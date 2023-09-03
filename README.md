@@ -1,2 +1,2 @@
 # rememberry 🫐
-Flashcards provide an effective way to memorise stuff using active recall and spaced repetition. Creating them manually in Anki can be painful - this script should help by pasting in the contents into appropriate sheet columns and let the upload and creation happening automatically in the background.  
+Need 10.000 hours to achieve excellence in a skill? 👀 Let's better use that time wisely - rememberry aims to be the go-to platform for learning concepts and theory by enhancing flashcard creation and learning. 🧠
