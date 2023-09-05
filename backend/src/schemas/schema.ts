@@ -25,3 +25,22 @@ const createStackTableQuery = `
     );
 `
 
+const createPeersTableQuery = `
+        CREATE TABLE peers(
+            peer_id UUID UNIQUE NOT NULL,
+            number_of_members SMALLINT NOT NULL,
+            peer_name VARCHAR,
+
+        );
+`
+
+const createFlashcardsTableQuery = `
+            CREATE TABLE flashcards(
+                flashcard_id UUID UNIQUE NOT NULL,
+                frontside VARCHAR NOT NULL,
+                backside VARCHAR NOT NULL,
+                learning_status SMALLINT NOT NULL
+            );
+`
+
+
