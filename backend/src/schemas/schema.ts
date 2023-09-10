@@ -60,16 +60,16 @@ CREATE TABLE IF NOT EXISTS users_peers (
 `;
 
 export async function createTables() {
-    try {
-        await pool.query(createUserTableQuery);
-        await pool.query(createStackTableQuery);
-        await pool.query(createFlashcardsTableQuery);
-        await pool.query(createPeersTableQuery);
-        await pool.query(createUserPeersTableQuery);
-        console.log("Tables created successfully");
-    } catch (error) {
-        console.error("An error occurred while creating tables:", error);
-    } finally {
-        pool.end();
-    }
+  try {
+    await pool.query(createUserTableQuery);
+    await pool.query(createStackTableQuery);
+    await pool.query(createFlashcardsTableQuery);
+    await pool.query(createPeersTableQuery);
+    await pool.query(createUserPeersTableQuery);
+    console.log("Tables created successfully");
+  } catch (error) {
+    console.error("An error occurred while creating tables:", error);
+  } finally {
+    pool.end();
+  }
 }
