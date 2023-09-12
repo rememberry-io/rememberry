@@ -2,11 +2,12 @@ import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import { appRouter } from "./routers/_app";
 import { createContext } from "./context";
 import cors from "cors";
+import pool from "./schemas/db";
 
 const server = createHTTPServer({
   middleware: cors(),
   router: appRouter,
-  createContext
+  createContext,
 });
 
 server.listen(3050);
