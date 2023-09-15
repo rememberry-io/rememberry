@@ -6,6 +6,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  important: true,
   theme: {
     extend: {
       backgroundImage: {
@@ -35,8 +36,14 @@ const config: Config = {
     },
   },
   textColors: {
-    grey: "#787777",
-    rememberry: "#1370DD",
+    primary: "#1370DD",
+	secondary: "#787777",
+	dark: "#000000"
+  },
+  colors: {
+	primary: "#1370DD",
+	lighter: "#5A97F1",
+	secondary: "#ffffff"
   },
 
   plugins: [],
