@@ -16,8 +16,10 @@ const pool = new Pool({
 });
 
 export const createContext = (opts: CreateHTTPContextOptions) => {
+  const {req, res} = opts
   return {
-    
+    req,
+    res,
     db: pool,
   };
 };
