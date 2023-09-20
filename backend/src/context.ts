@@ -1,26 +1,31 @@
 import { CreateHTTPContextOptions } from "@trpc/server/adapters/standalone";
-import { Pool } from "pg";
+import { Client } from "pg";
+import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
+import * as schema from './db/schema'
 
-const dbUser: string = process.env.PG_USERNAME!;
-const dbPassword: string = process.env.PG_PASSWORD!;
-const dbPort: number = +process.env.PG_PORT!;
-const databaseName: string = process.env.PG_DATABASE_NAME!;
-const dbHost: string = process.env.PG_HOST!;
+const pgHost = process.env.PG_HOST || "";
+const pgDatabaseName = process.env.PG_DATABASE_NAME || "";
+const pgUsername = process.env.PG_USERNAME || "";
+const pgPassword = process.env.PG_PASSWORD || "";
 
-const pool = new Pool({
-  user: dbUser,
-  password: dbPassword,
-  host: dbHost,
-  database: databaseName,
-  port: dbPort,
+export const client = new Client({
+  host: pgHost,
+  port: 5433,
+  user: pgUsername,
+  password: pgPassword,
+  database: pgDatabaseName,
 });
+
+await client.connect()
+
+export const db = drizzle(client) as NodePgDatabase<typeof import("/Users/lennartp./Desktop/Projekte/rememberry/backend/src/db/schema.ts")>
 
 export const createContext = (opts: CreateHTTPContextOptions) => {
   const {req, res} = opts
   return {
     req,
     res,
-    db: pool,
+    db: db,
   };
 };
 
