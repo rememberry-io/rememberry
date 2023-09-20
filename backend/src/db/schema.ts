@@ -1,4 +1,6 @@
 
+import { relations } from "drizzle-orm";
+import { primaryKey } from "drizzle-orm/mysql-core";
 import { integer, pgTable, varchar, uuid, timestamp, index } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -15,7 +17,7 @@ export type NewUser = typeof users.$inferInsert
 
 
 export const topics = pgTable("topics", {
-    topic_id: uuid('topic_id').primaryKey(),
+    topic_id: uuid('topic_id').defaultRandom().primaryKey(),
     topic: varchar("topic")
 })
 export type Topic = typeof topics.$inferSelect
@@ -45,8 +47,7 @@ export const flashcards = pgTable("flashcards", {
     backside_text: varchar("backside_text")
 }, (table) => {
     return {
-        flashcard_idx: index("flashcard_idx").on(table.flashcard_id)
-    }
+}
 }
 )
 export type Flashcard = typeof flashcards.$inferSelect
@@ -71,3 +72,34 @@ export const backside_media = pgTable("frontside_media", {
 })
 export type BacksideMedia = typeof backside_media.$inferSelect
 export type NewBacksideMedia = typeof backside_media.$inferInsert
+
+
+
+export const tags = pgTable("tags", {
+    tag_id: uuid("tag_id").primaryKey(),
+    tag: varchar("tag")
+})
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+    tagsToCards: many(tagsToCards),
+}))
+
+export const cardsRelations = relations(flashcards, ({ many }) => ({
+    tagsToCards: many(tagsToCards),
+}))
+
+export const tagsToCards = pgTable("tags_to_cards", {
+    tag_id: uuid("tag_id").notNull().references(()=>flashcards.flashcard_id),
+    flashcard_id: uuid("flashcard_id").notNull().references(()=>tags.tag_id),
+})
+
+export const tagsToCardsRelations = relations(tagsToCards, ({ one })=>({
+    tag: one(tags, {
+        fields: [tagsToCards.tag_id],
+        references: [tags.tag_id]
+    }),
+    flashcard: one(flashcards, {
+        fields: [tagsToCards.flashcard_id],
+        references: [flashcards.flashcard_id]
+    })
+}))
