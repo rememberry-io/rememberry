@@ -17,12 +17,6 @@ const userIdInput = z.object({userId:z.string()})
 
 export const stackRouter = router({
 
-    getStacksByTopic: publicProcedure.query(async(opts)=>{
-        console.log(opts.ctx.req)
-        const res = await stackModels.getUsersStacksFilteredByTopic('aa279cff-e43c-418c-8470-2eaa1a998c8a', 'Bryum Moss', opts.ctx.db)
-        return res
-    }),
-
     getUsersStacksFilteredByTopic: publicProcedure.input(searchByTopicInput).query(async(opts)=>{
         const res = await stackModels.getUsersStacksFilteredByTopic(opts.input.user_id, opts.input.topic, opts.ctx.db)
         return res
