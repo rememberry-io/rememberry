@@ -9,6 +9,8 @@ import {
 	TutorialIcon
 } from "../icons/index";
 import SidebarHeader from "./SidebarHeader";
+import Link from 'next/link'
+import styles from './Sidebar.module.css'
 
 
 
@@ -20,11 +22,12 @@ export default function Sidebar() {
 	const [isCollapsible, setIsCollapsible] = useState(false);
 
 	const sidebarElements = [
-		{ id: 1, label: "Dashboard", icon: DashboardIcon, link: "/dashboard"},
-		{ id: 2, label: "Create Flashcard", icon: CreateIcon, link: "/create"},
-		{ id: 3, label: "Map", icon: MapIcon, link: "/map"},
-		{ id: 4, label: "Upload content", icon: UploadIcon, link: "/upload"},
-		{ id: 5, label: "How it works", icon: TutorialIcon, link: "/tutorial"}
+		{ id: 1, label: "Flashcard map", icon: CreateIcon, link: "/map", current: true},
+		{ id: 2, label: "How it works", icon: TutorialIcon, link: "/tutorial", current: false},
+		{ id: 3, label: "Incoming features", icon: CreateIcon, link: "/features", current: false},
+		{ id: 4, label: "Our mission", icon: TutorialIcon, link: "/mission", current: false},
+		{ id: 5, label: "Give feedback", icon: TutorialIcon, link: "/feedback", current: false},
+		{ id: 6, label: "Upload content", icon: UploadIcon, link: "/upload", current: false},
 	]
 
 	const wrapperClass = classNames(
@@ -43,16 +46,25 @@ export default function Sidebar() {
 
 	return (
 		<div className={wrapperClass}>
-			<SidebarHeader />
-			<div id="nav-wrapper" className="">
-				<ul className="text-white border">
+			<div className="p-3">
+				<div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
+					<div className="flex grow flex-col gapy-y-5 overflow-y-auto px-6 pb-4">
+						<SidebarHeader />
+							<nav className="flex flex-1 flex-col">
+								<ul role="list" className="text-white">
+									{sidebarElements.map((item) => {
+										return <div key={item.id}><Link href={item.link}>{item.label}</Link></div>
+									})}
+								</ul>
 
-					{sidebarElements.map((item) => {
-						return <div key={item.id}>
-						<p>{item.label}</p>
-						</div>
-					})}
-				</ul>
+						</nav>
+					<div>
+
+					</div>
+				</div>
+
+			</div>
+					
 			</div>
 		</div>
 	);
