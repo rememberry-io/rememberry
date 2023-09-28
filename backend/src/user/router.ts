@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, publicProcedure } from "../trpc";
 import * as userModel from '../user/user.model'
 import * as schema from '../db/schema'
+import { AnyRouter, Router } from "@trpc/server";
 
 
 const createUserInput = z.object({

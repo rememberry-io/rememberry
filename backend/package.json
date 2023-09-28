@@ -21,7 +21,7 @@
     "drizzle-orm": "^0.28.6",
     "drizzle-zod": "^0.5.1",
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.11.3",
     "trpc": "^0.11.3",
     "typescript": "^5.2.2",

@@ -1,6 +1,7 @@
 import { router, publicProcedure } from "../trpc";
 import * as stackModels from '../stacks/stackModels'
 import z from 'zod'
+import { privateProcedure } from "../middleware/jwt";
 
 const stackInput = z.object({
     user_id: z.string(),
@@ -16,6 +17,8 @@ const searchByTopicInput = z.object({
 const userIdInput = z.object({userId:z.string()})
 
 export const stackRouter = router({
+
+    testAuth: privateProcedure.query(async(opts) => { return 'logged in'}),
 
     getUsersStacksFilteredByTopic: publicProcedure.input(searchByTopicInput).query(async(opts)=>{
         const res = await stackModels.getUsersStacksFilteredByTopic(opts.input.user_id, opts.input.topic, opts.ctx.db)
