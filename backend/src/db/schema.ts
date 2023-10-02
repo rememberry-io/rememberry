@@ -29,7 +29,7 @@ export type NewUser = typeof users.$inferInsert;
 
 export const maps = pgTable("maps", {
   map_id: uuid("map_id").defaultRandom().primaryKey(),
-  user_id: uuid("user_id").references(()=>users.user_id),
+  user_id: uuid("user_id").references(()=>users.user_id, {onDelete: 'cascade'}),
   map_name: varchar("map_name"),
   map_description: varchar("map_description")
 })
@@ -49,7 +49,7 @@ export type newMap = typeof maps.$inferInsert
 
 export const stacks = pgTable("stacks", {
   stack_id: uuid("stack_id").defaultRandom().primaryKey(),
-  map_id: uuid("map_id").references(() => maps.map_id),
+  map_id: uuid("map_id").references(() => maps.map_id, {onDelete: 'cascade'}),
   stack_name: varchar("stack_name"),
   stack_description: varchar("stack_description"),
   number_of_learned_cards: integer("number_of_learned_cards"),
@@ -75,7 +75,7 @@ export type NewStack = typeof stacks.$inferInsert;
 
 export const flashcards = pgTable("flashcards", {
   flashcard_id: uuid("flashcard_id").defaultRandom().primaryKey(),
-  stack_id: uuid("stack_id").references(() => stacks.stack_id),
+  stack_id: uuid("stack_id").references(() => stacks.stack_id, {onDelete: 'cascade'}),
   frontside_text: varchar("frontside_text"),
   backside_text: varchar("backside_text"),
    
@@ -98,7 +98,7 @@ export type NewFlashcard = typeof flashcards.$inferInsert;
 
 export const session_data = pgTable("session_data", {
   session_id: uuid("session_id").defaultRandom().primaryKey(),
-  flashcard_id: uuid("flashcard_id").references(()=>flashcards.flashcard_id),
+  flashcard_id: uuid("flashcard_id").references(()=>flashcards.flashcard_id, {onDelete: 'cascade'}),
   times_learned: integer("times_learned"),
   last_learned: date("last_learned")
 })
@@ -117,7 +117,7 @@ export type NewSessionData = typeof session_data.$inferInsert
 
 export const frontside_media = pgTable("frontside_media", {
   media_id: uuid("media_id").defaultRandom().primaryKey(),
-  flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id),
+  flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {onDelete: 'cascade'}),
   media_link: varchar("media_link"),
   positioning: varchar("positioning")
 });
@@ -139,7 +139,7 @@ export type NewFrontsideMedia = typeof frontside_media.$inferInsert;
 
 export const backside_media = pgTable("backside_media", {
   media_id: uuid("media_id").defaultRandom().primaryKey(),
-  flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id),
+  flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {onDelete: 'cascade'}),
   media_link: varchar("media_link"),
   positioning: varchar("positioning")
 });
