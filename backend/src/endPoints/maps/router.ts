@@ -17,7 +17,7 @@ const updateMapInput = z.object({
 
 
 
-const mapRouter = router({
+export const mapRouter = router({
 
     createMap: publicProcedure.input(createMapInput).query(async(opts) => {
         const res = mapModels.createMap(opts.input, opts.ctx.db)
