@@ -1,9 +1,10 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
 import { client } from "../../db/db";
-import { eq } from "drizzle-orm";
+import { eq, ne, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
+import { z } from 'zod'
 
 const database = drizzle(client, { schema });
 type dbConnection = typeof database;
@@ -69,17 +70,33 @@ export async function getUserById(userId: string, db: dbConnection) {
   return user;
 }
 
+
+export async function checkUpdateCredentials(userInput: schema.User, db:dbConnection){
+  const res = await db.select().from(schema.users).where(and(eq(schema.users.username, userInput.username), ne(schema.users.user_id, userInput.user_id)))
+  const res2 = await db.select().from(schema.users).where(and(eq(schema.users.email, userInput.email), ne(schema.users.user_id, userInput.user_id)))
+  if(res[0] && res2[0]){
+    throw new TRPCError(403, {message: "USERNAME AND EMAIL ALREADY EXIST"})
+  }else if(res2[0]){
+    throw new TRPCError(403, {message: "EMAIL ALREADY EXISTS"})
+  }else if(res[0]){
+    throw new TRPCError(403, {message: "USERNAME ALREADY EXIST"})
+  }
+}
+
 //UPDATE
 export async function updateUserById(
   userInput: schema.User,
   db: dbConnection
 ): Promise<schema.User[]> {
+  checkUpdateCredentials(userInput, db)
+  const salt = await bcrypt.genSalt(10)
+  const hashedPwd = await bcrypt.hash(userInput.password, salt)
   const updatedUser = await db
     .update(schema.users)
     .set({
       username: userInput.username,
       email: userInput.email,
-      password: userInput.password,
+      password: hashedPwd,
     })
     .where(eq(schema.users.user_id, userInput.user_id))
     .returning();
