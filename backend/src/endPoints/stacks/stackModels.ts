@@ -59,7 +59,7 @@ export async function changeParentStack(userInput:ParentAndChildId, db:dbConnect
   return res
 }
 
-export async function deleteParentStackRelation(childStack:schema.Stack, db:dbConnection): Promise<schema.Stack[]>{
-  const res = await db.update(schema.stacks).set({parent_stack_id: null}).where(eq(schema.stacks.stack_id, childStack.stack_id)).returning()
+export async function deleteParentStackRelation(childStackId:string, db:dbConnection): Promise<schema.Stack[]>{
+  const res = await db.update(schema.stacks).set({parent_stack_id: null}).where(eq(schema.stacks.stack_id, childStackId)).returning()
   return res 
 }

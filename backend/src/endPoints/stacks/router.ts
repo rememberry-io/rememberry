@@ -57,7 +57,13 @@ export const stackRouter = router({
   changeParentStack: publicProcedure.input(changeParentStackInput).query(async(opts) => {
     const res = await stackModels.changeParentStack(opts.input, opts.ctx.db)
     return res 
-  })
+  }),
+
+  deleteParentStackRelation: publicProcedure.input(z.string()).query(async(opts) => {
+    const res = await stackModels.deleteParentStackRelation(opts.input, opts.ctx.db)
+    return res 
+  }),
+  
 })
 
 
