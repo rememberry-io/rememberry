@@ -1,5 +1,5 @@
 import { CreateTRPCProxyClient, createTRPCProxyClient, httpBatchLink } from '@trpc/client';
-import type { AppRouter } from "@backend/index"
+import type { AppRouter } from "@backend/routers/_app"
 
 class TRPCClient {
   client: CreateTRPCProxyClient<AppRouter>;

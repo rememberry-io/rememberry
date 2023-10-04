@@ -1,6 +1,19 @@
 services:
+  backend:
+    container_name: rembackend
+    image: notemann27/test_rememb_backend:1.0
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      PG_USERNAME: ${PG_USERNAME}
+      PG_DATABASE_NAME=: ${PG_DATABASE_NAME}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_HOST: ${PG_HOST}
+    ports:
+      - "127.0.0.1:3050:3050"
+    restart: unless-stopped
+
   postgres:
-    container_name: postgres
+    container_name: postgres_database
     image: postgres:15.4
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -12,6 +25,7 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+
 networks:
   postgres:
     driver: bridge

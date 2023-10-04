@@ -4,7 +4,7 @@ SERVER RUNS ON http://localhost:3050
 
 We are using bun
 
-use 
+use
 
 ```
 bun dev
