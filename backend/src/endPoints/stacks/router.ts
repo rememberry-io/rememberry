@@ -49,6 +49,11 @@ export const stackRouter = router({
     return res
   }),
 
+  getAllChildsFromParent: publicProcedure.input(z.string()).query(async(opts) => {
+    const res = await stackModels.getAllChildsFromParent(opts.input, opts.ctx.db)
+    return res
+  }),
+
   getStackById: publicProcedure.input(z.string()).query(async(opts) => {
     const res = await stackModels.getParentFromStack(opts.input, opts.ctx.db)
     return res 
