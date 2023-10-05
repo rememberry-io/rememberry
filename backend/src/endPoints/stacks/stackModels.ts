@@ -48,6 +48,25 @@ export async function getStacksFromParent(parentStackId:string, db:dbConnection)
   return res 
 }
 
+
+export async function getAllChildsFromParent(stackId:string, db:dbConnection){
+  const res = await db.execute(sql`
+  WITH RECURSIVE cte_substacks AS (
+      
+      SELECT * FROM stacks WHERE stack_id=${stackId}
+  
+      UNION ALL
+  
+      SELECT stacks.* FROM stacks 
+      JOIN cte_substacks ON stacks.parent_stack_id = cte_substacks.stack_id
+      
+      )
+      SELECT * 
+      FROM cte_substacks
+  `)
+  return res.rows
+}
+
 export async function getParentFromStack(parentStackId:string, db:dbConnection){
   const prep = db.select().from(schema.stacks).where(eq(schema.stacks.stack_id, sql.placeholder("id"))).prepare("parentStack")
   const res = await prep.execute({id: parentStackId})
