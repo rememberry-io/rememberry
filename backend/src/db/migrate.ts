@@ -2,20 +2,8 @@ import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { config } from "dotenv";
 import { Client } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
+import {client} from './db'
 config();
-
-const pgHost = process.env.PG_HOST || "";
-const pgDatabaseName = process.env.PG_DATABASE_NAME || "";
-const pgUsername = process.env.PG_USERNAME || "";
-const pgPassword = process.env.PG_PASSWORD || "";
-
-export const client = new Client({
-  host: pgHost,
-  port: 5433,
-  user: pgUsername,
-  password: pgPassword,
-  database: pgDatabaseName,
-});
 
 const db = drizzle(client)
 
