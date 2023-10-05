@@ -100,7 +100,8 @@ export const session_data = pgTable("session_data", {
   session_id: uuid("session_id").defaultRandom().primaryKey(),
   flashcard_id: uuid("flashcard_id").references(()=>flashcards.flashcard_id, {onDelete: 'cascade'}),
   times_learned: integer("times_learned"),
-  last_learned: date("last_learned")
+  last_learned: date("last_learned"),
+  learning_status: integer("learning_status").default(0)
 })
 
 export const session_data_relations = relations(session_data, ({one}) => ({
