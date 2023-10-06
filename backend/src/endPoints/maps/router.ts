@@ -19,7 +19,7 @@ const updateMapInput = z.object({
 
 export const mapRouter = router({
 
-    createMap: publicProcedure.input(createMapInput).query(async(opts) => {
+    createMap: publicProcedure.input(createMapInput).mutation(async(opts) => {
         const res = mapModels.createMap(opts.input, opts.ctx.db)
         return res
     }),
@@ -29,12 +29,12 @@ export const mapRouter = router({
         return res 
     }),
 
-    updateMap: publicProcedure.input(updateMapInput).query(async(opts) => {
+    updateMap: publicProcedure.input(updateMapInput).mutation(async(opts) => {
         const res = await mapModels.updateMap(opts.input, opts.ctx.db)
         return res
     }), 
 
-    deleteMap: publicProcedure.input(z.string()).query(async (opts) => {
+    deleteMap: publicProcedure.input(z.string()).mutation(async (opts) => {
         const res = await mapModels.deleteMapWithAllStacks(opts.input, opts.ctx.db)
         return res 
     })

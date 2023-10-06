@@ -29,7 +29,7 @@ const changeParentStackInput = z.object({
 
 export const stackRouter = router({
 
-  createStack : publicProcedure.input(stackInput).query(async(opts) => {
+  createStack : publicProcedure.input(stackInput).mutation(async(opts) => {
     const res = await stackModels.createStack(opts.input, opts.ctx.db)
     return res
   }),
@@ -59,12 +59,12 @@ export const stackRouter = router({
     return res 
   }),
 
-  changeParentStack: publicProcedure.input(changeParentStackInput).query(async(opts) => {
+  changeParentStack: publicProcedure.input(changeParentStackInput).mutation(async(opts) => {
     const res = await stackModels.changeParentStack(opts.input, opts.ctx.db)
     return res 
   }),
 
-  deleteParentStackRelation: publicProcedure.input(z.string()).query(async(opts) => {
+  deleteParentStackRelation: publicProcedure.input(z.string()).mutation(async(opts) => {
     const res = await stackModels.deleteParentStackRelation(opts.input, opts.ctx.db)
     return res 
   }),

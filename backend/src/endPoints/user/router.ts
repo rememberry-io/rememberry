@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../../trpc";
 import * as userModel from "./user.model";
+import * as userController from "./userController";
 import * as schema from "../../db/schema";
 
 const createUserInput = z.object({
@@ -16,28 +17,28 @@ const User = z.object({
 });
 
 export const userRouter = router({
-  createUser: publicProcedure.input(createUserInput).query(async (opts) => {
-    const res = await userModel.createUser(opts.input, opts.ctx.db);
+  createUser: publicProcedure.input(createUserInput).mutation(async (opts) => {
+    const res = await userController.controlUserCreation(opts.input, opts.ctx.db);
     return res;
   }),
 
-  updateUser: publicProcedure.input(User).query(async (opts) => {
-    const res = await userModel.updateUserById(opts.input, opts.ctx.db);
+  updateUser: publicProcedure.input(User).mutation(async (opts) => {
+    const res = await userController.controlUserUpdateById(opts.input, opts.ctx.db);
     return res;
   }),
 
-  deleteUserById: publicProcedure.input(User).query(async (opts) => {
-    const res = await userModel.deleteUserById(opts.input.user_id, opts.ctx.db);
+  deleteUserById: publicProcedure.input(User).mutation(async (opts) => {
+    const res = await userController.controlUserDeletionById(opts.input.user_id, opts.ctx.db);
     return res;
   }),
 
   getAllUsers: publicProcedure.input(z.null()).query(async (opts) => {
-    const res = await userModel.getAllUsers(opts.ctx.db);
+    const res = await userController.getAllUsers(opts.ctx.db);
     return res;
   }),
 
   getUserById: publicProcedure.input(User).query(async (opts) => {
-    const res = await userModel.getUserById(opts.input.user_id, opts.ctx.db);
+    const res = await userController.getUserById(opts.input.user_id, opts.ctx.db);
     return res;
   }),
 });
