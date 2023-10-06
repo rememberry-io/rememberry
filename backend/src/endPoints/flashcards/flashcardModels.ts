@@ -2,24 +2,14 @@ import { client } from "../../db/db";
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from '../../db/schema'
 import { eq, and, desc, sql} from "drizzle-orm";
-
+import * as types from "./types";
 const database = drizzle(client, { schema })
 type dbConnection = typeof database
 
 
-type Flashcards = {
-    frontside: string | null,
-    frontside_media: string | null,
-    frontside_media_positioning: string | null,
-    backside: string | null,
-    backside_media: string | null,
-    backside_media_positioning: string | null
-}
 
-enum LearningStatus {
-    learnable = 1,
-    notLearnable = 0
-}
+
+
 
 
 export async function createFlashcard(flashcard: schema.NewFlashcard, db:dbConnection): Promise<schema.Flashcard[]>{
@@ -73,7 +63,7 @@ export async function getAllFlashcardsFromStack(stackId:string, db:dbConnection)
     return res
 }
 
-export async function getLearnableFlashcardsFromStack(stackId:string, db:dbConnection): Promise<Flashcards[]>{
+export async function getLearnableFlashcardsFromStack(stackId:string, db:dbConnection): Promise<types.Flashcards[]>{
     const prep = db
     .select({
         flashcard_id: schema.flashcards.flashcard_id,
@@ -89,7 +79,7 @@ export async function getLearnableFlashcardsFromStack(stackId:string, db:dbConne
     .leftJoin(schema.frontside_media, eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id))
     .leftJoin(schema.backside_media, eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id))
     .innerJoin(schema.session_data, eq(schema.flashcards.flashcard_id, schema.session_data.flashcard_id))
-    .where(and(eq(schema.flashcards.stack_id, sql.placeholder("stack_id")), eq(schema.session_data.learning_status, LearningStatus.learnable)))
+    .where(and(eq(schema.flashcards.stack_id, sql.placeholder("stack_id")), eq(schema.session_data.learning_status, types.LearningStatus.learnable)))
     .prepare("getLearnableFlashcardsFromStack")
     
     const res = await prep.execute({stack_id: stackId})
@@ -125,6 +115,39 @@ export async function getAllFlashcardsFromStackAndChildStacks(stackId:string, db
     JOIN flashcards ON cte_stacks.stack_id = flashcards.stack_id
     LEFT JOIN frontside_media ON flashcards.flashcard_id = frontside_media.flashcard_id
     LEFT JOIN backside_media ON flashcards.flashcard_id = backside_media.flashcard_id
+    `)
+    return res.rows
+}
+
+
+export async function getLearnableFlashcardsFromStackAndChilds(stackId:string, db:dbConnection): Promise<any>{
+    const res = await db.execute(sql`
+    WITH RECURSIVE cte_stacks AS(
+        SELECT stack_id 
+        FROM stacks
+        WHERE stack_id=${stackId}
+
+        UNION ALL
+
+    SELECT stacks.stack_id
+    FROM STACKS
+    JOIN cte_stacks ON stacks.parent_stack_id = cte_stacks.stack_id
+    )
+
+    SELECT
+        flashcards.flashcard_id,
+        flashcards.frontside_text,
+        flashcards.backside_text,
+        frontside_media.media_link,
+        frontside_media.positioning,
+        backside_media.media_link,
+        backside_media.positioning
+    FROM cte_stacks
+    JOIN flashcards ON flashcards.stack_id = cte_stacks.stack_id
+    JOIN session_data ON flashcards.flashcard_id = session_data.flashcard_id
+    LEFT JOIN frontside_media ON flashcards.flashcard_id = frontside_media.flashcard_id
+    LEFT JOIN backside_media ON flashcards.flashcard_id = backside_media.flashcard_id 
+    WHERE session_data.learning_status=1;
     `)
     return res.rows
 }
