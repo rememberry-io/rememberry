@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { router, publicProcedure } from "../../trpc";
-import * as mapModels from './mapModels'
+import * as mapController from './mapController'
 import * as schema from "../../db/schema";
 
 
@@ -20,22 +20,22 @@ const updateMapInput = z.object({
 export const mapRouter = router({
 
     createMap: publicProcedure.input(createMapInput).mutation(async(opts) => {
-        const res = mapModels.createMap(opts.input, opts.ctx.db)
+        const res = mapController.controlMapCreation(opts.input, opts.ctx.db)
         return res
     }),
 
-    getMapsById: publicProcedure.input(z.string()).query(async(opts) => {
-        const res = await mapModels.getMapsByUserId(opts.input, opts.ctx.db)
+    getUsersMaps: publicProcedure.input(z.string()).query(async(opts) => {
+        const res = await mapController.controlGetUsersMaps(opts.input, opts.ctx.db)
         return res 
     }),
 
     updateMap: publicProcedure.input(updateMapInput).mutation(async(opts) => {
-        const res = await mapModels.updateMap(opts.input, opts.ctx.db)
+        const res = await mapController.controlUpdateMap(opts.input, opts.ctx.db)
         return res
     }), 
 
-    deleteMap: publicProcedure.input(z.string()).mutation(async (opts) => {
-        const res = await mapModels.deleteMapWithAllStacks(opts.input, opts.ctx.db)
+    deleteMapWithAllStacks: publicProcedure.input(z.string()).mutation(async (opts) => {
+        const res = await mapController.controlDeleteMapWithAllStacks(opts.input, opts.ctx.db)
         return res 
     })
 
