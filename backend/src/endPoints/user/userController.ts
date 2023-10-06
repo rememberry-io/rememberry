@@ -1,9 +1,6 @@
-import { client } from "../../db/db";
-import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "../../db/schema";
 import * as types from './types'
 import * as userModel from './user.model'
-const db = drizzle(client, { schema });
 import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
 
