@@ -4,20 +4,16 @@ import { client } from "../../db/db";
 import { eq, ne, and } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
-import { z } from 'zod'
+import * as types from "./types";
 
-const database = drizzle(client, { schema });
-type dbConnection = typeof database;
+export const database = drizzle(client, { schema });
 
 //WRITE
-export async function createUser(
+export async function writeUser(
   userInput: schema.NewUser,
-  db: dbConnection
+  db: types.dbConnection,
+  hashedPwd: string
 ): Promise<schema.NewUser[]> {
-  
-  await checkCredentials(userInput.email, userInput.username, db)
-  const salt = await bcrypt.genSalt(10); 
-  const hashedPwd = await bcrypt.hash(userInput.password, salt);
   const newUser = await db
     .insert(schema.users)
     .values({
@@ -31,38 +27,49 @@ export async function createUser(
 }
 
 //READ
-export async function getAllUsers(db: dbConnection) {
+export async function readAllUsers(db: types.dbConnection) {
   const res = await db.select().from(schema.users);
   return res;
 }
 
-export async function checkUsername(username:string, db:dbConnection){
-  const user = await db.select().from(schema.users).where(eq(schema.users.username, username))
-  console.log(user[0])
-  if(user[0]){
-    return true
+export async function checkUsername(username: string, db: types.dbConnection) {
+  const user = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.username, username));
+  if (user[0]) {
+    return true;
   }
 }
 
-export async function checkUserEmail(email:string, db:dbConnection){
-  const user = await db.select().from(schema.users).where(eq(schema.users.email, email))
-  if(user[0]){
-    return true
+export async function checkUserEmail(email: string, db: types.dbConnection) {
+  const user = await db
+    .select()
+    .from(schema.users)
+    .where(eq(schema.users.email, email));
+  if (user[0]) {
+    return true;
   }
 }
 
-export async function checkCredentials(email:string, username: string, db:dbConnection){
-  if(await checkUserEmail(email, db) && await checkUsername(username, db)){
-    throw new TRPCError(403, {message: "USERNAME AND EMAIL ALREADY EXIST"})
-  }else if(await checkUserEmail(email, db)){
-    throw new TRPCError(403, {message: "EMAIL ALREADY EXISTS"})
-  }else if(await checkUsername(username, db)){
-    throw new TRPCError(403, {message: "USERNAME ALREADY EXISTS"})
+export async function checkCredentials(
+  email: string,
+  username: string,
+  db: types.dbConnection
+) {
+  if (
+    (await checkUserEmail(email, db)) &&
+    (await checkUsername(username, db))
+  ) {
+    throw new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" });
+  } else if (await checkUserEmail(email, db)) {
+    throw new TRPCError(403, { message: "EMAIL ALREADY EXISTS" });
+  } else if (await checkUsername(username, db)) {
+    throw new TRPCError(403, { message: "USERNAME ALREADY EXISTS" });
   }
 }
 
-
-export async function getUserById(userId: string, db: dbConnection) {
+export async function readUserById(userId: string, db: types.dbConnection) {
   const user = await db
     .select()
     .from(schema.users)
@@ -70,27 +77,45 @@ export async function getUserById(userId: string, db: dbConnection) {
   return user;
 }
 
-
-export async function checkUpdateCredentials(userInput: schema.User, db:dbConnection){
-  const res = await db.select().from(schema.users).where(and(eq(schema.users.username, userInput.username), ne(schema.users.user_id, userInput.user_id)))
-  const res2 = await db.select().from(schema.users).where(and(eq(schema.users.email, userInput.email), ne(schema.users.user_id, userInput.user_id)))
-  if(res[0] && res2[0]){
-    throw new TRPCError(403, {message: "USERNAME AND EMAIL ALREADY EXIST"})
-  }else if(res2[0]){
-    throw new TRPCError(403, {message: "EMAIL ALREADY EXISTS"})
-  }else if(res[0]){
-    throw new TRPCError(403, {message: "USERNAME ALREADY EXIST"})
+export async function checkUpdateCredentials(
+  userInput: schema.User,
+  db: types.dbConnection
+) {
+  const res = await db
+    .select()
+    .from(schema.users)
+    .where(
+      and(
+        eq(schema.users.username, userInput.username),
+        ne(schema.users.user_id, userInput.user_id)
+      )
+    );
+  const res2 = await db
+    .select()
+    .from(schema.users)
+    .where(
+      and(
+        eq(schema.users.email, userInput.email),
+        ne(schema.users.user_id, userInput.user_id)
+      )
+    );
+  if (res[0] && res2[0]) {
+    throw new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" });
+  } else if (res2[0]) {
+    throw new TRPCError(403, { message: "EMAIL ALREADY EXISTS" });
+  } else if (res[0]) {
+    throw new TRPCError(403, { message: "USERNAME ALREADY EXIST" });
   }
 }
 
 //UPDATE
 export async function updateUserById(
   userInput: schema.User,
-  db: dbConnection
+  db: types.dbConnection
 ): Promise<schema.User[]> {
-  checkUpdateCredentials(userInput, db)
-  const salt = await bcrypt.genSalt(10)
-  const hashedPwd = await bcrypt.hash(userInput.password, salt)
+  checkUpdateCredentials(userInput, db);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPwd = await bcrypt.hash(userInput.password, salt);
   const updatedUser = await db
     .update(schema.users)
     .set({
@@ -106,7 +131,7 @@ export async function updateUserById(
 //DELETE
 export async function deleteUserById(
   userId: string,
-  db: dbConnection
+  db: types.dbConnection
 ): Promise<schema.User[]> {
   const deletedUser = await db
     .delete(schema.users)
