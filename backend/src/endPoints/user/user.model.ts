@@ -94,11 +94,9 @@ export async function fetchUpdateCredentials(
 //UPDATE
 export async function updateUserById(
   userInput: schema.User,
+  hashedPwd: string,
   db: types.dbConnection
 ): Promise<schema.User[]> {
-  fetchUpdateCredentials(userInput, db);
-  const salt = await bcrypt.genSalt(10);
-  const hashedPwd = await bcrypt.hash(userInput.password, salt);
   const updatedUser = await db
     .update(schema.users)
     .set({
