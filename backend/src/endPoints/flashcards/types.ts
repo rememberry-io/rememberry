@@ -1,4 +1,4 @@
-
+import { database } from "../user/user.model"
 
 export type Flashcards = {
     frontside: string | null,
@@ -13,3 +13,5 @@ export enum LearningStatus {
     learnable = 1,
     notLearnable = 0
 }
+
+export type dbConnection = typeof database

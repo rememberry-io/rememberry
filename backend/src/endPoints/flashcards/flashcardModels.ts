@@ -6,12 +6,7 @@ import * as types from "./types";
 const database = drizzle(client, { schema })
 type dbConnection = typeof database
 
-
-
-
-
-
-
+ 
 export async function createFlashcard(flashcard: schema.NewFlashcard, db:dbConnection): Promise<schema.Flashcard[]>{
     const prep = db.insert(schema.flashcards).values({
         stack_id: sql.placeholder("stack_id"),
