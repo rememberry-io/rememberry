@@ -6,6 +6,7 @@ import { config } from "dotenv";
 config()
 
 
+
 export const flashcardRouter = router({
     
     getAllCardsFromStack: publicProcedure.input(z.string()).query(async(opts) => {
@@ -21,6 +22,11 @@ export const flashcardRouter = router({
     getAllCardsFromParentAndChilds: publicProcedure.input(z.string()).query(async(opts) => {
         const res = await flashcardModels.getAllFlashcardsFromStackAndChildStacks(opts.input, opts.ctx.db)
         return res
+    }),
+
+    getLearnableCardsFromStackAndChilds: publicProcedure.input(z.string()).query(async(opts) => {
+        const res = await flashcardModels.getLearnableFlashcardsFromStackAndChilds(opts.input, opts.ctx.db)
+        return res 
     })
 })
 
