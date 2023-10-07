@@ -1,0 +1,1 @@
+ALTER TABLE "session_data" ADD COLUMN "learning_status" integer DEFAULT 0;

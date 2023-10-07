@@ -6,7 +6,7 @@ import cors from "cors";
 const server = createHTTPServer({
   middleware: cors(),
   router: appRouter,
-  createContext
+  createContext,
 });
 
 server.listen(3050);
