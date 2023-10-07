@@ -8,9 +8,10 @@ import {
 	UploadIcon,
 	TutorialIcon
 } from "../icons/index";
-import SidebarHeader from "./SidebarHeader";
 import Link from 'next/link'
 import styles from './Sidebar.module.css'
+import Image from 'next/image'
+import CollapseIcon from "../icons/CollapseIcon"
 
 
 
@@ -46,10 +47,25 @@ export default function Sidebar() {
 
 	return (
 		<div className={wrapperClass}>
+
+			{/* Sidebar Header */}
+			<div className='flex flex-row items-center justify-between'>
+			<div id='profilepic' className='border'>
+				<Image src="/blueberry.png" width={30} height={30} alt="Profile Picture"/>
+			</div>
+			<div id='name'>
+				<p>Vorname Name</p>
+			</div>
+			<div id='burger-bar'>
+				<button>
+					<CollapseIcon />
+				</button>
+			</div>
+		</div>
+		
 			<div className="p-3">
 				<div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
 					<div className="flex grow flex-col gapy-y-5 overflow-y-auto px-6 pb-4">
-						<SidebarHeader />
 							<nav className="flex flex-1 flex-col">
 								<ul role="list" className="text-white">
 									{sidebarElements.map((item) => {

@@ -34,7 +34,7 @@ const initialEdges: Edge[] = [
   
   
   
-  export default function Home() {
+  export default function Map() {
 	  const [nodes, setNodes] = useState(initialNodes);
 	  const [edges, setEdges] = useState(initialEdges);
 
