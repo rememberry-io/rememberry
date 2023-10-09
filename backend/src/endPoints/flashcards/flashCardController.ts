@@ -2,13 +2,20 @@ import * as schema from "../../db/schema";
 import * as types from "./types";
 import * as flashcardModels from "./flashcardModels";
 
-export async function controlCreateFlashcard(
-  flashcard: schema.NewFlashcard,
-  db: types.dbConnection
-) {
-  const res = flashcardModels.createFlashcard(flashcard, db);
-  return res;
+
+export async function controlCreateFlashcard(flashcard:types.Flashcards, db:types.dbConnection){
+    if(flashcard.frontside_media_link && flashcard.backside_media_link){
+         const res = await flashcardModels.createFlashcardWithMedia(flashcard, db)
+         return res
+    }else if(flashcard.frontside_media_link && !flashcard.backside_media_link){
+        const res = await flashcardModels.createFlashcardWithFrontsideMedia(flashcard, db)
+        return res
+    }else if(flashcard.backside_media_link && !flashcard.frontside_media_link){
+        const res = await flashcardModels.createFlashcardWithBackideMedia(flashcard, db)
+        return res
+    }
 }
+
 
 export async function controlUpdateFlashcard(
   flashcard: schema.Flashcard,
@@ -18,6 +25,7 @@ export async function controlUpdateFlashcard(
   return res;
 }
 
+
 export async function controlDeleteFlashcard(
   flashcardId: string,
   db: types.dbConnection
@@ -25,6 +33,7 @@ export async function controlDeleteFlashcard(
   const res = await flashcardModels.deleteFlashcard(flashcardId, db);
   return res;
 }
+
 
 export async function controlGetAllFlashcardsFromStack(
   stackId: string,
@@ -34,6 +43,7 @@ export async function controlGetAllFlashcardsFromStack(
   return res;
 }
 
+
 export async function controlGetLearnableFlashcardsFromStack(
   stackId: string,
   db: types.dbConnection
@@ -41,6 +51,7 @@ export async function controlGetLearnableFlashcardsFromStack(
   const res = flashcardModels.getLearnableFlashcardsFromStack(stackId, db);
   return res;
 }
+
 
 export async function controlgetAllFlashcardsFromStackAndChildStacks(
   stackId: string,

@@ -1,19 +1,21 @@
 import { router, publicProcedure } from "../../trpc";
-import * as flashcardController from "./flashCardController";
+import * as flashcardController from './flashCardController'
+import * as types from './types'
 import z from "zod";
 import { config } from "dotenv";
 
 config();
 
 export const flashcardRouter = router({
-  getAllCardsFromStack: publicProcedure
-    .input(z.string())
-    .query(async (opts) => {
-      const res = await flashcardController.controlGetAllFlashcardsFromStack(
-        opts.input,
-        opts.ctx.db
-      );
-      return res;
+    
+    createFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
+        const res = flashcardController.controlCreateFlashcard(opts.input, opts.ctx.db)
+        return res
+    }),
+
+    getAllCardsFromStack: publicProcedure.input(z.string()).query(async(opts) => {
+        const res = await flashcardController.controlGetAllFlashcardsFromStack(opts.input, opts.ctx.db)
+        return res
     }),
 
   getLearnableCardsFromStack: publicProcedure
