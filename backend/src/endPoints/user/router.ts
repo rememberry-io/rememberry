@@ -42,6 +42,7 @@ export const userRouter = router({
   }),
 
   getAllUsers: publicProcedure.input(z.null()).query(async (opts) => {
+    console.log("test")
     const res = await userController.getAllUsers(opts.ctx.db);
     return res;
   }),
