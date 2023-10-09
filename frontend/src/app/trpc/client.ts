@@ -14,4 +14,4 @@ class TRPCClient {
   }
 } 
 
-export default new TRPCClient();
+export const tClient = new TRPCClient();
