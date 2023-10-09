@@ -1,7 +1,7 @@
 {
   "name": "rememberry_backend",
   "scripts": {
-    "build": "bun build --target=bun --outfile=dist/index.js ./src/index.ts",
+    "build": "bun build --target=node --outfile=dist/index.js ./src/index.ts",
     "start": "bun src/index.ts",
     "format": "prettier --write .",
     "dev": "bun --watch src/index.ts",

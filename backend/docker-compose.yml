@@ -1,8 +1,8 @@
 services:
   backend:
     container_name: rembackend
-      # build: .
-    image: notemann27/rem-backend:v0.0.3 # wtfisthis #     
+    build: .
+      # image: notemann27/rem-backend:v0.0.3 # wtfisthis #     
     environment:
       DATABASE_URL: ${DATABASE_URL}
       PG_PORT: ${PG_PORT}
@@ -29,8 +29,8 @@ services:
       - postgres:/data/postgres
       - ./drizzle:/drizzle
       - ./execute_sql_migration.sh:/execute_sql_migration.sh
-        #ports:
-        #  - "127.0.0.1:5433:5432"
+    ports:
+      - "127.0.0.1:5432:5432"
     networks:
       - rem-backend-net
     restart: unless-stopped
