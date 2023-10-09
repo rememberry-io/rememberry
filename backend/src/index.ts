@@ -12,5 +12,3 @@ const server = createHTTPServer({
 server.listen(3050);
 
 console.log("server listening on http://localhost:3050");
-
-export type AppRouter = typeof appRouter;
