@@ -7,7 +7,7 @@ const database = drizzle(client, { schema })
 type dbConnection = typeof database
 
  
-export async function createFlashcard(flashcard: types.Flashcards, db:dbConnection): Promise<schema.Flashcard[]>{
+export async function createBasicFlashcard(flashcard: types.Flashcards, db:dbConnection): Promise<schema.Flashcard[]>{
     
     const prep = db.insert(schema.flashcards).values({
         stack_id: sql.placeholder("stack_id"),
@@ -52,7 +52,7 @@ export async function createFrontsideMedia(flashcard:types.Flashcards, flashcard
 
 export async function createFlashcardWithMedia(flashcard: types.Flashcards, db:dbConnection){
     const res = await db.transaction(async (tx) => {
-        const basicFlashcard = await createFlashcard(flashcard, db)
+        const basicFlashcard = await createBasicFlashcard(flashcard, db)
         const flashcardId = basicFlashcard[0].flashcard_id
         await createFrontsideMedia(flashcard, flashcardId, db)
         await createBacksideMedia(flashcard, flashcardId, db) 
@@ -63,7 +63,7 @@ export async function createFlashcardWithMedia(flashcard: types.Flashcards, db:d
 
 export async function createFlashcardWithFrontsideMedia(flashcard: types.Flashcards, db:dbConnection){
     const res = await db.transaction(async (tx) => {
-        const basicFlashcard = await createFlashcard(flashcard, db)
+        const basicFlashcard = await createBasicFlashcard(flashcard, db)
         const flashcardId = basicFlashcard[0].flashcard_id
         await createFrontsideMedia(flashcard, flashcardId, db)
         return basicFlashcard
@@ -73,7 +73,7 @@ export async function createFlashcardWithFrontsideMedia(flashcard: types.Flashca
 
 export async function createFlashcardWithBackideMedia(flashcard: types.Flashcards, db:dbConnection){
     const res = await db.transaction(async (tx) => {
-        const basicFlashcard = await createFlashcard(flashcard, db)
+        const basicFlashcard = await createBasicFlashcard(flashcard, db)
         const flashcardId = basicFlashcard[0].flashcard_id
         await createBacksideMedia(flashcard, flashcardId, db)
         return basicFlashcard
@@ -82,18 +82,36 @@ export async function createFlashcardWithBackideMedia(flashcard: types.Flashcard
 }
 
 export async function updateFlashcard(
-  flashcard: schema.Flashcard,
+  flashcard: types.Flashcards,
   db: dbConnection
 ): Promise<schema.Flashcard[]> {
-  const res = await db
+  const res = await db.transaction(async(tx) => {
+
+    const Basicflashcard = await tx
     .update(schema.flashcards)
     .set({
-      stack_id: flashcard.stack_id,
-      frontside_text: flashcard.frontside_text,
-      backside_text: flashcard.backside_text,
+        frontside_text: flashcard.frontside_text,
+        backside_text: flashcard.backside_text,
+        stack_id: flashcard.stack_id
     })
-    .returning();
-  return res;
+    .returning()
+
+    await tx
+    .update(schema.backside_media)
+    .set({
+        media_link: flashcard.backside_media_link,
+        positioning: flashcard.backside_media_positioning
+    })
+    
+    await tx
+    .update(schema.frontside_media)
+    .set({
+        media_link: flashcard.frontside_media_link,
+        positioning: flashcard.frontside_media_positioning
+    })
+    return Basicflashcard
+  })
+  return res
 }
 
 export async function deleteFlashcard(

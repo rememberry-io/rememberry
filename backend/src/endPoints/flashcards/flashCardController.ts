@@ -18,7 +18,7 @@ export async function controlCreateFlashcard(flashcard:types.Flashcards, db:type
 
 
 export async function controlUpdateFlashcard(
-  flashcard: schema.Flashcard,
+  flashcard: types.Flashcards,
   db: types.dbConnection
 ) {
   const res = await flashcardModels.updateFlashcard(flashcard, db);

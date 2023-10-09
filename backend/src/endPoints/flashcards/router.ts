@@ -7,10 +7,20 @@ import { config } from "dotenv";
 config();
 
 export const flashcardRouter = router({
-    
+
     createFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
         const res = flashcardController.controlCreateFlashcard(opts.input, opts.ctx.db)
         return res
+    }),
+
+    updateFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
+        const res = flashcardController.controlUpdateFlashcard(opts.input, opts.ctx.db)
+        return res 
+    }),
+
+    deleteFlashcard: publicProcedure.input(z.string()).mutation(async(opts) => {
+        const res = flashcardController.controlDeleteFlashcard(opts.input, opts.ctx.db)
+        return res 
     }),
 
     getAllCardsFromStack: publicProcedure.input(z.string()).query(async(opts) => {
