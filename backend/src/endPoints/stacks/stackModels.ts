@@ -9,10 +9,9 @@ type dbConnection = typeof database;
 
 export async function createStack(
   stack: schema.NewStack,
-  date: Date,
-  db: dbConnection
+  date: Date
 ): Promise<schema.NewStack[]> {
-  const res = await db
+  const res = await database
     .insert(schema.stacks)
     .values({
       stack_id: stack.stack_id,

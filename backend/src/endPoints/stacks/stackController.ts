@@ -3,12 +3,11 @@ import * as stackModel from "./stackModels";
 import * as types from "./types";
 
 export async function controlCreateStack(
-  stack: schema.NewStack,
-  db: types.dbConnection
+  stack: schema.NewStack
 ) {
   const date = new Date();
 
-  const res = await stackModel.createStack(stack, date, db);
+  const res = await stackModel.createStack(stack, date);
   return res;
 }
 
@@ -107,5 +106,10 @@ export async function controlDeleteParentStackRelation(
 export async function controlStackDeletionAndChildMoveUp(stackId:string, db:types.dbConnection){
   const res = await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId, db)
   return res 
+}
+
+export async function controlStackAndChildDeletion(stackId:string, db:types.dbConnection){
+  const res = await stackModel.deleteStackAndChildren(stackId, db)
+  return res
 }
 
