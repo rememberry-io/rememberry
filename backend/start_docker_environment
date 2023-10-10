@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -o allexport 
+source .env set
+set +o allexport
+
+echo "Start $PG_HOST docker container:"
+docker compose up -d $PG_HOST
+
+sleep 2
+
+echo "Apply migration to $PG_HOST container..."
+
+docker exec $PG_HOST /bin/sh execute_sql_migration.sh
+
+echo "Finished migration"
+
+sleep 1
+
+echo "Start backend service"
+
+docker compose up -d backend
+
+echo "Database and backend successfully started"
