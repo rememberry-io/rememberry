@@ -1,5 +1,5 @@
-// root page
 
+// root page
 import Sidebar from '@/components/Sidebar/Sidebar'
 import Image from 'next/image'
 

@@ -1,10 +1,14 @@
-import { app } from "./server/server"
-const port = 3000;
+import { createHTTPServer } from "@trpc/server/adapters/standalone";
+import { appRouter } from "./routers/_app";
+import { createContext } from "./context";
+import cors from "cors";
 
-const bootstrap = async () => {
-  app.listen(port, () => {
-    console.log(`Server is running on: localhost:${port}`)
-  })
-}
+const server = createHTTPServer({
+  middleware: cors(),
+  router: appRouter,
+  createContext,
+});
 
-bootstrap()
+server.listen(3050);
+
+console.log("server listening on http://localhost:3050");
