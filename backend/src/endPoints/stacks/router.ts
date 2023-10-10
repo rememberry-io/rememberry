@@ -97,10 +97,6 @@ export const stackRouter = router({
       );
       return res;
     }),
-
-    deletStackWithAllChilds
-
-    deleteStackOnly
 });
 
 export type stackRouter = typeof stackRouter;
