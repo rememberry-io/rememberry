@@ -17,7 +17,9 @@ const User = z.object({
 });
 
 export const userRouter = router({
-  createUser: publicProcedure.input(createUserInput).mutation(async (opts) => {
+
+
+  createUser: publicProcedure.input(createUserInput).query(async (opts) => {
     const res = await userController.controlUserCreation(
       opts.input,
       opts.ctx.db
@@ -25,7 +27,7 @@ export const userRouter = router({
     return res;
   }),
 
-  updateUser: publicProcedure.input(User).mutation(async (opts) => {
+  updateUser: publicProcedure.input(User).query(async (opts) => {
     const res = await userController.controlUserUpdateById(
       opts.input,
       opts.ctx.db
@@ -41,7 +43,7 @@ export const userRouter = router({
     return res;
   }),
 
-  getAllUsers: publicProcedure.input(z.null()).query(async (opts) => {
+  getAllUsers: publicProcedure.input(z.undefined()).query(async (opts) => {
     const res = await userController.getAllUsers(opts.ctx.db);
     return res;
   }),
