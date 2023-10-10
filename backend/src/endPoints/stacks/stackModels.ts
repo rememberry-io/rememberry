@@ -124,3 +124,25 @@ export async function deleteParentStackRelation(
     .returning();
   return res;
 }
+
+export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string, db:dbConnection){
+  const res = await db.transaction(async(tx) => {
+
+    const deletedStack = await tx
+    .delete(schema.stacks)
+    .where(eq(schema.stacks.stack_id, stackId))
+    .returning()
+    
+    const newParentId = deletedStack[0].parent_stack_id
+    const oldParentId = deletedStack[0].stack_id
+    const updatedStacks = await tx
+    .update(schema.stacks)
+    .set({
+      parent_stack_id: newParentId
+    })
+    .where(eq(schema.stacks.parent_stack_id, oldParentId))
+    .returning()
+    return updatedStacks
+  })
+  return res 
+}
