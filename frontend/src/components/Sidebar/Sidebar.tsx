@@ -1,87 +1,94 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import classNames from "classnames";
+import Link from "next/link";
+import styles from "./Sidebar.module.css";
+import Image from "next/image";
+import { SidebarButton } from "../ui/SidebarButton";
+import { Map, HelpCircle, Upload, Sticker, Hourglass } from "lucide-react";
 import {
-	DashboardIcon,
-	CreateIcon,
-	MapIcon,
-	UploadIcon,
-	TutorialIcon
-} from "../icons/index";
-import Link from 'next/link'
-import styles from './Sidebar.module.css'
-import Image from 'next/image'
-import CollapseIcon from "../icons/CollapseIcon"
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
+export default function Sidebar() {
+  const sidebarElements = [
+    { id: 1, label: "Flashcard map", icon: Map, link: "/map" },
+    { id: 2, label: "How it works", icon: HelpCircle, link: "/tutorial" },
+    { id: 3, label: "Upcoming features", icon: Hourglass, link: "/features" },
+    { id: 4, label: "Give feedback", icon: Sticker, link: "/feedback" },
+    { id: 5, label: "Upload content", icon: Upload, link: "/upload" },
+  ];
 
+  const [isOpen, setIsOpen] = useState(false);
 
-
-
-
-export default function Sidebar() {
-	const [toggleCollapse, setToggleCollapse] = useState(false);
-	const [isCollapsible, setIsCollapsible] = useState(false);
-
-	const sidebarElements = [
-		{ id: 1, label: "Flashcard map", icon: CreateIcon, link: "/map", current: true},
-		{ id: 2, label: "How it works", icon: TutorialIcon, link: "/tutorial", current: false},
-		{ id: 3, label: "Incoming features", icon: CreateIcon, link: "/features", current: false},
-		{ id: 4, label: "Our mission", icon: TutorialIcon, link: "/mission", current: false},
-		{ id: 5, label: "Give feedback", icon: TutorialIcon, link: "/feedback", current: false},
-		{ id: 6, label: "Upload content", icon: UploadIcon, link: "/upload", current: false},
-	]
-
-	const wrapperClass = classNames(
-		"min-h-screen bg-blue-500 w-64 px-4 pt-8 pb-4 flex flex-col",
-		{
-			['w-80']: !toggleCollapse,
-			['w-20']: toggleCollapse
-		}
-	);
-	const collapseIconClass = classNames(
-		"min-h-screen bg-blue-500 w-64 px-4 pt-8 pb-4 flex flex-col",
-		{
-			"rotate-180": toggleCollapse,
-		}
-	);
-
-	return (
-		<div className={wrapperClass}>
-
-			{/* Sidebar Header */}
-			<div className='flex flex-row items-center justify-between'>
-			<div id='profilepic' className='border'>
-				<Image src="/blueberry.png" width={30} height={30} alt="Profile Picture"/>
-			</div>
-			<div id='name'>
-				<p>Vorname Name</p>
-			</div>
-			<div id='burger-bar'>
-				<button>
-					<CollapseIcon />
-				</button>
-			</div>
-		</div>
-		
-			<div className="p-3">
-				<div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-72 lg:flex-col">
-					<div className="flex grow flex-col gapy-y-5 overflow-y-auto px-6 pb-4">
-							<nav className="flex flex-1 flex-col">
-								<ul role="list" className="text-white">
-									{sidebarElements.map((item) => {
-										return <div key={item.id}><Link href={item.link}>{item.label}</Link></div>
-									})}
-								</ul>
-
-						</nav>
-					<div>
-
-					</div>
-				</div>
-
-			</div>
-					
-			</div>
-		</div>
-	);
+  return (
+    <div>
+      {/* Wrapper */}
+      <div className="space-y-4 py-4 flex flex-col text-white h-full">
+        {/* Sidebar Header */}
+        <div className="px-4 py-2 flex-row flex items-start justify-between">
+          <div>
+            <div className="relative">
+              <Link
+                href="/profile"
+                className="flex items-center bg-red-100"
+              ></Link>
+              <Image
+                width={32}
+                height={32}
+                alt="Rememberry logo"
+                src="/blueberry.png"
+              />
+            </div>
+          </div>
+          <div>
+            {/* SidebarButton as the Sheet trigger */}
+            <SidebarButton />
+          </div>
+        </div>
+        {/* Sidebar Links */}
+        <div>
+          <nav className="flex flex-1 flex-col">
+            <ul role="list" className="text-white font-medium">
+              {sidebarElements.map((item) => (
+                <li
+                  className="flex flex-row items-center pl-6 hover:text-white hover:bg-white/10 rounded-lg transition"
+                  key={item.id}
+                >
+                  <div>
+                    <item.icon />
+                  </div>
+                  <div>
+                    <Link
+                      href={item.link}
+                      className="flex items-center my-4 pl-6"
+                    >
+                      {" "}
+                      {item.label}
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <div className="relative bg-cyan-700 overflow-hidden h-10 w-10">
+        <Image
+          src="/sample_profile_pic.png"
+          layout="fill"
+          objectFit="cover"
+          alt="Profile Picture"
+          className="rounded-full"
+        />
+      </div>
+    </div>
+  );
 }
