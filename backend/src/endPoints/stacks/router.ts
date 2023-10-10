@@ -41,6 +41,26 @@ export const stackRouter = router({
       );
       return res;
     }),
+    
+    getDirectChildsFromParent: publicProcedure
+      .input(z.string())
+      .query(async (opts) => {
+        const res = await stackController.controlGetDirectChildsFromParent(
+          opts.input,
+          opts.ctx.db
+        );
+        return res;
+      }),
+      
+      getAllChildsFromParent: publicProcedure
+        .input(z.string())
+        .query(async (opts) => {
+          const res = await stackController.controlGetAllChildsFromParent(
+            opts.input,
+            opts.ctx.db
+          );
+          return res;
+        }),
 
   getAllStacksFromMap: publicProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetAllStacksFromMap(
@@ -49,26 +69,6 @@ export const stackRouter = router({
     );
     return res;
   }),
-
-  getDirectChildsFromParent: publicProcedure
-    .input(z.string())
-    .query(async (opts) => {
-      const res = await stackController.controlGetDirectChildsFromParent(
-        opts.input,
-        opts.ctx.db
-      );
-      return res;
-    }),
-
-  getAllChildsFromParent: publicProcedure
-    .input(z.string())
-    .query(async (opts) => {
-      const res = await stackController.controlGetAllChildsFromParent(
-        opts.input,
-        opts.ctx.db
-      );
-      return res;
-    }),
 
   getParentFromStack: publicProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetParentFromStack(
@@ -97,6 +97,10 @@ export const stackRouter = router({
       );
       return res;
     }),
+
+    deletStackWithAllChilds
+
+    deleteStackOnly
 });
 
 export type stackRouter = typeof stackRouter;
