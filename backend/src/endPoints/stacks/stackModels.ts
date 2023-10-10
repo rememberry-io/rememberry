@@ -128,21 +128,42 @@ export async function deleteParentStackRelation(
 export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string, db:dbConnection){
   const res = await db.transaction(async(tx) => {
 
-    const deletedStack = await tx
-    .delete(schema.stacks)
+    const stackToDelete = await tx
+    .select({newParentId: schema.stacks.parent_stack_id})
+    .from(schema.stacks)
     .where(eq(schema.stacks.stack_id, stackId))
-    .returning()
-    
-    const newParentId = deletedStack[0].parent_stack_id
-    const oldParentId = deletedStack[0].stack_id
+    const newParentId = stackToDelete[0].newParentId
+
     const updatedStacks = await tx
     .update(schema.stacks)
     .set({
       parent_stack_id: newParentId
     })
-    .where(eq(schema.stacks.parent_stack_id, oldParentId))
+    .where(eq(schema.stacks.parent_stack_id, stackId))
     .returning()
+
+    const stackDeletion = await tx
+    .delete(schema.stacks)
+    .where(eq(schema.stacks.stack_id, stackId))
     return updatedStacks
   })
   return res 
+}
+
+export async function deleteStackAndChildren(stackId:string, db:dbConnection){
+  const res = await db.execute(sql`
+    WITH RECURSIVE stacks_to_delete AS(
+      SELECT stack_id FROM stacks
+      WHERE stack_id=${stackId}
+
+      UNION
+
+      SELECT stacks.stack_id
+      FROM stacks
+      JOIN stacks_to_delete ON stacks.parent_stack_id = stacks_to_delete.stack_id
+    )
+    DELETE FROM stacks
+    WHERE stack_id IN(SELECT stack_id FROM stacks_to_delete)
+  `)
+  return res.rows
 }

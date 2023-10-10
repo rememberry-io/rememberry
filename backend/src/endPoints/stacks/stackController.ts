@@ -7,16 +7,53 @@ export async function controlCreateStack(
   db: types.dbConnection
 ) {
   const date = new Date();
+
   const res = await stackModel.createStack(stack, date, db);
   return res;
+}
+
+export async function controlGetStackById(stackId:string, db:types.dbConnection){
+  const res = await stackModel.getStackById(stackId, db)
+  return res 
 }
 
 export async function controlGetAllStacksFromMap(
   mapId: string,
   db: types.dbConnection
 ) {
-  const res = await stackModel.getStacksFromMap(mapId, db);
+  const stacks = await stackModel.getStacksFromMap(mapId, db);
+  console.log(stacks);
+  
+  const res = transformToHierarchy(stacks)
   return res;
+}
+
+const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
+  const lookup: { [key: string]: types.Stack } = {};
+
+  for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      lookup[item.stack_id] = item;
+      item.children = [];
+  }
+
+  for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      const parent_id = item.parent_stack_id;
+      if (parent_id && lookup[parent_id]) {
+          lookup[parent_id].children!.push(item);
+      }
+  }
+
+  const result: types.Stack[] = [];
+  for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      if (!item.parent_stack_id) {
+          result.push(item);
+      }
+  }
+
+  return result;
 }
 
 export async function controlGetHighestOrderStacks(
@@ -66,3 +103,9 @@ export async function controlDeleteParentStackRelation(
   const res = await stackModel.deleteParentStackRelation(childStackId, db);
   return res;
 }
+
+export async function controlStackDeletionAndChildMoveUp(stackId:string, db:types.dbConnection){
+  const res = await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId, db)
+  return res 
+}
+
