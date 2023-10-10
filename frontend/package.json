@@ -40,6 +40,6 @@
   "devDependencies": {
     "@types/react": "^18.2.22",
     "@types/react-dom": "^18.2.7",
-    "@tanstack/eslint-plugin-query": "^4.36.1",
+    "@tanstack/eslint-plugin-query": "^4.36.1"
   }
 }
