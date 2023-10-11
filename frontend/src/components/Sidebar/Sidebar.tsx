@@ -19,7 +19,7 @@ import {
 
 export default function Sidebar() {
   const sidebarElements = [
-    { id: 1, label: "Flashcard map", icon: Map, link: "/map" },
+    { id: 1, label: "Flashcard maps", icon: Map, link: "/map" },
     { id: 2, label: "How it works", icon: HelpCircle, link: "/tutorial" },
     { id: 3, label: "Upcoming features", icon: Hourglass, link: "/features" },
     { id: 4, label: "Give feedback", icon: Sticker, link: "/feedback" },
@@ -29,9 +29,9 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div>
+    <div className="flex flex-col h-full bg-blue-700 text-white">
       {/* Wrapper */}
-      <div className="space-y-4 py-4 flex flex-col text-white h-full">
+      <div className="space-y-4 py-4 flex flex-col h-full">
         {/* Sidebar Header */}
         <div className="px-4 py-2 flex-row flex items-start justify-between">
           <div>
@@ -56,14 +56,14 @@ export default function Sidebar() {
         {/* Sidebar Links */}
         <div>
           <nav className="flex flex-1 flex-col">
-            <ul role="list" className="text-white font-medium">
+            <ul role="list" className="text-white font-small text-sm">
               {sidebarElements.map((item) => (
                 <li
                   className="flex flex-row items-center pl-6 hover:text-white hover:bg-white/10 rounded-lg transition"
                   key={item.id}
                 >
                   <div>
-                    <item.icon />
+                    <item.icon className="stroke-2 w-6 h-6" />
                   </div>
                   <div>
                     <Link
@@ -80,14 +80,17 @@ export default function Sidebar() {
           </nav>
         </div>
       </div>
-      <div className="relative bg-cyan-700 overflow-hidden h-10 w-10">
-        <Image
-          src="/sample_profile_pic.png"
-          layout="fill"
-          objectFit="cover"
-          alt="Profile Picture"
-          className="rounded-full"
-        />
+      <div className="w-full h-32 flex items-center">
+        <div className="relative overflow-hidden h-8 w-8 mx-6">
+          <Image
+            src="/sample_profile_pic.png"
+            layout="fill"
+            objectFit="cover"
+            alt="Profile Picture"
+            className="rounded-full"
+          />
+        </div>
+        <div className="text-sm mr-6 truncate max-w-xs">Leonardo Di Caprio</div>
       </div>
     </div>
   );

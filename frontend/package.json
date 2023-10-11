@@ -9,14 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
-
+    "@nextui-org/react": "^2.1.13",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",
-    "@types/node": "20.5.9",
     "@tanstack/react-query": "^4.36.1",
     "@trpc/client": "^10.40.0",
     "@trpc/react-query": "^10.40.0",
     "@trpc/server": "^10.40.0",
+    "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
@@ -25,6 +25,7 @@
     "clsx": "^2.0.0",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "framer-motion": "^10.16.4",
     "lucide-react": "^0.284.0",
     "next": "13.4.19",
     "postcss": "8.4.29",
@@ -38,8 +39,8 @@
     "zustand": "^4.4.3"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.36.1",
     "@types/react": "^18.2.22",
-    "@types/react-dom": "^18.2.7",
-    "@tanstack/eslint-plugin-query": "^4.36.1"
+    "@types/react-dom": "^18.2.7"
   }
 }
