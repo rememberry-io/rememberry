@@ -1,10 +1,14 @@
-"use client"
-import TestButton from './test-components/TestButton'
 
-export default function Home() {
+// root page
+import Sidebar from '@/components/Sidebar/Sidebar'
+import Image from 'next/image'
+
+function Home() {
   return (
-    <div>
-      <TestButton/>
-    </div>
+    <main className="bg-white">
+		<Sidebar />
+    </main>
   )
 }
+
+export default Home;

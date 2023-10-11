@@ -1,7 +1,9 @@
 import { CreateTRPCProxyClient, createTRPCProxyClient, httpBatchLink } from '@trpc/client';
-import type { AppRouter } from "@backend/routers/_app"
+import { inferRouterInputs, inferRouterOutputs } from '@trpc/server';
+import type {AppRouter} from "@backend/routers/_app"
+import { CreateTRPCReact, createTRPCReact } from '@trpc/react-query';
 
-class TRPCClient {
+class TRPCProxyClient {
   client: CreateTRPCProxyClient<AppRouter>;
   constructor() {
     this.client = createTRPCProxyClient<AppRouter>({
@@ -14,4 +16,9 @@ class TRPCClient {
   }
 } 
 
-export const tClient = new TRPCClient();
+export type RouterInput = inferRouterInputs<AppRouter>;
+export type RouterOutput = inferRouterOutputs<AppRouter>;
+
+export const tClient = new TRPCProxyClient();
+
+

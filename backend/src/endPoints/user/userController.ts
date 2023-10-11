@@ -8,7 +8,12 @@ export async function controlUserCreation(
   userInput: schema.NewUser,
   db: types.dbConnection
 ) {
-  await userModel.checkCredentials(userInput.email, userInput.username, db);
+  
+  const userExists = await userModel.checkCredentials(userInput.email, userInput.username, db);
+
+  if (userExists[0])
+    return userExists[0]
+
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
   const res = await userModel.writeUser(userInput, db, hashedPwd);

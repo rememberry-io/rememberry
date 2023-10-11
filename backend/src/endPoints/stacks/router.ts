@@ -112,7 +112,6 @@ export const stackRouter = router({
     const res = await stackController.controlStackAndChildDeletion(opts.input, opts.ctx.db)
     return res
   })
-
 });
 
 export type stackRouter = typeof stackRouter;

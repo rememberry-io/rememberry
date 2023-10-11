@@ -61,12 +61,13 @@ export async function checkCredentials(
     (await checkUserEmail(email, db)) &&
     (await checkUsername(username, db))
   ) {
-    throw new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" });
+    return [new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" }), null] as const;
   } else if (await checkUserEmail(email, db)) {
-    throw new TRPCError(403, { message: "EMAIL ALREADY EXISTS" });
+    return [new TRPCError(403, { message: "EMAIL ALREADY EXISTS" }), null] as const;
   } else if (await checkUsername(username, db)) {
-    throw new TRPCError(403, { message: "USERNAME ALREADY EXISTS" });
+    return [new TRPCError(403, { message: "USERNAME ALREADY EXISTS" }), null] as const;
   }
+  return [null, true] as const
 }
 
 export async function readUserById(userId: string, db: types.dbConnection) {
