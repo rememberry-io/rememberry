@@ -6,19 +6,18 @@ import styles from "./Sidebar.module.css";
 import Image from "next/image";
 import { SidebarButton } from "../ui/SidebarButton";
 import { Map, HelpCircle, Upload, Sticker, Hourglass } from "lucide-react";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+
+interface SidebarElement {
+  id: number;
+  label: String;
+  icon: React.FC<any>;
+  link: string;
+}
 
 export default function Sidebar() {
-  const sidebarElements = [
+  const [isOpen, setIsOpen] = useState(true);
+
+  const sidebarElements: SidebarElement[] = [
     { id: 1, label: "Flashcard maps", icon: Map, link: "/map" },
     { id: 2, label: "How it works", icon: HelpCircle, link: "/tutorial" },
     { id: 3, label: "Upcoming features", icon: Hourglass, link: "/features" },
@@ -26,13 +25,21 @@ export default function Sidebar() {
     { id: 5, label: "Upload content", icon: Upload, link: "/upload" },
   ];
 
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div className="flex flex-col h-full bg-blue-700 text-white">
-      {/* Wrapper */}
-      <div className="space-y-4 py-4 flex flex-col h-full">
-        {/* Sidebar Header */}
+    <div
+      className={classNames(
+        "flex flex-col h-full text-white md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80]",
+        {
+          "bg-blue-700": isOpen,
+          [styles.closed]: !isOpen,
+        }
+      )}
+    >
+      <div
+        className={classNames("space-y-4 py-4 flex flex-col h-full", {
+          hidden: !isOpen,
+        })}
+      >
         <div className="px-4 py-2 flex-row flex items-start justify-between">
           <div>
             <div className="relative">
@@ -49,11 +56,9 @@ export default function Sidebar() {
             </div>
           </div>
           <div>
-            {/* SidebarButton as the Sheet trigger */}
-            <SidebarButton />
+            <SidebarButton isOpen={isOpen} setIsOpen={setIsOpen} />
           </div>
         </div>
-        {/* Sidebar Links */}
         <div>
           <nav className="flex flex-1 flex-col">
             <ul role="list" className="text-white font-small text-sm">
@@ -70,7 +75,6 @@ export default function Sidebar() {
                       href={item.link}
                       className="flex items-center my-4 pl-6"
                     >
-                      {" "}
                       {item.label}
                     </Link>
                   </div>
@@ -79,18 +83,20 @@ export default function Sidebar() {
             </ul>
           </nav>
         </div>
-      </div>
-      <div className="w-full h-32 flex items-center">
-        <div className="relative overflow-hidden h-8 w-8 mx-6">
-          <Image
-            src="/sample_profile_pic.png"
-            layout="fill"
-            objectFit="cover"
-            alt="Profile Picture"
-            className="rounded-full"
-          />
+        <div className="w-full h-32 flex items-center bg-green-600">
+          <div className="relative overflow-hidden h-8 w-8 mx-6">
+            <Image
+              src="/sample_profile_pic.png"
+              layout="fill"
+              objectFit="cover"
+              alt="Profile Picture"
+              className="rounded-full"
+            />
+          </div>
+          <div className="text-sm mr-6 truncate max-w-xs">
+            Leonardo Di Caprio
+          </div>
         </div>
-        <div className="text-sm mr-6 truncate max-w-xs">Leonardo Di Caprio</div>
       </div>
     </div>
   );
