@@ -9,10 +9,9 @@ type dbConnection = typeof database;
 
 export async function createStack(
   stack: schema.NewStack,
-  date: Date,
-  db: dbConnection
+  date: Date
 ): Promise<schema.NewStack[]> {
-  const res = await db
+  const res = await database
     .insert(schema.stacks)
     .values({
       stack_id: stack.stack_id,
@@ -123,4 +122,47 @@ export async function deleteParentStackRelation(
     .where(eq(schema.stacks.stack_id, childStackId))
     .returning();
   return res;
+}
+
+export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string, db:dbConnection){
+  const res = await db.transaction(async(tx) => {
+
+    const stackToDelete = await tx
+    .select({newParentId: schema.stacks.parent_stack_id})
+    .from(schema.stacks)
+    .where(eq(schema.stacks.stack_id, stackId))
+    const newParentId = stackToDelete[0].newParentId
+
+    const updatedStacks = await tx
+    .update(schema.stacks)
+    .set({
+      parent_stack_id: newParentId
+    })
+    .where(eq(schema.stacks.parent_stack_id, stackId))
+    .returning()
+
+    const stackDeletion = await tx
+    .delete(schema.stacks)
+    .where(eq(schema.stacks.stack_id, stackId))
+    return updatedStacks
+  })
+  return res 
+}
+
+export async function deleteStackAndChildren(stackId:string, db:dbConnection){
+  const res = await db.execute(sql`
+    WITH RECURSIVE stacks_to_delete AS(
+      SELECT stack_id FROM stacks
+      WHERE stack_id=${stackId}
+
+      UNION
+
+      SELECT stacks.stack_id
+      FROM stacks
+      JOIN stacks_to_delete ON stacks.parent_stack_id = stacks_to_delete.stack_id
+    )
+    DELETE FROM stacks
+    WHERE stack_id IN(SELECT stack_id FROM stacks_to_delete)
+  `)
+  return res.rows
 }
