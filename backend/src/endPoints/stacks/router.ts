@@ -3,6 +3,7 @@ import z from "zod";
 import { config } from "dotenv";
 import * as schema from "../../db/schema";
 import * as stackController from "./stackController";
+import { privateProcedure } from "../../middleware/jwt";
 
 config();
 
@@ -25,19 +26,20 @@ const changeParentStackInput = z.object({
 
 export const stackRouter = router({
 
-  create: publicProcedure.input(stackInput).mutation(async (opts) => {
+  create: privateProcedure.input(stackInput).query(async (opts) => {
     const res = await stackController.controlCreateStack(
       opts.input
     );
     return res;
   }),
 
-  getById: publicProcedure.input(z.string()).query(async(opts) => {
+  getById: privateProcedure.input(z.string()).query(async(opts) => {
     const res = await stackController.controlGetStackById(opts.input)
+
     return res
   }),
 
-  getOldestParentsFromMap: publicProcedure
+  getOldestParentsFromMap: privateProcedure
     .input(z.string())
     .query(async (opts) => {
       const res = await stackController.controlGetHighestOrderStacks(
@@ -46,7 +48,7 @@ export const stackRouter = router({
       return res;
     }),
     
-  getDirectChilds: publicProcedure
+  getDirectChilds: privateProcedure
       .input(z.string())
       .query(async (opts) => {
         const res = await stackController.controlGetDirectChildsFromParent(
@@ -55,7 +57,7 @@ export const stackRouter = router({
         return res;
       }),
       
-  getAllChildren: publicProcedure
+  getAllChildren: privateProcedure
         .input(z.string())
         .query(async (opts) => {
           const res = await stackController.controlGetAllChildsFromParent(
@@ -64,21 +66,21 @@ export const stackRouter = router({
           return res;
         }),
 
-  getAll: publicProcedure.input(z.string()).query(async (opts) => {
+  getAll: privateProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetAllStacksFromMap(
       opts.input
     );
     return res;
   }),
 
-  getParent: publicProcedure.input(z.string()).query(async (opts) => {
+  getParent: privateProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetParentFromStack(
       opts.input
     );
     return res;
   }),
 
-  changeParent: publicProcedure
+  changeParent: privateProcedure
     .input(changeParentStackInput)
     .mutation(async (opts) => {
       const res = await stackController.controlChangeParentStack(
@@ -87,7 +89,7 @@ export const stackRouter = router({
       return res;
     }),
 
-  deleteParentRelation: publicProcedure
+  deleteParentRelation: privateProcedure
     .input(z.string())
     .mutation(async (opts) => {
       const res = await stackController.controlDeleteParentStackRelation(
@@ -96,12 +98,12 @@ export const stackRouter = router({
       return res;
     }),
 
-  deleteAndMoveChildsUp: publicProcedure.input(z.string()).query(async(opts) => {
+  deleteAndMoveChildsUp: privateProcedure.input(z.string()).query(async(opts) => {
     const res = await stackController.controlStackDeletionAndChildMoveUp(opts.input)
     return res
   }),
 
-  deleteWithAllChilds: publicProcedure.input(z.string()).query(async(opts) => {
+  deleteWithAllChilds: privateProcedure.input(z.string()).query(async(opts) => {
     const res = await stackController.controlStackAndChildDeletion(opts.input)
     return res
   })

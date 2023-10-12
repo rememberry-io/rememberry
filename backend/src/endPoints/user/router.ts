@@ -3,6 +3,7 @@ import { router, publicProcedure } from "../../trpc";
 import * as userModel from "./user.model";
 import * as userController from "./userController";
 import * as schema from "../../db/schema";
+import { privateProcedure } from "../../middleware/jwt";
 
 const createUserInput = z.object({
   username: z.string(),
@@ -14,6 +15,7 @@ const User = z.object({
   email: z.string(),
   password: z.string(),
   user_id: z.string(),
+  refresh_token: z.string()
 });
 
 export const userRouter = router({
@@ -26,21 +28,21 @@ export const userRouter = router({
     return res;
   }),
 
-  updateUser: publicProcedure.input(User).query(async (opts) => {
+  updateUser: privateProcedure.input(User).query(async (opts) => {
     const res = await userController.controlUserUpdateById(
       opts.input,
     );
     return res;
   }),
 
-  deleteUserById: publicProcedure.input(User).mutation(async (opts) => {
+  deleteUserById: privateProcedure.input(User).mutation(async (opts) => {
     const res = await userController.controlUserDeletionById(
       opts.input.user_id
     );
     return res;
   }),
 
-  getAllUsers: publicProcedure.input(z.undefined()).query(async (opts) => {
+  getAllUsers: privateProcedure.input(z.undefined()).query(async (opts) => {
     const res = await userController.getAllUsers();
     return res;
   }),

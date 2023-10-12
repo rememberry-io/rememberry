@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "fcd5aa8c-5d7e-4de1-9ae1-356faaf2246e",
-  "prevId": "40dac861-12b0-472e-9c2b-1b0d12a54814",
+  "id": "ce5924ff-94a8-44fc-b302-cc79847a3ff7",
+  "prevId": "c8d9b8fc-8663-43a6-9ce1-a01e7ef453b6",
   "tables": {
     "backside_media": {
       "name": "backside_media",
@@ -40,8 +40,12 @@
           "name": "backside_media_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "backside_media",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["flashcard_id"],
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "flashcard_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -85,8 +89,12 @@
           "name": "flashcards_stack_id_stacks_stack_id_fk",
           "tableFrom": "flashcards",
           "tableTo": "stacks",
-          "columnsFrom": ["stack_id"],
-          "columnsTo": ["stack_id"],
+          "columnsFrom": [
+            "stack_id"
+          ],
+          "columnsTo": [
+            "stack_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -130,8 +138,12 @@
           "name": "frontside_media_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "frontside_media",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["flashcard_id"],
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "flashcard_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -175,8 +187,12 @@
           "name": "maps_user_id_users_user_id_fk",
           "tableFrom": "maps",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -212,6 +228,13 @@
           "type": "date",
           "primaryKey": false,
           "notNull": false
+        },
+        "learning_status": {
+          "name": "learning_status",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
         }
       },
       "indexes": {},
@@ -220,8 +243,12 @@
           "name": "session_data_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "session_data",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["flashcard_id"],
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "flashcard_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -296,8 +323,12 @@
           "name": "stacks_map_id_maps_map_id_fk",
           "tableFrom": "stacks",
           "tableTo": "maps",
-          "columnsFrom": ["map_id"],
-          "columnsTo": ["map_id"],
+          "columnsFrom": [
+            "map_id"
+          ],
+          "columnsTo": [
+            "map_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -305,8 +336,12 @@
           "name": "stacks_parent_stack_id_stacks_stack_id_fk",
           "tableFrom": "stacks",
           "tableTo": "stacks",
-          "columnsFrom": ["parent_stack_id"],
-          "columnsTo": ["stack_id"],
+          "columnsFrom": [
+            "parent_stack_id"
+          ],
+          "columnsTo": [
+            "stack_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -342,6 +377,12 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -351,12 +392,16 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       }
     }

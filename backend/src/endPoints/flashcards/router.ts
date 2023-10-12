@@ -3,32 +3,33 @@ import * as flashcardController from './flashCardController'
 import * as types from './types'
 import z from "zod";
 import { config } from "dotenv";
+import { privateProcedure } from "../../middleware/jwt";
 
 config();
 
 export const flashcardRouter = router({
 
-    createFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
+    createFlashcard: privateProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
         const res = flashcardController.controlCreateFlashcard(opts.input)
         return res
     }),
 
-    updateFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
+    updateFlashcard: privateProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
         const res = flashcardController.controlUpdateFlashcard(opts.input)
         return res 
     }),
 
-    deleteFlashcard: publicProcedure.input(z.string()).mutation(async(opts) => {
+    deleteFlashcard: privateProcedure.input(z.string()).mutation(async(opts) => {
         const res = flashcardController.controlDeleteFlashcard(opts.input)
         return res 
     }),
 
-    getAllCardsFromStack: publicProcedure.input(z.string()).query(async(opts) => {
+    getAllCardsFromStack: privateProcedure.input(z.string()).query(async(opts) => {
         const res = await flashcardController.controlGetAllFlashcardsFromStack(opts.input)
         return res
     }),
 
-  getLearnableCardsFromStack: publicProcedure
+  getLearnableCardsFromStack: privateProcedure
     .input(z.string())
     .query(async (opts) => {
       const res =
@@ -38,7 +39,7 @@ export const flashcardRouter = router({
       return res;
     }),
 
-  getAllCardsFromParentAndChilds: publicProcedure
+  getAllCardsFromParentAndChilds: privateProcedure
     .input(z.string())
     .query(async (opts) => {
       const res =
@@ -48,7 +49,7 @@ export const flashcardRouter = router({
       return res;
     }),
 
-  getLearnableCardsFromStackAndChilds: publicProcedure
+  getLearnableCardsFromStackAndChilds: privateProcedure
     .input(z.string())
     .query(async (opts) => {
       const res =

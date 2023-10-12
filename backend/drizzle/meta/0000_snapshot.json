@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "9fdb4497-56f1-48e0-a094-4ade77104729",
+  "id": "f4fd662c-5e8c-406c-9c79-d2201d7b2a07",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "backside_media": {
@@ -15,15 +15,21 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "flashcard_id": {
+          "name": "flashcard_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "media_link": {
           "name": "media_link",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "flashcard_id": {
-          "name": "flashcard_id",
-          "type": "uuid",
+        "positioning": {
+          "name": "positioning",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
@@ -34,9 +40,13 @@
           "name": "backside_media_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "backside_media",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["flashcard_id"],
-          "onDelete": "no action",
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "flashcard_id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -79,9 +89,13 @@
           "name": "flashcards_stack_id_stacks_stack_id_fk",
           "tableFrom": "flashcards",
           "tableTo": "stacks",
-          "columnsFrom": ["stack_id"],
-          "columnsTo": ["stack_id"],
-          "onDelete": "no action",
+          "columnsFrom": [
+            "stack_id"
+          ],
+          "columnsTo": [
+            "stack_id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -99,15 +113,21 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
+        "flashcard_id": {
+          "name": "flashcard_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "media_link": {
           "name": "media_link",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "flashcard_id": {
-          "name": "flashcard_id",
-          "type": "uuid",
+        "positioning": {
+          "name": "positioning",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         }
@@ -118,9 +138,118 @@
           "name": "frontside_media_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "frontside_media",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["flashcard_id"],
-          "onDelete": "no action",
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "flashcard_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "maps": {
+      "name": "maps",
+      "schema": "",
+      "columns": {
+        "map_id": {
+          "name": "map_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "map_name": {
+          "name": "map_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "map_description": {
+          "name": "map_description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "maps_user_id_users_user_id_fk": {
+          "name": "maps_user_id_users_user_id_fk",
+          "tableFrom": "maps",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "session_data": {
+      "name": "session_data",
+      "schema": "",
+      "columns": {
+        "session_id": {
+          "name": "session_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "flashcard_id": {
+          "name": "flashcard_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "times_learned": {
+          "name": "times_learned",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_learned": {
+          "name": "last_learned",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "learning_status": {
+          "name": "learning_status",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "session_data_flashcard_id_flashcards_flashcard_id_fk": {
+          "name": "session_data_flashcard_id_flashcards_flashcard_id_fk",
+          "tableFrom": "session_data",
+          "tableTo": "flashcards",
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "flashcard_id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -138,14 +267,20 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
+        "map_id": {
+          "name": "map_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
         "stack_name": {
           "name": "stack_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "stack_description": {
+          "name": "stack_description",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -169,8 +304,14 @@
           "notNull": false,
           "default": "now()"
         },
-        "topic_id": {
-          "name": "topic_id",
+        "positioning": {
+          "name": "positioning",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "parent_stack_id": {
+          "name": "parent_stack_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
@@ -178,111 +319,33 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "stacks_user_id_users_user_id_fk": {
-          "name": "stacks_user_id_users_user_id_fk",
+        "stacks_map_id_maps_map_id_fk": {
+          "name": "stacks_map_id_maps_map_id_fk",
           "tableFrom": "stacks",
-          "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
-          "onDelete": "no action",
+          "tableTo": "maps",
+          "columnsFrom": [
+            "map_id"
+          ],
+          "columnsTo": [
+            "map_id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "stacks_topic_id_topics_topic_id_fk": {
-          "name": "stacks_topic_id_topics_topic_id_fk",
+        "stacks_parent_stack_id_stacks_stack_id_fk": {
+          "name": "stacks_parent_stack_id_stacks_stack_id_fk",
           "tableFrom": "stacks",
-          "tableTo": "topics",
-          "columnsFrom": ["topic_id"],
-          "columnsTo": ["topic_id"],
+          "tableTo": "stacks",
+          "columnsFrom": [
+            "parent_stack_id"
+          ],
+          "columnsTo": [
+            "stack_id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "tags": {
-      "name": "tags",
-      "schema": "",
-      "columns": {
-        "tag_id": {
-          "name": "tag_id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "tag": {
-          "name": "tag",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "tags_to_cards": {
-      "name": "tags_to_cards",
-      "schema": "",
-      "columns": {
-        "tag_id": {
-          "name": "tag_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "flashcard_id": {
-          "name": "flashcard_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "tags_to_cards_tag_id_tags_tag_id_fk": {
-          "name": "tags_to_cards_tag_id_tags_tag_id_fk",
-          "tableFrom": "tags_to_cards",
-          "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "tags_to_cards_flashcard_id_flashcards_flashcard_id_fk": {
-          "name": "tags_to_cards_flashcard_id_flashcards_flashcard_id_fk",
-          "tableFrom": "tags_to_cards",
-          "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["flashcard_id"],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "topics": {
-      "name": "topics",
-      "schema": "",
-      "columns": {
-        "topic_id": {
-          "name": "topic_id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "topic": {
-          "name": "topic",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -314,12 +377,33 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
+      "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        },
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        }
+      }
     }
   },
   "enums": {},
