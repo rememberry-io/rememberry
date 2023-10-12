@@ -14,7 +14,6 @@ export async function createStack(
   const res = await database
     .insert(schema.stacks)
     .values({
-      stack_id: stack.stack_id,
       stack_name: stack.stack_name,
       number_of_learned_cards: stack.number_of_learned_cards,
       number_of_unlearned_cards: stack.number_of_unlearned_cards,
@@ -28,8 +27,8 @@ export async function createStack(
   return res;
 }
 
-export async function getStacksFromMap(mapId: string, db: dbConnection) {
-  const prep = db
+export async function getStacksFromMap(mapId: string) {
+  const prep = database
     .select()
     .from(schema.stacks)
     .where(eq(schema.stacks.map_id, sql.placeholder("id")))
@@ -39,10 +38,9 @@ export async function getStacksFromMap(mapId: string, db: dbConnection) {
 }
 
 export async function getHighestOrderParentStacks(
-  mapId: string,
-  db: dbConnection
+  mapId: string
 ): Promise<schema.Stack[]> {
-  const prep = db
+  const prep = database
     .select()
     .from(schema.stacks)
     .where(
@@ -57,10 +55,9 @@ export async function getHighestOrderParentStacks(
 }
 
 export async function getDirectChildsFromParent(
-  parentStackId: string,
-  db: dbConnection
+  parentStackId: string
 ) {
-  const prep = db
+  const prep = database
     .select()
     .from(schema.stacks)
     .where(eq(schema.stacks.parent_stack_id, sql.placeholder("id")))
@@ -70,10 +67,9 @@ export async function getDirectChildsFromParent(
 }
 
 export async function getAllChildsFromParent(
-  stackId: string,
-  db: dbConnection
+  stackId: string
 ) {
-  const res = await db.execute(sql`
+  const res = await database.execute(sql`
   WITH RECURSIVE cte_substacks AS (
       
       SELECT * FROM stacks WHERE stack_id=${stackId}
@@ -90,8 +86,8 @@ export async function getAllChildsFromParent(
   return res.rows;
 }
 
-export async function getStackById(stackId: string, db: dbConnection) {
-  const prep = db
+export async function getStackById(stackId: string) {
+  const prep = database
     .select()
     .from(schema.stacks)
     .where(eq(schema.stacks.stack_id, sql.placeholder("id")))
@@ -101,10 +97,9 @@ export async function getStackById(stackId: string, db: dbConnection) {
 }
 
 export async function changeParentStack(
-  parentAndChild: types.ParentAndChildId,
-  db: dbConnection
+  parentAndChild: types.ParentAndChildId
 ): Promise<schema.Stack[]> {
-  const res = await db
+  const res = await database
     .update(schema.stacks)
     .set({ parent_stack_id: parentAndChild.new_parent_id })
     .where(eq(schema.stacks.stack_id, parentAndChild.child_id))
@@ -113,10 +108,9 @@ export async function changeParentStack(
 }
 
 export async function deleteParentStackRelation(
-  childStackId: string,
-  db: dbConnection
+  childStackId: string
 ): Promise<schema.Stack[]> {
-  const res = await db
+  const res = await database
     .update(schema.stacks)
     .set({ parent_stack_id: null })
     .where(eq(schema.stacks.stack_id, childStackId))
@@ -124,8 +118,8 @@ export async function deleteParentStackRelation(
   return res;
 }
 
-export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string, db:dbConnection){
-  const res = await db.transaction(async(tx) => {
+export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string){
+  const res = await database.transaction(async(tx) => {
 
     const stackToDelete = await tx
     .select({newParentId: schema.stacks.parent_stack_id})
@@ -149,8 +143,8 @@ export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string, db:d
   return res 
 }
 
-export async function deleteStackAndChildren(stackId:string, db:dbConnection){
-  const res = await db.execute(sql`
+export async function deleteStackAndChildren(stackId:string){
+  const res = await database.execute(sql`
     WITH RECURSIVE stacks_to_delete AS(
       SELECT stack_id FROM stacks
       WHERE stack_id=${stackId}

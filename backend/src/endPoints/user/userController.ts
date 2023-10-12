@@ -6,42 +6,39 @@ import { TRPCError } from "trpc";
 
 export async function controlUserCreation(
   userInput: schema.NewUser,
-  db: types.dbConnection
 ) {
   
-  const userExists = await userModel.checkCredentials(userInput.email, userInput.username, db);
+  const userExists = await userModel.checkCredentials(userInput.email, userInput.username);
 
   if (userExists[0])
     return userExists[0]
 
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
-  const res = await userModel.writeUser(userInput, db, hashedPwd);
+  const res = await userModel.writeUser(userInput, hashedPwd);
   return res;
 }
 
-export async function getAllUsers(db: types.dbConnection) {
-  const res = await userModel.readAllUsers(db);
+export async function getAllUsers() {
+  const res = await userModel.readAllUsers();
   return res;
 }
 
-export async function getUserById(userId: string, db: types.dbConnection) {
-  const res = await userModel.readUserById(userId, db);
+export async function getUserById(userId: string) {
+  const res = await userModel.readUserById(userId);
   return res;
 }
 
 export async function controlUserUpdateById(
   userInput: schema.User,
-  db: types.dbConnection
 ) {
   const updateCredentials = await userModel.fetchUpdateCredentials(
-    userInput,
-    db
+    userInput
   );
   checkUpdateCredentials(updateCredentials, userInput);
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
-  const res = await userModel.updateUserById(userInput, hashedPwd, db);
+  const res = await userModel.updateUserById(userInput, hashedPwd);
   return res;
 }
 
@@ -64,9 +61,8 @@ function checkUpdateCredentials(
 }
 
 export async function controlUserDeletionById(
-  userId: string,
-  db: types.dbConnection
+  userId: string
 ) {
-  const res = await userModel.deleteUserById(userId, db);
+  const res = await userModel.deleteUserById(userId);
   return res;
 }

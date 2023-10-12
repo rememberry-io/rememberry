@@ -7,10 +7,9 @@ const database = drizzle(client, { schema });
 type dbConnection = typeof database;
 
 export async function createMap(
-  userInput: schema.newMap,
-  db: dbConnection
+  userInput: schema.newMap
 ): Promise<schema.Map[]> {
-  const res = await db
+  const res = await database
     .insert(schema.maps)
     .values({
       user_id: userInput.user_id,
@@ -22,10 +21,9 @@ export async function createMap(
 }
 
 export async function updateMap(
-  userInput: schema.newMap,
-  db: dbConnection
+  userInput: schema.newMap
 ): Promise<schema.Map[]> {
-  const res = await db
+  const res = await database
     .update(schema.maps)
     .set({
       map_name: userInput.map_name,
@@ -37,10 +35,9 @@ export async function updateMap(
 }
 
 export async function deleteMapWithAllStacks(
-  mapId: string,
-  db: dbConnection
+  mapId: string
 ): Promise<schema.Map[]> {
-  const res = db
+  const res = database
     .delete(schema.maps)
     .where(eq(schema.maps.map_id, mapId))
     .returning();
@@ -48,10 +45,9 @@ export async function deleteMapWithAllStacks(
 }
 
 export async function getMapsByUserId(
-  userId: string,
-  db: dbConnection
+  userId: string
 ): Promise<schema.Map[]> {
-  const prepared = db
+  const prepared = database
     .select()
     .from(schema.maps)
     .where(eq(schema.maps.user_id, sql.placeholder("id")))

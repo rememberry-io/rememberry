@@ -11,16 +11,15 @@ export async function controlCreateStack(
   return res;
 }
 
-export async function controlGetStackById(stackId:string, db:types.dbConnection){
-  const res = await stackModel.getStackById(stackId, db)
+export async function controlGetStackById(stackId:string){
+  const res = await stackModel.getStackById(stackId)
   return res 
 }
 
 export async function controlGetAllStacksFromMap(
-  mapId: string,
-  db: types.dbConnection
+  mapId: string
 ) {
-  const stacks = await stackModel.getStacksFromMap(mapId, db);
+  const stacks = await stackModel.getStacksFromMap(mapId);
   console.log(stacks);
   
   const res = transformToHierarchy(stacks)
@@ -56,60 +55,54 @@ const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
 }
 
 export async function controlGetHighestOrderStacks(
-  mapId: string,
-  db: types.dbConnection
+  mapId: string
 ) {
-  const res = await stackModel.getHighestOrderParentStacks(mapId, db);
+  const res = await stackModel.getHighestOrderParentStacks(mapId);
   return res;
 }
 
 export async function controlGetDirectChildsFromParent(
-  parentStackId: string,
-  db: types.dbConnection
+  parentStackId: string
 ) {
-  const res = await stackModel.getDirectChildsFromParent(parentStackId, db);
+  const res = await stackModel.getDirectChildsFromParent(parentStackId);
   return res;
 }
 
 export async function controlGetAllChildsFromParent(
-  parentStackId: string,
-  db: types.dbConnection
+  parentStackId: string
 ) {
-  const res = await stackModel.getAllChildsFromParent(parentStackId, db);
+  const res = await stackModel.getAllChildsFromParent(parentStackId);
   return res;
 }
 
 export async function controlGetParentFromStack(
-  stackId: string,
-  db: types.dbConnection
+  stackId: string
 ) {
-  const res = await stackModel.getStackById(stackId, db);
+  const res = await stackModel.getStackById(stackId);
   return res;
 }
 
 export async function controlChangeParentStack(
-  parentAndChild: types.ParentAndChildId,
-  db: types.dbConnection
+  parentAndChild: types.ParentAndChildId
 ) {
-  const res = await stackModel.changeParentStack(parentAndChild, db);
+  const res = await stackModel.changeParentStack(parentAndChild);
   return res;
 }
 
 export async function controlDeleteParentStackRelation(
-  childStackId: string,
-  db: types.dbConnection
+  childStackId: string
 ) {
-  const res = await stackModel.deleteParentStackRelation(childStackId, db);
+  const res = await stackModel.deleteParentStackRelation(childStackId);
   return res;
 }
 
-export async function controlStackDeletionAndChildMoveUp(stackId:string, db:types.dbConnection){
-  const res = await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId, db)
+export async function controlStackDeletionAndChildMoveUp(stackId:string){
+  const res = await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId)
   return res 
 }
 
-export async function controlStackAndChildDeletion(stackId:string, db:types.dbConnection){
-  const res = await stackModel.deleteStackAndChildren(stackId, db)
+export async function controlStackAndChildDeletion(stackId:string){
+  const res = await stackModel.deleteStackAndChildren(stackId)
   return res
 }
 

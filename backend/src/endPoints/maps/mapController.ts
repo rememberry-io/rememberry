@@ -4,33 +4,29 @@ import * as mapModels from "./mapModels";
 import { mapColumnsInAliasedSQLToAlias } from "drizzle-orm";
 
 export async function controlMapCreation(
-  userInput: schema.newMap,
-  db: types.dbConnection
+  userInput: schema.newMap
 ) {
-  const res = await mapModels.createMap(userInput, db);
+  const res = await mapModels.createMap(userInput);
   return res;
 }
 
 export async function controlUpdateMap(
-  userInput: schema.newMap,
-  db: types.dbConnection
+  userInput: schema.newMap
 ) {
-  const res = await mapModels.updateMap(userInput, db);
+  const res = await mapModels.updateMap(userInput);
   return res;
 }
 
 export async function controlDeleteMapWithAllStacks(
-  mapId: string,
-  db: types.dbConnection
+  mapId: string
 ) {
-  const res = await mapModels.deleteMapWithAllStacks(mapId, db);
+  const res = await mapModels.deleteMapWithAllStacks(mapId);
   return res;
 }
 
 export async function controlGetUsersMaps(
-  userId: string,
-  db: types.dbConnection
+  userId: string
 ) {
-  const res = mapModels.getMapsByUserId(userId, db);
+  const res = mapModels.getMapsByUserId(userId);
   return res;
 }

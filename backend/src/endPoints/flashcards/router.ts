@@ -9,22 +9,22 @@ config();
 export const flashcardRouter = router({
 
     createFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
-        const res = flashcardController.controlCreateFlashcard(opts.input, opts.ctx.db)
+        const res = flashcardController.controlCreateFlashcard(opts.input)
         return res
     }),
 
     updateFlashcard: publicProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
-        const res = flashcardController.controlUpdateFlashcard(opts.input, opts.ctx.db)
+        const res = flashcardController.controlUpdateFlashcard(opts.input)
         return res 
     }),
 
     deleteFlashcard: publicProcedure.input(z.string()).mutation(async(opts) => {
-        const res = flashcardController.controlDeleteFlashcard(opts.input, opts.ctx.db)
+        const res = flashcardController.controlDeleteFlashcard(opts.input)
         return res 
     }),
 
     getAllCardsFromStack: publicProcedure.input(z.string()).query(async(opts) => {
-        const res = await flashcardController.controlGetAllFlashcardsFromStack(opts.input, opts.ctx.db)
+        const res = await flashcardController.controlGetAllFlashcardsFromStack(opts.input)
         return res
     }),
 
@@ -33,8 +33,7 @@ export const flashcardRouter = router({
     .query(async (opts) => {
       const res =
         await flashcardController.controlGetLearnableFlashcardsFromStack(
-          opts.input,
-          opts.ctx.db
+          opts.input
         );
       return res;
     }),
@@ -44,8 +43,7 @@ export const flashcardRouter = router({
     .query(async (opts) => {
       const res =
         await flashcardController.controlgetAllFlashcardsFromStackAndChildStacks(
-          opts.input,
-          opts.ctx.db
+          opts.input
         );
       return res;
     }),
@@ -55,8 +53,7 @@ export const flashcardRouter = router({
     .query(async (opts) => {
       const res =
         await flashcardController.getLearnableFlashcardsFromStackAndChilds(
-          opts.input,
-          opts.ctx.db
+          opts.input
         );
       return res;
     }),
