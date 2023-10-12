@@ -1,10 +1,26 @@
-import Sidebar from "@/components/Sidebar/Sidebar";
+"use client";
+import React, { useState } from "react";
+import Sidebar from "@/_components/Navigation/Sidebar";
+import { SidebarButton } from "@/_components/ui/SidebarButton";
+import { Header } from "@/_components/Navigation/Header";
 
 export default function MapLayout({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className="h-full relative">
-      <div className="hidden  h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] bg-blue-500 right-shadow">
-        <Sidebar />
+      {/* <div
+        className={`h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] right-shadow ${
+          !isOpen && "hidden"
+        }`}
+      > */}
+      <div>
+        <Header isOpen={isOpen} toggleSidebar={toggleSidebar} />
+        <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
       </div>
       {/* MapLayout will receive several React nodes as children that will be rendered in place here */}
       {children}
