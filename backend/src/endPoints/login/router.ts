@@ -14,6 +14,11 @@ export const loginRouter = router({
         return res 
     }),
 
+    registerUser: publicProcedure.input(types.registerInput).query(async(opts) => {
+        const res = await loginController.controlRegistration(opts.input)
+        return res
+    }),
+
     refreshToken: publicProcedure.input(types.refreshTokenInputSchema).query(async(opts) => {
         const res = await loginController.refreshAccessToken(opts.input)        
         return res 

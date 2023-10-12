@@ -26,3 +26,9 @@ export type refreshTokenInputType = {
 export type JWTPayload = {
     userId: string
 }
+
+export const registerInput = z.object({
+    username: z.string(),
+    email: z.string(),
+    password: z.string(),
+})

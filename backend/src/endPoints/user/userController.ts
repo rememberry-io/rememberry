@@ -16,7 +16,7 @@ export async function controlUserCreation(
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
   const res = await userModel.writeUser(userInput, hashedPwd);
-  return res;
+  return res[0];
 }
 
 export async function getAllUsers() {
