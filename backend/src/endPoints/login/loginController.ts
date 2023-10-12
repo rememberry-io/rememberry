@@ -4,8 +4,8 @@ import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { config } from 'dotenv'
 import * as schema from '../../db/schema'
-import { TRPCError } from 'trpc'
 import { readUserById } from '../user/user.model'
+import { controlUserCreation } from '../user/userController'
 config()
 
 export async function controlLogin(credentials:types.LoginCredentials){
@@ -24,13 +24,29 @@ export async function controlLogin(credentials:types.LoginCredentials){
     return {message:'UNAUTHORIZED'}
 }
 
+export async function controlRegistration(user:schema.NewUser){
+    const newUser = await controlUserCreation(user)
+    const userCredentials = {email: user.email, password: user.password, user_id: user.user_id!}
+    const accessToken = signAccessToken(userCredentials)
+    const refreshToken = signRefreshToken(userCredentials)
+    await loginModel.updateRefreshToken(refreshToken)
+    const res = {
+        user: newUser,
+        tokens: {
+            accessToken: accessToken,
+            refreshToken: refreshToken
+        }
+    }
+    return res
+}
+
 export function signAccessToken(user:types.LoginUser){
     const payload = {
         userId: user.user_id
     }
     const secret = process.env.ACCESS_TOKEN_SECRET!
     const options = {
-        expiresIn: '60s', //24h
+        expiresIn: '84600s', //24h
     }
     const token = jwt.sign(payload, secret, options)
     return token
