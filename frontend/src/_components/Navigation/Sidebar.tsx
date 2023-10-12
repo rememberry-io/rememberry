@@ -65,9 +65,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
                 />
               </div>
             </div>
-            <div>
-              <SidebarButton isOpen={true} toggleSidebar={toggleSidebar} />
-            </div>
+            <SidebarButton isOpen={true} toggleSidebar={toggleSidebar} />
           </div>
           <div>
             <nav className="flex flex-1 flex-col">

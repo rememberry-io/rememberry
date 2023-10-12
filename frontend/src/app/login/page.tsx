@@ -16,7 +16,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/_components/ui/tabs";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 export default function Login() {
   return (
@@ -43,7 +43,11 @@ export default function Login() {
                 <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" />
               </div>
-              <div className="underline text-sm">Forgot password?</div>
+              <div>
+                <Link href="/" className="underline text-sm">
+                  Forgot password?
+                </Link>
+              </div>
             </CardContent>
             <CardFooter>
               <Button className="w-full">Log in</Button>

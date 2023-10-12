@@ -14,8 +14,9 @@ export const Header: React.FC<HeaderProps> = ({ isOpen, toggleSidebar }) => {
   //     setIsOpen(!isOpen);
   //   };
   return (
-    <nav className="w-full flex items-center gap-x-4 px-3 py-4 bg-blue-500">
+    <nav className="w-full flex items-center gap-x-4 px-3 py-4">
       <SidebarButton isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <h1>1st semester medicine</h1>
     </nav>
   );
 };
