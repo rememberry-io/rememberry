@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "@/components/Sidebar/Sidebar";
-import { SidebarButton } from "@/components/ui/SidebarButton";
+import Sidebar from "@/_components/Navigation/Sidebar";
+import { SidebarButton } from "@/_components/ui/SidebarButton";
+import { Header } from "@/_components/Navigation/Header";
 
 export default function MapLayout({ children }: { children: React.ReactNode }) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -18,11 +19,8 @@ export default function MapLayout({ children }: { children: React.ReactNode }) {
         }`}
       > */}
       <div>
-        {/* {isOpen ? ( */}
-        {/* ) : ( */}
-        <Sidebar />
-        <SidebarButton isOpen={isOpen} toggleSidebar={toggleSidebar} />
-        {/* )} */}
+        <Header isOpen={isOpen} toggleSidebar={toggleSidebar} />
+        <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
       </div>
       {/* MapLayout will receive several React nodes as children that will be rendered in place here */}
       {children}

@@ -10,7 +10,7 @@ import ReactFlow, {
   addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import MyCustomNode from "@/components/Flow/CustomNode";
+import MyCustomNode from "@/_components/Flow/CustomNode";
 
 // as reactflow is written in TS -> types don't have to be included separately
 const initialNodes: Node[] = [
