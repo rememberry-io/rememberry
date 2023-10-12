@@ -23,8 +23,7 @@ export const userRouter = router({
 
   createUser: publicProcedure.input(createUserInput).query(async (opts) => {
     const res = await userController.controlUserCreation(
-      opts.input,
-      opts.ctx.db
+      opts.input
     );
     return res;
   }),
@@ -32,28 +31,25 @@ export const userRouter = router({
   updateUser: privateProcedure.input(User).query(async (opts) => {
     const res = await userController.controlUserUpdateById(
       opts.input,
-      opts.ctx.db
     );
     return res;
   }),
 
   deleteUserById: privateProcedure.input(User).mutation(async (opts) => {
     const res = await userController.controlUserDeletionById(
-      opts.input.user_id,
-      opts.ctx.db
+      opts.input.user_id
     );
     return res;
   }),
 
   getAllUsers: privateProcedure.input(z.undefined()).query(async (opts) => {
-    const res = await userController.getAllUsers(opts.ctx.db);
+    const res = await userController.getAllUsers();
     return res;
   }),
 
   getUserById: publicProcedure.input(User).query(async (opts) => {
     const res = await userController.getUserById(
-      opts.input.user_id,
-      opts.ctx.db
+      opts.input.user_id
     );
     return res;
   }),

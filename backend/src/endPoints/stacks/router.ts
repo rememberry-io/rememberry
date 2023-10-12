@@ -34,7 +34,8 @@ export const stackRouter = router({
   }),
 
   getById: privateProcedure.input(z.string()).query(async(opts) => {
-    const res = await stackController.controlGetStackById(opts.input, opts.ctx.db)
+    const res = await stackController.controlGetStackById(opts.input)
+
     return res
   }),
 
@@ -42,8 +43,7 @@ export const stackRouter = router({
     .input(z.string())
     .query(async (opts) => {
       const res = await stackController.controlGetHighestOrderStacks(
-        opts.input,
-        opts.ctx.db
+        opts.input
       );
       return res;
     }),
@@ -52,8 +52,7 @@ export const stackRouter = router({
       .input(z.string())
       .query(async (opts) => {
         const res = await stackController.controlGetDirectChildsFromParent(
-          opts.input,
-          opts.ctx.db
+          opts.input
         );
         return res;
       }),
@@ -62,24 +61,21 @@ export const stackRouter = router({
         .input(z.string())
         .query(async (opts) => {
           const res = await stackController.controlGetAllChildsFromParent(
-            opts.input,
-            opts.ctx.db
+            opts.input
           );
           return res;
         }),
 
   getAll: privateProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetAllStacksFromMap(
-      opts.input,
-      opts.ctx.db
+      opts.input
     );
     return res;
   }),
 
   getParent: privateProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetParentFromStack(
-      opts.input,
-      opts.ctx.db
+      opts.input
     );
     return res;
   }),
@@ -88,8 +84,7 @@ export const stackRouter = router({
     .input(changeParentStackInput)
     .mutation(async (opts) => {
       const res = await stackController.controlChangeParentStack(
-        opts.input,
-        opts.ctx.db
+        opts.input
       );
       return res;
     }),
@@ -98,19 +93,18 @@ export const stackRouter = router({
     .input(z.string())
     .mutation(async (opts) => {
       const res = await stackController.controlDeleteParentStackRelation(
-        opts.input,
-        opts.ctx.db
+        opts.input
       );
       return res;
     }),
 
   deleteAndMoveChildsUp: privateProcedure.input(z.string()).query(async(opts) => {
-    const res = await stackController.controlStackDeletionAndChildMoveUp(opts.input, opts.ctx.db)
+    const res = await stackController.controlStackDeletionAndChildMoveUp(opts.input)
     return res
   }),
 
   deleteWithAllChilds: privateProcedure.input(z.string()).query(async(opts) => {
-    const res = await stackController.controlStackAndChildDeletion(opts.input, opts.ctx.db)
+    const res = await stackController.controlStackAndChildDeletion(opts.input)
     return res
   })
 });
