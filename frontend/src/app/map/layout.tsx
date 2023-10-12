@@ -18,7 +18,11 @@ export default function MapLayout({ children }: { children: React.ReactNode }) {
         }`}
       > */}
       <div>
+        {/* {isOpen ? ( */}
+        {/* ) : ( */}
         <Sidebar />
+        <SidebarButton isOpen={isOpen} toggleSidebar={toggleSidebar} />
+        {/* )} */}
       </div>
       {/* MapLayout will receive several React nodes as children that will be rendered in place here */}
       {children}

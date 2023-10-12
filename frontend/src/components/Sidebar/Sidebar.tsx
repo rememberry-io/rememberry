@@ -17,6 +17,10 @@ interface SidebarElement {
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   const sidebarElements: SidebarElement[] = [
     { id: 1, label: "Flashcard maps", icon: Map, link: "/map" },
     { id: 2, label: "How it works", icon: HelpCircle, link: "/tutorial" },
@@ -56,7 +60,7 @@ export default function Sidebar() {
             </div>
           </div>
           <div>
-            <SidebarButton isOpen={isOpen} setIsOpen={setIsOpen} />
+            <SidebarButton isOpen={true} toggleSidebar={toggleSidebar} />
           </div>
         </div>
         <div>
@@ -83,7 +87,9 @@ export default function Sidebar() {
             </ul>
           </nav>
         </div>
-        <div className="w-full h-32 flex items-center bg-green-600">
+        {/* this div will take up the space to ensure that the container with the profile pic and name always stays at the bottom */}
+        <div className="flex-grow"></div>
+        <div className="w-full h-24 flex items-center">
           <div className="relative overflow-hidden h-8 w-8 mx-6">
             <Image
               src="/sample_profile_pic.png"

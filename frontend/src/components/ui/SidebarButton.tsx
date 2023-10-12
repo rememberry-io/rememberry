@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 
 interface SidebarButtonProps {
   isOpen: boolean;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleSidebar: () => void;
 }
 
-export function SidebarButton({ isOpen, setIsOpen }: SidebarButtonProps) {
+export function SidebarButton({ isOpen, toggleSidebar }: SidebarButtonProps) {
   return (
     <Button
       variant="outline"
       size="icon"
-      className="bg-[#] text-white"
-      onClick={() => setIsOpen(!isOpen)}
+      className="bg-blue-700 text-white"
+      onClick={toggleSidebar}
     >
       {isOpen ? (
         <ChevronsLeft className="h-4 w-4" />
