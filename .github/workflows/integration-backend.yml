@@ -36,3 +36,5 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with: 
           commit_message: "format: run prettier to format files"
+          branch: ${{ github.head_ref }}
+
