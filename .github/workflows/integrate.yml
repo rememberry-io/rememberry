@@ -2,8 +2,6 @@ name: Rememberry Backend CI
 
 on:
   push:
-    paths:
-      - "backend/**"
     branches: [test/ci-pipeline]
 
 jobs:
