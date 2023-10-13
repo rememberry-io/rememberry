@@ -23,11 +23,11 @@ jobs:
       - run: ls
         name: Run ls
         working-directory: backend
-      - run: bun run format
-        name: Format the code with prettier
-        working-directory: backend
       - run: bun install --frozen-lockfile
         name: Install dependecies
+        working-directory: backend
+      - run: bun run format
+        name: Format the code with prettier
         working-directory: backend
       - run: bun run build
         name: Build with bun
