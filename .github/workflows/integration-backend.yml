@@ -1,0 +1,38 @@
+name: Rememberry Backend CI
+
+on:
+  push:
+    paths:
+      - "backend/**"
+    branches: [test/ci-pipeline]
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          ref: test/ci-pipeline
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: ls
+        name: Run ls
+        working-directory: backend
+      - run: bun run format
+        name: Format the code with prettier
+        working-directory: backend
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+        working-directory: backend
+      - run: bun run build
+        name: Build with bun
+        working-directory: backend
+      - name: Commit format changes
+        uses: stefanuweifel/git-auto-commit-action@v4
+        with: 
+          commit_message: "format: run prettier to format files"
