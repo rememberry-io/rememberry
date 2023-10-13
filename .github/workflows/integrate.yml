@@ -9,15 +9,22 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-        name: Checkout backend
+        name: Checkout backend.
         with:
           ref: test/ci-pipeline
           sparse-checkout: |
             ./backend
       - uses: oven-sh/setup-bun@v1
+        name: Get bun.
         with:
           bun-version: 1.0.6
       - run: ls
+        name: Run ls
+        working-directory: backend
       - run: bun install --frozen-lockfile
+        name: Install dependecies
+        working-directory: backend
       - run: bun run build
+        name: Build
+        working-directory: backend
 
