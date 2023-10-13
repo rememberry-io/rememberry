@@ -33,6 +33,6 @@ jobs:
         name: Build with bun
         working-directory: backend
       - name: Commit format changes
-        uses: stefanuweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v4
         with: 
           commit_message: "format: run prettier to format files"
