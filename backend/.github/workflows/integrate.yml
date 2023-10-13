@@ -1,0 +1,17 @@
+name: Rememberry Backend CI
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+
