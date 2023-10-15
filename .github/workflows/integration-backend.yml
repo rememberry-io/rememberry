@@ -1,11 +1,11 @@
 name: Rememberry Backend CI
 
 on:
-  push:
+  pull_request:
     paths:
       - "backend/**"
       - ".github/workflows/integration-backend.yml"
-    branches: [test/ci-pipeline]
+    branches: [master]
 
 defaults:
   run:
@@ -54,9 +54,28 @@ jobs:
           commit_message: "format: run prettier to format files"
           branch: ${{ github.head_ref }}
 
-  build:
-    name: build image
+  test-build:
+    name: build to check compilation
     runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          ref: test/ci-pipeline
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+      - run: bun run build
+        name: build the project with bun
+
+  build-image:
+    runs-on: ubuntu-22.04
+    name: build image
     if: github.ref == 'refs/heads/master'
     needs: [ lint, test ]
     steps:
@@ -74,4 +93,3 @@ jobs:
         name: Install dependecies
       - run: bun run build
         name: build the project with bun
-
