@@ -28,7 +28,7 @@ jobs:
       - run: bun install --frozen-lockfile
         name: Install dependecies
       - run: bun run test
-        name: Build with bun
+        name: test with bun
 
   lint: 
     name: lint and format backend

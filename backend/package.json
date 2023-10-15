@@ -8,7 +8,7 @@
     "migrate:generate": "drizzle-kit generate:pg --schema=./src/db/schema.ts",
     "migration:push": "node -r esbuild-register src/db/migrate.ts",
     "migrate": "drizzle-kit generate:pg --schema=./src/db/schema.ts && node -r esbuild-register src/db/migrate.ts",
-    "test": ""
+    "test": "ls"
   },
   "dependencies": {
     "@trpc/client": "^10.40.0",
