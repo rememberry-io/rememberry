@@ -10,7 +10,7 @@ export const appRouter = router({
   stacks: stackRouter,
   maps: mapRouter,
   flashcards: flashcardRouter,
-  login: loginRouter
+  login: loginRouter,
 });
 
 export type AppRouter = typeof appRouter;

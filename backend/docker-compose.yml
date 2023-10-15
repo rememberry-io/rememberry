@@ -1,8 +1,9 @@
 services:
   backend:
     container_name: rembackend
-    build: .
-      # image: notemann27/rem-backend:v0.0.3 # wtfisthis #     
+    build:
+      .
+      # image: notemann27/rem-backend:v0.0.3 # wtfisthis #
     environment:
       DATABASE_URL: ${DATABASE_URL}
       PG_PORT: ${PG_PORT}

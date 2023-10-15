@@ -4,7 +4,6 @@ import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
 import { client } from "./db/db";
 import { inferAsyncReturnType } from "@trpc/server";
 
-
 export const db = drizzle(client) as NodePgDatabase<
   typeof import("./db/schema.ts")
 >;

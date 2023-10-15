@@ -14,7 +14,7 @@ export const users = pgTable("users", {
   username: varchar("username").unique().notNull(),
   email: varchar("email").unique().notNull(),
   password: varchar("user_password").notNull(),
-  refresh_token: varchar("refresh_token")
+  refresh_token: varchar("refresh_token"),
 });
 
 export const userRelations = relations(users, ({ many }) => ({

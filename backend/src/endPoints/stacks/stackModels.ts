@@ -54,9 +54,7 @@ export async function getHighestOrderParentStacks(
   return res;
 }
 
-export async function getDirectChildsFromParent(
-  parentStackId: string
-) {
+export async function getDirectChildsFromParent(parentStackId: string) {
   const prep = database
     .select()
     .from(schema.stacks)
@@ -66,9 +64,7 @@ export async function getDirectChildsFromParent(
   return res;
 }
 
-export async function getAllChildsFromParent(
-  stackId: string
-) {
+export async function getAllChildsFromParent(stackId: string) {
   const res = await database.execute(sql`
   WITH RECURSIVE cte_substacks AS (
       
@@ -118,32 +114,31 @@ export async function deleteParentStackRelation(
   return res;
 }
 
-export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string){
-  const res = await database.transaction(async(tx) => {
-
+export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
+  const res = await database.transaction(async (tx) => {
     const stackToDelete = await tx
-    .select({newParentId: schema.stacks.parent_stack_id})
-    .from(schema.stacks)
-    .where(eq(schema.stacks.stack_id, stackId))
-    const newParentId = stackToDelete[0].newParentId
+      .select({ newParentId: schema.stacks.parent_stack_id })
+      .from(schema.stacks)
+      .where(eq(schema.stacks.stack_id, stackId));
+    const newParentId = stackToDelete[0].newParentId;
 
     const updatedStacks = await tx
-    .update(schema.stacks)
-    .set({
-      parent_stack_id: newParentId
-    })
-    .where(eq(schema.stacks.parent_stack_id, stackId))
-    .returning()
+      .update(schema.stacks)
+      .set({
+        parent_stack_id: newParentId,
+      })
+      .where(eq(schema.stacks.parent_stack_id, stackId))
+      .returning();
 
     const stackDeletion = await tx
-    .delete(schema.stacks)
-    .where(eq(schema.stacks.stack_id, stackId))
-    return updatedStacks
-  })
-  return res 
+      .delete(schema.stacks)
+      .where(eq(schema.stacks.stack_id, stackId));
+    return updatedStacks;
+  });
+  return res;
 }
 
-export async function deleteStackAndChildren(stackId:string){
+export async function deleteStackAndChildren(stackId: string) {
   const res = await database.execute(sql`
     WITH RECURSIVE stacks_to_delete AS(
       SELECT stack_id FROM stacks
@@ -157,6 +152,6 @@ export async function deleteStackAndChildren(stackId:string){
     )
     DELETE FROM stacks
     WHERE stack_id IN(SELECT stack_id FROM stacks_to_delete)
-  `)
-  return res.rows
+  `);
+  return res.rows;
 }

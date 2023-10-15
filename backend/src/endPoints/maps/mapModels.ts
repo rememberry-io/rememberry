@@ -44,9 +44,7 @@ export async function deleteMapWithAllStacks(
   return res;
 }
 
-export async function getMapsByUserId(
-  userId: string
-): Promise<schema.Map[]> {
+export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {
   const prepared = database
     .select()
     .from(schema.maps)

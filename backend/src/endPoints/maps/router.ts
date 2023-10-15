@@ -22,9 +22,7 @@ export const mapRouter = router({
   }),
 
   getUsersMaps: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await mapController.controlGetUsersMaps(
-      opts.input
-    );
+    const res = await mapController.controlGetUsersMaps(opts.input);
     return res;
   }),
 
@@ -37,9 +35,7 @@ export const mapRouter = router({
   deleteMapWithAllStacks: privateProcedure
     .input(z.string())
     .mutation(async (opts) => {
-      const res = await mapController.controlDeleteMapWithAllStacks(
-        opts.input
-      );
+      const res = await mapController.controlDeleteMapWithAllStacks(opts.input);
       return res;
     }),
 });
