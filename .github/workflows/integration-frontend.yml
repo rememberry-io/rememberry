@@ -1,0 +1,27 @@
+name: Rememberry Frontend CI
+
+on:
+  pull_request:
+    paths:
+      - "frontend/**"
+    branches: [master]
+
+jobs:
+  test_pull_request:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout frontend
+        with:
+          sparse-checkout: |
+            ./frontend
+      - uses: actions/setup-node@v3
+        name: Get node
+        with:
+          node-vesrion: 20
+      - run: npm ci
+        name: Install dependecies
+        working-directory: frontend
+      - run: npm run build
+        name: Build with npm
+        working-directory: frontend

@@ -51,21 +51,24 @@ export async function checkUserEmail(email: string) {
   }
 }
 
-export async function checkCredentials(
-  email: string,
-  username: string
-) {
-  if (
-    (await checkUserEmail(email)) &&
-    (await checkUsername(username))
-  ) {
-    return [new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" }), null] as const;
+export async function checkCredentials(email: string, username: string) {
+  if ((await checkUserEmail(email)) && (await checkUsername(username))) {
+    return [
+      new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" }),
+      null,
+    ] as const;
   } else if (await checkUserEmail(email)) {
-    return [new TRPCError(403, { message: "EMAIL ALREADY EXISTS" }), null] as const;
+    return [
+      new TRPCError(403, { message: "EMAIL ALREADY EXISTS" }),
+      null,
+    ] as const;
   } else if (await checkUsername(username)) {
-    return [new TRPCError(403, { message: "USERNAME ALREADY EXISTS" }), null] as const;
+    return [
+      new TRPCError(403, { message: "USERNAME ALREADY EXISTS" }),
+      null,
+    ] as const;
   }
-  return [null, true] as const
+  return [null, true] as const;
 }
 
 export async function readUserById(userId: string) {
@@ -77,7 +80,7 @@ export async function readUserById(userId: string) {
 }
 
 export async function fetchUpdateCredentials(
-  userInput: schema.User,
+  userInput: schema.User
 ): Promise<schema.User[]> {
   const res = await database
     .select()
@@ -95,7 +98,7 @@ export async function fetchUpdateCredentials(
 //UPDATE
 export async function updateUserById(
   userInput: schema.User,
-  hashedPwd: string,
+  hashedPwd: string
 ): Promise<schema.User[]> {
   const updatedUser = await database
     .update(schema.users)
@@ -110,9 +113,7 @@ export async function updateUserById(
 }
 
 //DELETE
-export async function deleteUserById(
-  userId: string,
-): Promise<schema.User[]> {
+export async function deleteUserById(userId: string): Promise<schema.User[]> {
   const deletedUser = await database
     .delete(schema.users)
     .where(eq(schema.users.user_id, userId))

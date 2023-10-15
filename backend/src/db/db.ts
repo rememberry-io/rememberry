@@ -18,15 +18,15 @@ export const client = new Client({
   database: pgDatabaseName,
 });
 
-const connectToDb= async () =>  {
+const connectToDb = async () => {
   try {
     await client.connect();
   } catch (e) {
-    console.log(e)
-    throw e
+    console.log(e);
+    throw e;
   }
-}
+};
 
-connectToDb()
+connectToDb();
 
 export const db = drizzle(client);

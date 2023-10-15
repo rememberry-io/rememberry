@@ -1,6 +1,6 @@
 import { router, publicProcedure } from "../../trpc";
-import * as flashcardController from './flashCardController'
-import * as types from './types'
+import * as flashcardController from "./flashCardController";
+import * as types from "./types";
 import z from "zod";
 import { config } from "dotenv";
 import { privateProcedure } from "../../middleware/jwt";
@@ -8,25 +8,32 @@ import { privateProcedure } from "../../middleware/jwt";
 config();
 
 export const flashcardRouter = router({
-
-    createFlashcard: privateProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
-        const res = flashcardController.controlCreateFlashcard(opts.input)
-        return res
+  createFlashcard: privateProcedure
+    .input(types.FlashcardsSchema)
+    .mutation(async (opts) => {
+      const res = flashcardController.controlCreateFlashcard(opts.input);
+      return res;
     }),
 
-    updateFlashcard: privateProcedure.input(types.FlashcardsSchema).mutation(async(opts) => {
-        const res = flashcardController.controlUpdateFlashcard(opts.input)
-        return res 
+  updateFlashcard: privateProcedure
+    .input(types.FlashcardsSchema)
+    .mutation(async (opts) => {
+      const res = flashcardController.controlUpdateFlashcard(opts.input);
+      return res;
     }),
 
-    deleteFlashcard: privateProcedure.input(z.string()).mutation(async(opts) => {
-        const res = flashcardController.controlDeleteFlashcard(opts.input)
-        return res 
-    }),
+  deleteFlashcard: privateProcedure.input(z.string()).mutation(async (opts) => {
+    const res = flashcardController.controlDeleteFlashcard(opts.input);
+    return res;
+  }),
 
-    getAllCardsFromStack: privateProcedure.input(z.string()).query(async(opts) => {
-        const res = await flashcardController.controlGetAllFlashcardsFromStack(opts.input)
-        return res
+  getAllCardsFromStack: privateProcedure
+    .input(z.string())
+    .query(async (opts) => {
+      const res = await flashcardController.controlGetAllFlashcardsFromStack(
+        opts.input
+      );
+      return res;
     }),
 
   getLearnableCardsFromStack: privateProcedure

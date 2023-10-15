@@ -4,114 +4,132 @@ import * as schema from "../../db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 import * as types from "./types";
 import { drainMicrotasks } from "bun:jsc";
-const database = drizzle(client, { schema })
-type dbConnection = typeof database
+const database = drizzle(client, { schema });
+type dbConnection = typeof database;
 
- 
-export async function createBasicFlashcard(flashcard: types.Flashcards): Promise<schema.Flashcard[]>{
-    
-    const prep = database.insert(schema.flashcards).values({
-        stack_id: sql.placeholder("stack_id"),
-        frontside_text: sql.placeholder("frontside_text"),
-        backside_text: sql.placeholder("backside_text")
-    }).returning().prepare("createFlashcardQuery")
-
-    const res = await prep.execute({
-        stack_id: flashcard.stack_id,
-        frontside_text: flashcard.frontside_text,
-        backside_text: flashcard.backside_text
-    })
-    return res
-    
-}
-
-export async function createBacksideMedia(flashcard: types.Flashcards, flashcardId:string): Promise<schema.BacksideMedia[]>{
-    const prep = database.insert(schema.backside_media)
+export async function createBasicFlashcard(
+  flashcard: types.Flashcards
+): Promise<schema.Flashcard[]> {
+  const prep = database
+    .insert(schema.flashcards)
     .values({
-        flashcard_id: sql.placeholder("id"),
-        media_link: sql.placeholder("link"),
-        positioning: sql.placeholder("positioning")
+      stack_id: sql.placeholder("stack_id"),
+      frontside_text: sql.placeholder("frontside_text"),
+      backside_text: sql.placeholder("backside_text"),
     })
     .returning()
-    .prepare("insert backside media")
-    const res = await prep.execute({id:flashcardId, link: flashcard.backside_media_link, positioning: flashcard.backside_media_positioning})
-    return res
+    .prepare("createFlashcardQuery");
+
+  const res = await prep.execute({
+    stack_id: flashcard.stack_id,
+    frontside_text: flashcard.frontside_text,
+    backside_text: flashcard.backside_text,
+  });
+  return res;
 }
 
-export async function createFrontsideMedia(flashcard:types.Flashcards, flashcardId:string){
-    const prep = database.insert(schema.frontside_media)
+export async function createBacksideMedia(
+  flashcard: types.Flashcards,
+  flashcardId: string
+): Promise<schema.BacksideMedia[]> {
+  const prep = database
+    .insert(schema.backside_media)
     .values({
-        flashcard_id: sql.placeholder("id"),
-        media_link: sql.placeholder("link"),
-        positioning: sql.placeholder("positioing")
+      flashcard_id: sql.placeholder("id"),
+      media_link: sql.placeholder("link"),
+      positioning: sql.placeholder("positioning"),
     })
     .returning()
-    .prepare("insert frontside media")
-    const res = await prep.execute({id:flashcardId, link: flashcard.frontside_media_link, positioning:flashcard.frontside_media_positioning})
-    return res 
+    .prepare("insert backside media");
+  const res = await prep.execute({
+    id: flashcardId,
+    link: flashcard.backside_media_link,
+    positioning: flashcard.backside_media_positioning,
+  });
+  return res;
 }
 
-export async function createFlashcardWithMedia(flashcard: types.Flashcards){
-    const res = await database.transaction(async (tx) => {
-        const basicFlashcard = await createBasicFlashcard(flashcard)
-        const flashcardId = basicFlashcard[0].flashcard_id
-        await createFrontsideMedia(flashcard, flashcardId)
-        await createBacksideMedia(flashcard, flashcardId) 
-        return basicFlashcard
+export async function createFrontsideMedia(
+  flashcard: types.Flashcards,
+  flashcardId: string
+) {
+  const prep = database
+    .insert(schema.frontside_media)
+    .values({
+      flashcard_id: sql.placeholder("id"),
+      media_link: sql.placeholder("link"),
+      positioning: sql.placeholder("positioing"),
     })
-    return res
+    .returning()
+    .prepare("insert frontside media");
+  const res = await prep.execute({
+    id: flashcardId,
+    link: flashcard.frontside_media_link,
+    positioning: flashcard.frontside_media_positioning,
+  });
+  return res;
 }
 
-export async function createFlashcardWithFrontsideMedia(flashcard: types.Flashcards){
-    const res = await database.transaction(async (tx) => {
-        const basicFlashcard = await createBasicFlashcard(flashcard)
-        const flashcardId = basicFlashcard[0].flashcard_id
-        await createFrontsideMedia(flashcard, flashcardId)
-        return basicFlashcard
-    })
-    return res
+export async function createFlashcardWithMedia(flashcard: types.Flashcards) {
+  const res = await database.transaction(async (tx) => {
+    const basicFlashcard = await createBasicFlashcard(flashcard);
+    const flashcardId = basicFlashcard[0].flashcard_id;
+    await createFrontsideMedia(flashcard, flashcardId);
+    await createBacksideMedia(flashcard, flashcardId);
+    return basicFlashcard;
+  });
+  return res;
 }
 
-export async function createFlashcardWithBackideMedia(flashcard: types.Flashcards){
-    const res = await database.transaction(async (tx) => {
-        const basicFlashcard = await createBasicFlashcard(flashcard)
-        const flashcardId = basicFlashcard[0].flashcard_id
-        await createBacksideMedia(flashcard, flashcardId)
-        return basicFlashcard
-    })
-    return res
+export async function createFlashcardWithFrontsideMedia(
+  flashcard: types.Flashcards
+) {
+  const res = await database.transaction(async (tx) => {
+    const basicFlashcard = await createBasicFlashcard(flashcard);
+    const flashcardId = basicFlashcard[0].flashcard_id;
+    await createFrontsideMedia(flashcard, flashcardId);
+    return basicFlashcard;
+  });
+  return res;
+}
+
+export async function createFlashcardWithBackideMedia(
+  flashcard: types.Flashcards
+) {
+  const res = await database.transaction(async (tx) => {
+    const basicFlashcard = await createBasicFlashcard(flashcard);
+    const flashcardId = basicFlashcard[0].flashcard_id;
+    await createBacksideMedia(flashcard, flashcardId);
+    return basicFlashcard;
+  });
+  return res;
 }
 
 export async function updateFlashcard(
   flashcard: types.Flashcards
 ): Promise<schema.Flashcard[]> {
-  const res = await database.transaction(async(tx) => {
-
+  const res = await database.transaction(async (tx) => {
     const Basicflashcard = await tx
-    .update(schema.flashcards)
-    .set({
+      .update(schema.flashcards)
+      .set({
         frontside_text: flashcard.frontside_text,
         backside_text: flashcard.backside_text,
-        stack_id: flashcard.stack_id
-    })
-    .returning()
+        stack_id: flashcard.stack_id,
+      })
+      .returning();
 
-    await tx
-    .update(schema.backside_media)
-    .set({
-        media_link: flashcard.backside_media_link,
-        positioning: flashcard.backside_media_positioning
-    })
-    
-    await tx
-    .update(schema.frontside_media)
-    .set({
-        media_link: flashcard.frontside_media_link,
-        positioning: flashcard.frontside_media_positioning
-    })
-    return Basicflashcard
-  })
-  return res
+    await tx.update(schema.backside_media).set({
+      media_link: flashcard.backside_media_link,
+      positioning: flashcard.backside_media_positioning,
+    });
+
+    await tx.update(schema.frontside_media).set({
+      media_link: flashcard.frontside_media_link,
+      positioning: flashcard.frontside_media_positioning,
+    });
+    return Basicflashcard;
+  });
+  return res;
 }
 
 export async function deleteFlashcard(
@@ -124,9 +142,7 @@ export async function deleteFlashcard(
   return res;
 }
 
-export async function getAllFlashcardsFromStack(
-  stackId: string
-) {
+export async function getAllFlashcardsFromStack(stackId: string) {
   const prep = database
     .select({
       flashcard_id: schema.flashcards.flashcard_id,
