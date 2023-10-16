@@ -55,9 +55,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
-        with:
-          sparse-checkout: |
-            ./frontend
       - uses: actions/setup-node@v3
         name: get nodejs
         with:
