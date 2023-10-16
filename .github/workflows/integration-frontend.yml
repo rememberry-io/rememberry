@@ -59,6 +59,10 @@ jobs:
         name: get nodejs
         with:
           node-vesrion: 20
+      - uses: oven-sh/setup-bun@v1
+        name: get bun
+        with:
+          bun-version: 1.0.6
       - run: npm ci
         name: install dependecies frontend
       - run: bun install --frozen-lockfile
