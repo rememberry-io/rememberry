@@ -7,6 +7,7 @@ interface UserModel {
   delete: RouterInput["user"]["updateUser"];
 }
 
+
 export type test = RouterInput["user"];
 
 export type UserCreate = RouterInput["user"]["createUser"];
