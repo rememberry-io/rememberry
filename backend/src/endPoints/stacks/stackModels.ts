@@ -1,7 +1,7 @@
-import { client } from "../../db/db";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { client } from "../../db/db";
 import * as schema from "../../db/schema";
-import { eq, and, desc, sql, isNull } from "drizzle-orm";
 import * as types from "./types";
 
 const database = drizzle(client, { schema });
@@ -9,7 +9,7 @@ type dbConnection = typeof database;
 
 export async function createStack(
   stack: schema.NewStack,
-  date: Date
+  date: Date,
 ): Promise<schema.NewStack[]> {
   const res = await database
     .insert(schema.stacks)
@@ -38,7 +38,7 @@ export async function getStacksFromMap(mapId: string) {
 }
 
 export async function getHighestOrderParentStacks(
-  mapId: string
+  mapId: string,
 ): Promise<schema.Stack[]> {
   const prep = database
     .select()
@@ -46,8 +46,8 @@ export async function getHighestOrderParentStacks(
     .where(
       and(
         eq(schema.stacks.map_id, sql.placeholder("id")),
-        isNull(schema.stacks.parent_stack_id)
-      )
+        isNull(schema.stacks.parent_stack_id),
+      ),
     )
     .prepare("highestOrderStacks");
   const res = await prep.execute({ id: mapId });
@@ -93,7 +93,7 @@ export async function getStackById(stackId: string) {
 }
 
 export async function changeParentStack(
-  parentAndChild: types.ParentAndChildId
+  parentAndChild: types.ParentAndChildId,
 ): Promise<schema.Stack[]> {
   const res = await database
     .update(schema.stacks)
@@ -104,7 +104,7 @@ export async function changeParentStack(
 }
 
 export async function deleteParentStackRelation(
-  childStackId: string
+  childStackId: string,
 ): Promise<schema.Stack[]> {
   const res = await database
     .update(schema.stacks)

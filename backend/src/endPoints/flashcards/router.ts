@@ -1,9 +1,9 @@
-import { router, publicProcedure } from "../../trpc";
+import { config } from "dotenv";
+import z from "zod";
+import { privateProcedure } from "../../middleware/jwt";
+import { router } from "../../trpc";
 import * as flashcardController from "./flashCardController";
 import * as types from "./types";
-import z from "zod";
-import { config } from "dotenv";
-import { privateProcedure } from "../../middleware/jwt";
 
 config();
 
@@ -31,7 +31,7 @@ export const flashcardRouter = router({
     .input(z.string())
     .query(async (opts) => {
       const res = await flashcardController.controlGetAllFlashcardsFromStack(
-        opts.input
+        opts.input,
       );
       return res;
     }),
@@ -41,7 +41,7 @@ export const flashcardRouter = router({
     .query(async (opts) => {
       const res =
         await flashcardController.controlGetLearnableFlashcardsFromStack(
-          opts.input
+          opts.input,
         );
       return res;
     }),
@@ -51,7 +51,7 @@ export const flashcardRouter = router({
     .query(async (opts) => {
       const res =
         await flashcardController.controlgetAllFlashcardsFromStackAndChildStacks(
-          opts.input
+          opts.input,
         );
       return res;
     }),
@@ -61,7 +61,7 @@ export const flashcardRouter = router({
     .query(async (opts) => {
       const res =
         await flashcardController.getLearnableFlashcardsFromStackAndChilds(
-          opts.input
+          opts.input,
         );
       return res;
     }),

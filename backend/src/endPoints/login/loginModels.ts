@@ -1,14 +1,14 @@
-import * as schema from "../../db/schema";
-import { client } from "../../db/db";
+import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
+import jwt from "jsonwebtoken";
+import { client } from "../../db/db";
+import * as schema from "../../db/schema";
 import * as types from "./types";
-import { eq, and } from "drizzle-orm";
-import jwt, { Jwt, JwtHeader, JwtPayload } from "jsonwebtoken";
 
 const database = drizzle(client, { schema });
 
 export async function checkLoginCredentials(
-  credentials: types.LoginCredentials
+  credentials: types.LoginCredentials,
 ) {
   const user = await database
     .select({

@@ -1,5 +1,5 @@
-import { database } from "../user/user.model";
 import z from "zod";
+import { database } from "../user/user.model";
 
 export type Flashcards = {
   stack_id: string;

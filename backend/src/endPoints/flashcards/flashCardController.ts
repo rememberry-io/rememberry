@@ -1,21 +1,17 @@
-import * as schema from "../../db/schema";
-import * as types from "./types";
 import * as flashcardModels from "./flashcardModels";
-import { database } from "../user/user.model";
+import * as types from "./types";
 
 export async function controlCreateFlashcard(flashcard: types.Flashcards) {
   if (flashcard.frontside_media_link && flashcard.backside_media_link) {
     const res = await flashcardModels.createFlashcardWithMedia(flashcard);
     return res;
   } else if (flashcard.frontside_media_link && !flashcard.backside_media_link) {
-    const res = await flashcardModels.createFlashcardWithFrontsideMedia(
-      flashcard
-    );
+    const res =
+      await flashcardModels.createFlashcardWithFrontsideMedia(flashcard);
     return res;
   } else if (flashcard.backside_media_link && !flashcard.frontside_media_link) {
-    const res = await flashcardModels.createFlashcardWithBackideMedia(
-      flashcard
-    );
+    const res =
+      await flashcardModels.createFlashcardWithBackideMedia(flashcard);
     return res;
   }
 }
@@ -41,16 +37,15 @@ export async function controlGetLearnableFlashcardsFromStack(stackId: string) {
 }
 
 export async function controlgetAllFlashcardsFromStackAndChildStacks(
-  stackId: string
+  stackId: string,
 ) {
-  const res = await flashcardModels.getAllFlashcardsFromStackAndChildStacks(
-    stackId
-  );
+  const res =
+    await flashcardModels.getAllFlashcardsFromStackAndChildStacks(stackId);
   return res;
 }
 
 export async function getLearnableFlashcardsFromStackAndChilds(
-  stackId: string
+  stackId: string,
 ) {
   const res = flashcardModels.getLearnableFlashcardsFromStackAndChilds(stackId);
   return res;
