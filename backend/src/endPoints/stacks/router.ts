@@ -1,9 +1,8 @@
-import { router, publicProcedure } from "../../trpc";
-import z from "zod";
 import { config } from "dotenv";
-import * as schema from "../../db/schema";
-import * as stackController from "./stackController";
+import z from "zod";
 import { privateProcedure } from "../../middleware/jwt";
+import { router } from "../../trpc";
+import * as stackController from "./stackController";
 
 config();
 
@@ -40,14 +39,14 @@ export const stackRouter = router({
     .input(z.string())
     .query(async (opts) => {
       const res = await stackController.controlGetHighestOrderStacks(
-        opts.input
+        opts.input,
       );
       return res;
     }),
 
   getDirectChilds: privateProcedure.input(z.string()).query(async (opts) => {
     const res = await stackController.controlGetDirectChildsFromParent(
-      opts.input
+      opts.input,
     );
     return res;
   }),
@@ -78,7 +77,7 @@ export const stackRouter = router({
     .input(z.string())
     .mutation(async (opts) => {
       const res = await stackController.controlDeleteParentStackRelation(
-        opts.input
+        opts.input,
       );
       return res;
     }),
@@ -87,7 +86,7 @@ export const stackRouter = router({
     .input(z.string())
     .query(async (opts) => {
       const res = await stackController.controlStackDeletionAndChildMoveUp(
-        opts.input
+        opts.input,
       );
       return res;
     }),
@@ -96,7 +95,7 @@ export const stackRouter = router({
     .input(z.string())
     .query(async (opts) => {
       const res = await stackController.controlStackAndChildDeletion(
-        opts.input
+        opts.input,
       );
       return res;
     }),

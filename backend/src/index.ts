@@ -1,7 +1,7 @@
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
-import { appRouter } from "./routers/_app";
-import { createContext } from "./context";
 import cors from "cors";
+import { createContext } from "./context";
+import { appRouter } from "./routers/_app";
 
 const server = createHTTPServer({
   middleware: cors(),

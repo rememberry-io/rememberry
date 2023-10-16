@@ -71,7 +71,7 @@ export async function controlGetParentFromStack(stackId: string) {
 }
 
 export async function controlChangeParentStack(
-  parentAndChild: types.ParentAndChildId
+  parentAndChild: types.ParentAndChildId,
 ) {
   const res = await stackModel.changeParentStack(parentAndChild);
   return res;

@@ -1,7 +1,6 @@
-import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { config } from "dotenv";
-import { Client } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { client } from "./db";
 config();
 

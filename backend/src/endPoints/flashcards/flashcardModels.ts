@@ -1,14 +1,13 @@
-import { client } from "../../db/db";
+import { and, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { client } from "../../db/db";
 import * as schema from "../../db/schema";
-import { eq, and, desc, sql } from "drizzle-orm";
 import * as types from "./types";
-import { drainMicrotasks } from "bun:jsc";
 const database = drizzle(client, { schema });
 type dbConnection = typeof database;
 
 export async function createBasicFlashcard(
-  flashcard: types.Flashcards
+  flashcard: types.Flashcards,
 ): Promise<schema.Flashcard[]> {
   const prep = database
     .insert(schema.flashcards)
@@ -30,7 +29,7 @@ export async function createBasicFlashcard(
 
 export async function createBacksideMedia(
   flashcard: types.Flashcards,
-  flashcardId: string
+  flashcardId: string,
 ): Promise<schema.BacksideMedia[]> {
   const prep = database
     .insert(schema.backside_media)
@@ -51,7 +50,7 @@ export async function createBacksideMedia(
 
 export async function createFrontsideMedia(
   flashcard: types.Flashcards,
-  flashcardId: string
+  flashcardId: string,
 ) {
   const prep = database
     .insert(schema.frontside_media)
@@ -82,7 +81,7 @@ export async function createFlashcardWithMedia(flashcard: types.Flashcards) {
 }
 
 export async function createFlashcardWithFrontsideMedia(
-  flashcard: types.Flashcards
+  flashcard: types.Flashcards,
 ) {
   const res = await database.transaction(async (tx) => {
     const basicFlashcard = await createBasicFlashcard(flashcard);
@@ -94,7 +93,7 @@ export async function createFlashcardWithFrontsideMedia(
 }
 
 export async function createFlashcardWithBackideMedia(
-  flashcard: types.Flashcards
+  flashcard: types.Flashcards,
 ) {
   const res = await database.transaction(async (tx) => {
     const basicFlashcard = await createBasicFlashcard(flashcard);
@@ -106,7 +105,7 @@ export async function createFlashcardWithBackideMedia(
 }
 
 export async function updateFlashcard(
-  flashcard: types.Flashcards
+  flashcard: types.Flashcards,
 ): Promise<schema.Flashcard[]> {
   const res = await database.transaction(async (tx) => {
     const Basicflashcard = await tx
@@ -133,7 +132,7 @@ export async function updateFlashcard(
 }
 
 export async function deleteFlashcard(
-  flashcardId: string
+  flashcardId: string,
 ): Promise<schema.Flashcard[]> {
   const res = await database
     .delete(schema.flashcards)
@@ -157,11 +156,11 @@ export async function getAllFlashcardsFromStack(stackId: string) {
     .from(schema.flashcards)
     .leftJoin(
       schema.frontside_media,
-      eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id)
+      eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id),
     )
     .leftJoin(
       schema.backside_media,
-      eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id)
+      eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id),
     )
     .where(eq(schema.flashcards.stack_id, sql.placeholder("stackId")))
     .prepare("getAllFlashcardsFromStack");
@@ -171,7 +170,7 @@ export async function getAllFlashcardsFromStack(stackId: string) {
 }
 
 export async function getLearnableFlashcardsFromStack(
-  stackId: string
+  stackId: string,
 ): Promise<any> {
   const prep = database
     .select({
@@ -187,21 +186,21 @@ export async function getLearnableFlashcardsFromStack(
     .from(schema.flashcards)
     .leftJoin(
       schema.frontside_media,
-      eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id)
+      eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id),
     )
     .leftJoin(
       schema.backside_media,
-      eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id)
+      eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id),
     )
     .innerJoin(
       schema.session_data,
-      eq(schema.flashcards.flashcard_id, schema.session_data.flashcard_id)
+      eq(schema.flashcards.flashcard_id, schema.session_data.flashcard_id),
     )
     .where(
       and(
         eq(schema.flashcards.stack_id, sql.placeholder("stack_id")),
-        eq(schema.session_data.learning_status, types.LearningStatus.learnable)
-      )
+        eq(schema.session_data.learning_status, types.LearningStatus.learnable),
+      ),
     )
     .prepare("getLearnableFlashcardsFromStack");
 
@@ -210,7 +209,7 @@ export async function getLearnableFlashcardsFromStack(
 }
 
 export async function getAllFlashcardsFromStackAndChildStacks(
-  stackId: string
+  stackId: string,
 ): Promise<any> {
   const res = await database.execute(sql`
     WITH RECURSIVE cte_stacks AS (
@@ -242,7 +241,7 @@ export async function getAllFlashcardsFromStackAndChildStacks(
 }
 
 export async function getLearnableFlashcardsFromStackAndChilds(
-  stackId: string
+  stackId: string,
 ): Promise<any> {
   const res = await database.execute(sql`
     WITH RECURSIVE cte_stacks AS(

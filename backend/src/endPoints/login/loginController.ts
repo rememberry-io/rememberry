@@ -1,11 +1,11 @@
-import * as loginModel from "./loginModels";
-import * as types from "./types";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { config } from "dotenv";
+import jwt from "jsonwebtoken";
 import * as schema from "../../db/schema";
 import { readUserById } from "../user/user.model";
 import { controlUserCreation } from "../user/userController";
+import * as loginModel from "./loginModels";
+import * as types from "./types";
 config();
 
 export async function controlLogin(credentials: types.LoginCredentials) {

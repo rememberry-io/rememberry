@@ -1,11 +1,7 @@
-import { router, publicProcedure } from "../../trpc";
-import z from "zod";
 import { config } from "dotenv";
-import * as schema from "../../db/schema";
+import { publicProcedure, router } from "../../trpc";
 import * as loginController from "./loginController";
-import { readUserById } from "../user/user.model";
 import * as types from "./types";
-import jwt, { Jwt } from "jsonwebtoken";
 config();
 
 export const loginRouter = router({

@@ -1,8 +1,8 @@
-import { router, middleware, publicProcedure } from "../trpc";
-import jwt from "jsonwebtoken";
-import { config } from "dotenv";
 import { TRPCError } from "@trpc/server";
-import { signAccessToken } from "../endPoints/login/loginController";
+import { config } from "dotenv";
+import jwt from "jsonwebtoken";
+import { middleware, publicProcedure } from "../trpc";
+
 config();
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
