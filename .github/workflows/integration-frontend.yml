@@ -60,7 +60,10 @@ jobs:
         with:
           node-vesrion: 20
       - run: npm ci
-        name: install dependecies
+        name: install dependecies frontend
+      - run: bun install --frozen-lockfile
+        name: install dependecies backend
+        working-directory: backend
       - run: npm run build
         name: build with nextjs
   build-image:
