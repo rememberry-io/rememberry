@@ -1,7 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/_components/ui/button";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
 
 interface SidebarButtonProps {
   isOpen: boolean;

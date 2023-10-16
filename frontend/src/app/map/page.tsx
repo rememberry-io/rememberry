@@ -1,16 +1,15 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import ReactFlow, {
-  Controls,
   Background,
-  Node,
+  Controls,
   Edge,
+  Node,
+  addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import MyCustomNode from "@/_components/Flow/CustomNode";
 
 // as reactflow is written in TS -> types don't have to be included separately
 const initialNodes: Node[] = [
@@ -45,17 +44,17 @@ export default function Map() {
   // applyChanges functions apply changes to current state of the element (either edge or node)
   const onNodesChange = useCallback(
     (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
+    [],
   );
 
   const onEdgesChange = useCallback(
     (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    []
+    [],
   );
 
   const onConnectHandler = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
-    []
+    [],
   );
 
   return (

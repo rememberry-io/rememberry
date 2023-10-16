@@ -1,7 +1,5 @@
 import * as schema from "../../db/schema";
-import * as types from "./types";
 import * as mapModels from "./mapModels";
-import { mapColumnsInAliasedSQLToAlias } from "drizzle-orm";
 
 export async function controlMapCreation(userInput: schema.newMap) {
   const res = await mapModels.createMap(userInput);

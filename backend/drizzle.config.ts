@@ -1,5 +1,5 @@
-import type { Config } from "drizzle-kit";
 import { config } from "dotenv";
+import type { Config } from "drizzle-kit";
 config();
 
 const pgHost = process.env.PG_HOST!;

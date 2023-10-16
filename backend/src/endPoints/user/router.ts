@@ -1,9 +1,7 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../../trpc";
-import * as userModel from "./user.model";
-import * as userController from "./userController";
-import * as schema from "../../db/schema";
 import { privateProcedure } from "../../middleware/jwt";
+import { publicProcedure, router } from "../../trpc";
+import * as userController from "./userController";
 
 const createUserInput = z.object({
   username: z.string(),
@@ -31,7 +29,7 @@ export const userRouter = router({
 
   deleteUserById: privateProcedure.input(User).mutation(async (opts) => {
     const res = await userController.controlUserDeletionById(
-      opts.input.user_id
+      opts.input.user_id,
     );
     return res;
   }),

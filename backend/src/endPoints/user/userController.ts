@@ -1,13 +1,12 @@
-import * as schema from "../../db/schema";
-import * as types from "./types";
-import * as userModel from "./user.model";
 import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
+import * as schema from "../../db/schema";
+import * as userModel from "./user.model";
 
 export async function controlUserCreation(userInput: schema.NewUser) {
   const userExists = await userModel.checkCredentials(
     userInput.email,
-    userInput.username
+    userInput.username,
   );
 
   if (userExists[0]) return userExists[0];
@@ -39,7 +38,7 @@ export async function controlUserUpdateById(userInput: schema.User) {
 
 function checkUpdateCredentials(
   fetchedUser: schema.User[],
-  userInput: schema.User
+  userInput: schema.User,
 ) {
   for (let i = 0; i < fetchedUser.length; i++) {
     if (

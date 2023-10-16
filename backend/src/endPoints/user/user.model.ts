@@ -1,17 +1,15 @@
+import { eq, ne, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "../../db/schema";
-import { client } from "../../db/db";
-import { eq, ne, and, or } from "drizzle-orm";
-import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
-import * as types from "./types";
+import { client } from "../../db/db";
+import * as schema from "../../db/schema";
 
 export const database = drizzle(client, { schema });
 
 //WRITE
 export async function writeUser(
   userInput: schema.NewUser,
-  hashedPwd: string
+  hashedPwd: string,
 ): Promise<schema.NewUser[]> {
   const newUser = await database
     .insert(schema.users)
@@ -80,7 +78,7 @@ export async function readUserById(userId: string) {
 }
 
 export async function fetchUpdateCredentials(
-  userInput: schema.User
+  userInput: schema.User,
 ): Promise<schema.User[]> {
   const res = await database
     .select()
@@ -88,8 +86,8 @@ export async function fetchUpdateCredentials(
     .where(
       or(
         eq(schema.users.email, userInput.email),
-        eq(schema.users.password, userInput.password)
-      )
+        eq(schema.users.password, userInput.password),
+      ),
     )
     .where(ne(schema.users.user_id, userInput.user_id));
   return res;
@@ -98,7 +96,7 @@ export async function fetchUpdateCredentials(
 //UPDATE
 export async function updateUserById(
   userInput: schema.User,
-  hashedPwd: string
+  hashedPwd: string,
 ): Promise<schema.User[]> {
   const updatedUser = await database
     .update(schema.users)

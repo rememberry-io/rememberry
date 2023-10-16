@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../../trpc";
-import * as mapController from "./mapController";
-import * as schema from "../../db/schema";
 import { privateProcedure } from "../../middleware/jwt";
+import { router } from "../../trpc";
+import * as mapController from "./mapController";
 
 const createMapInput = z.object({
   user_id: z.string(),

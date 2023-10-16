@@ -1,6 +1,6 @@
-import { Client } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
 import { config } from "dotenv";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Client } from "pg";
 
 config();
 
