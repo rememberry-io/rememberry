@@ -4,24 +4,88 @@ on:
   pull_request:
     paths:
       - "frontend/**"
+      - ".github/workflows/integration-frontend.yml"
     branches: [master]
 
+defaults:
+  run:
+    working-directory: frontend
+
 jobs:
-  test_pull_request:
+  lint-format:
+    name: run linter and formatter
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-        name: Checkout frontend
+        name: checkout frontend
         with:
           sparse-checkout: |
             ./frontend
       - uses: actions/setup-node@v3
-        name: Get node
+        name: get nodejs
         with:
           node-vesrion: 20
       - run: npm ci
-        name: Install dependecies
-        working-directory: frontend
+        name: install dependecies
+      - run: npm run lint
+        name: linter
+      - run: npm run format
+        name: formatter
+      - name: commit format changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with: 
+          commit_message: "format: run prettier to format files"
+          branch: ${{ github.head_ref }}
+  test:
+    name: run tests
+    runs-on: ubuntu-22.04
+    needs: ["lint-format"]
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+        with:
+          sparse-checkout: |
+            ./frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-vesrion: 20
+      - run: npm ci
+        name: install dependecies
+      - run: npm run test
+        name: run tests
+  build-compile:
+    name: build with next to check compilation
+    runs-on: ubuntu-22.04
+    needs: [test, lint-format]
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+        with:
+          sparse-checkout: |
+            ./frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-vesrion: 20
+      - run: npm ci
+        name: install dependecies
       - run: npm run build
-        name: Build with npm
-        working-directory: frontend
+        name: build with nextjs
+  build-image:
+    name: run tests
+    runs-on: ubuntu-22.04
+    if: github.ref == 'refs/heads/master'
+    needs: [test, lint-format, build-compile]
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+        with:
+          sparse-checkout: |
+            ./frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-vesrion: 20
+      - run: npm ci
+        name: install dependecies
