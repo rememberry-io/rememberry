@@ -37,13 +37,13 @@ const config: Config = {
   },
   textColors: {
     primary: "#1370DD",
-	secondary: "#787777",
-	dark: "#000000"
+    secondary: "#787777",
+    dark: "#000000",
   },
   colors: {
-	primary: "#1370DD",
-	lighter: "#5A97F1",
-	secondary: "#ffffff"
+    primary: "#1370DD",
+    lighter: "#5A97F1",
+    secondary: "#ffffff",
   },
 
   plugins: [],

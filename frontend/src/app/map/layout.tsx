@@ -1,8 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import Sidebar from "@/_components/Navigation/Sidebar";
-import { SidebarButton } from "@/_components/ui/SidebarButton";
 import { Header } from "@/_components/Navigation/Header";
+import Sidebar from "@/_components/Navigation/Sidebar";
+import React, { useState } from "react";
 
 export default function MapLayout({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
