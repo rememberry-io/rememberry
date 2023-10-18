@@ -67,7 +67,7 @@ const initialNodes: Node[] = [
   },
 ];
 
-export const Map: React.FC = () => {
+const Map: React.FC = () => {
   const [nodes, setNodes] = useState(initialNodes);
   // const [edges, setEdges] = useState(initialEdges);
 
