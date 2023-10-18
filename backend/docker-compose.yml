@@ -29,7 +29,7 @@ services:
     volumes:
       - postgres:/data/postgres
       - ./drizzle:/drizzle
-      - ./execute_sql_migration.sh:/execute_sql_migration.sh
+      - .scripts/execute_sql_migration.sh:/execute_sql_migration.sh
     ports:
       - "127.0.0.1:5432:5432"
     networks:
