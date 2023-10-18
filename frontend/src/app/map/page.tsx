@@ -1,20 +1,11 @@
 "use client";
-import { useCallback, useState } from "react";
-import ReactFlow, {
-  Background,
-  Controls,
-  Edge,
-  Node,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-} from "reactflow";
-import "reactflow/dist/style.css";
 import "@/_components/Flow/Flashcard";
-import "@/_components/Flow/Stack";
 import { Flashcard } from "@/_components/Flow/Flashcard";
+import "@/_components/Flow/Stack";
 import { Stack } from "@/_components/Flow/Stack";
-import { View } from "lucide-react";
+import { useCallback, useState } from "react";
+import ReactFlow, { Background, Node, applyNodeChanges } from "reactflow";
+import "reactflow/dist/style.css";
 
 // as reactflow is written in TS -> types don't have to be included separately
 

@@ -1,5 +1,3 @@
-import React from "react";
-
 export const TrafficLights = () => {
   const colorCollection = [
     "bg-red-500",
