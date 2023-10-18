@@ -20,18 +20,21 @@ import Link from "next/link";
 export default function Login() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="my-8 text-2xl font-medium">Lets get you started 🫐</h1>
+      <h1 className="my-8 text-2xl font-medium">
+        Let&apos;s get you started 🫐
+      </h1>
       <Tabs defaultValue="account" className="w-[400px]">
-        <TabsList className="grid w-full grid-cols-2 shadow-2xl">
+        <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account">Log in</TabsTrigger>
           <TabsTrigger value="password">Create Account</TabsTrigger>
         </TabsList>
-        <TabsContent value="account" className="shadow-2xl">
+        <TabsContent value="account">
           <Card>
-            <CardHeader>
-              <CardTitle className="font-medium text-lg text-center leading-8">
+            <CardHeader className="text-center">
+              <CardTitle className="font-medium text-lg leading-8 px-4">
                 Hope you rememberry your credentials 👀
               </CardTitle>
+              <CardDescription>Welcome back.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="space-y-1">
@@ -53,10 +56,10 @@ export default function Login() {
             </CardFooter>
           </Card>
         </TabsContent>
-        <TabsContent value="password" className="shadow-2xl">
+        <TabsContent value="password">
           <Card>
             <CardHeader className="text-center">
-              <CardTitle className="text-lg">
+              <CardTitle className="text-lg font-medium">
                 Glad to have you here 👋🏼
               </CardTitle>
               <CardDescription>
