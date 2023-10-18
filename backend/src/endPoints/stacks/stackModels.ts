@@ -1,7 +1,7 @@
-import { client } from "../../db/db";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { client } from "../../db/db";
 import * as schema from "../../db/schema";
-import { eq, and, desc, sql, isNull } from "drizzle-orm";
 import * as types from "./types";
 
 const database = drizzle(client, { schema });
@@ -9,7 +9,7 @@ type dbConnection = typeof database;
 
 export async function createStack(
   stack: schema.NewStack,
-  date: Date
+  date: Date,
 ): Promise<schema.NewStack[]> {
   const res = await database
     .insert(schema.stacks)
@@ -38,7 +38,7 @@ export async function getStacksFromMap(mapId: string) {
 }
 
 export async function getHighestOrderParentStacks(
-  mapId: string
+  mapId: string,
 ): Promise<schema.Stack[]> {
   const prep = database
     .select()
@@ -46,17 +46,15 @@ export async function getHighestOrderParentStacks(
     .where(
       and(
         eq(schema.stacks.map_id, sql.placeholder("id")),
-        isNull(schema.stacks.parent_stack_id)
-      )
+        isNull(schema.stacks.parent_stack_id),
+      ),
     )
     .prepare("highestOrderStacks");
   const res = await prep.execute({ id: mapId });
   return res;
 }
 
-export async function getDirectChildsFromParent(
-  parentStackId: string
-) {
+export async function getDirectChildsFromParent(parentStackId: string) {
   const prep = database
     .select()
     .from(schema.stacks)
@@ -66,9 +64,7 @@ export async function getDirectChildsFromParent(
   return res;
 }
 
-export async function getAllChildsFromParent(
-  stackId: string
-) {
+export async function getAllChildsFromParent(stackId: string) {
   const res = await database.execute(sql`
   WITH RECURSIVE cte_substacks AS (
       
@@ -97,7 +93,7 @@ export async function getStackById(stackId: string) {
 }
 
 export async function changeParentStack(
-  parentAndChild: types.ParentAndChildId
+  parentAndChild: types.ParentAndChildId,
 ): Promise<schema.Stack[]> {
   const res = await database
     .update(schema.stacks)
@@ -108,7 +104,7 @@ export async function changeParentStack(
 }
 
 export async function deleteParentStackRelation(
-  childStackId: string
+  childStackId: string,
 ): Promise<schema.Stack[]> {
   const res = await database
     .update(schema.stacks)
@@ -118,32 +114,31 @@ export async function deleteParentStackRelation(
   return res;
 }
 
-export async function deleteMiddleOrderStackAndMoveChildsUp(stackId:string){
-  const res = await database.transaction(async(tx) => {
-
+export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
+  const res = await database.transaction(async (tx) => {
     const stackToDelete = await tx
-    .select({newParentId: schema.stacks.parent_stack_id})
-    .from(schema.stacks)
-    .where(eq(schema.stacks.stack_id, stackId))
-    const newParentId = stackToDelete[0].newParentId
+      .select({ newParentId: schema.stacks.parent_stack_id })
+      .from(schema.stacks)
+      .where(eq(schema.stacks.stack_id, stackId));
+    const newParentId = stackToDelete[0].newParentId;
 
     const updatedStacks = await tx
-    .update(schema.stacks)
-    .set({
-      parent_stack_id: newParentId
-    })
-    .where(eq(schema.stacks.parent_stack_id, stackId))
-    .returning()
+      .update(schema.stacks)
+      .set({
+        parent_stack_id: newParentId,
+      })
+      .where(eq(schema.stacks.parent_stack_id, stackId))
+      .returning();
 
     const stackDeletion = await tx
-    .delete(schema.stacks)
-    .where(eq(schema.stacks.stack_id, stackId))
-    return updatedStacks
-  })
-  return res 
+      .delete(schema.stacks)
+      .where(eq(schema.stacks.stack_id, stackId));
+    return updatedStacks;
+  });
+  return res;
 }
 
-export async function deleteStackAndChildren(stackId:string){
+export async function deleteStackAndChildren(stackId: string) {
   const res = await database.execute(sql`
     WITH RECURSIVE stacks_to_delete AS(
       SELECT stack_id FROM stacks
@@ -157,6 +152,6 @@ export async function deleteStackAndChildren(stackId:string){
     )
     DELETE FROM stacks
     WHERE stack_id IN(SELECT stack_id FROM stacks_to_delete)
-  `)
-  return res.rows
+  `);
+  return res.rows;
 }

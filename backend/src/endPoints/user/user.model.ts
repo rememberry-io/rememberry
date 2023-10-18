@@ -1,17 +1,15 @@
+import { eq, ne, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "../../db/schema";
-import { client } from "../../db/db";
-import { eq, ne, and, or } from "drizzle-orm";
-import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
-import * as types from "./types";
+import { client } from "../../db/db";
+import * as schema from "../../db/schema";
 
 export const database = drizzle(client, { schema });
 
 //WRITE
 export async function writeUser(
   userInput: schema.NewUser,
-  hashedPwd: string
+  hashedPwd: string,
 ): Promise<schema.NewUser[]> {
   const newUser = await database
     .insert(schema.users)
@@ -51,21 +49,24 @@ export async function checkUserEmail(email: string) {
   }
 }
 
-export async function checkCredentials(
-  email: string,
-  username: string
-) {
-  if (
-    (await checkUserEmail(email)) &&
-    (await checkUsername(username))
-  ) {
-    return [new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" }), null] as const;
+export async function checkCredentials(email: string, username: string) {
+  if ((await checkUserEmail(email)) && (await checkUsername(username))) {
+    return [
+      new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" }),
+      null,
+    ] as const;
   } else if (await checkUserEmail(email)) {
-    return [new TRPCError(403, { message: "EMAIL ALREADY EXISTS" }), null] as const;
+    return [
+      new TRPCError(403, { message: "EMAIL ALREADY EXISTS" }),
+      null,
+    ] as const;
   } else if (await checkUsername(username)) {
-    return [new TRPCError(403, { message: "USERNAME ALREADY EXISTS" }), null] as const;
+    return [
+      new TRPCError(403, { message: "USERNAME ALREADY EXISTS" }),
+      null,
+    ] as const;
   }
-  return [null, true] as const
+  return [null, true] as const;
 }
 
 export async function readUserById(userId: string) {
@@ -85,8 +86,8 @@ export async function fetchUpdateCredentials(
     .where(
       or(
         eq(schema.users.email, userInput.email),
-        eq(schema.users.password, userInput.password)
-      )
+        eq(schema.users.password, userInput.password),
+      ),
     )
     .where(ne(schema.users.user_id, userInput.user_id));
   return res;
@@ -110,9 +111,7 @@ export async function updateUserById(
 }
 
 //DELETE
-export async function deleteUserById(
-  userId: string,
-): Promise<schema.User[]> {
+export async function deleteUserById(userId: string): Promise<schema.User[]> {
   const deletedUser = await database
     .delete(schema.users)
     .where(eq(schema.users.user_id, userId))

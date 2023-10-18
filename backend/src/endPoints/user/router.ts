@@ -1,9 +1,7 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../../trpc";
-import * as userModel from "./user.model";
-import * as userController from "./userController";
-import * as schema from "../../db/schema";
 import { privateProcedure } from "../../middleware/jwt";
+import { publicProcedure, router } from "../../trpc";
+import * as userController from "./userController";
 
 const createUserInput = z.object({
   username: z.string(),
@@ -15,29 +13,23 @@ const User = z.object({
   email: z.string(),
   password: z.string(),
   user_id: z.string(),
-  refresh_token: z.string()
+  refresh_token: z.string(),
 });
 
 export const userRouter = router({
-
-
   createUser: publicProcedure.input(createUserInput).query(async (opts) => {
-    const res = await userController.controlUserCreation(
-      opts.input
-    );
+    const res = await userController.controlUserCreation(opts.input);
     return res;
   }),
 
   updateUser: privateProcedure.input(User).query(async (opts) => {
-    const res = await userController.controlUserUpdateById(
-      opts.input,
-    );
+    const res = await userController.controlUserUpdateById(opts.input);
     return res;
   }),
 
   deleteUserById: privateProcedure.input(User).mutation(async (opts) => {
     const res = await userController.controlUserDeletionById(
-      opts.input.user_id
+      opts.input.user_id,
     );
     return res;
   }),
@@ -48,9 +40,7 @@ export const userRouter = router({
   }),
 
   getUserById: publicProcedure.input(User).query(async (opts) => {
-    const res = await userController.getUserById(
-      opts.input.user_id
-    );
+    const res = await userController.getUserById(opts.input.user_id);
     return res;
   }),
 });

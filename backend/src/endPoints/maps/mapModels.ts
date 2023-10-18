@@ -1,13 +1,13 @@
+import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import * as schema from "../../db/schema";
 import { client } from "../../db/db";
-import { sql, eq } from "drizzle-orm";
+import * as schema from "../../db/schema";
 
 const database = drizzle(client, { schema });
 type dbConnection = typeof database;
 
 export async function createMap(
-  userInput: schema.newMap
+  userInput: schema.newMap,
 ): Promise<schema.Map[]> {
   const res = await database
     .insert(schema.maps)
@@ -21,7 +21,7 @@ export async function createMap(
 }
 
 export async function updateMap(
-  userInput: schema.newMap
+  userInput: schema.newMap,
 ): Promise<schema.Map[]> {
   const res = await database
     .update(schema.maps)
@@ -35,7 +35,7 @@ export async function updateMap(
 }
 
 export async function deleteMapWithAllStacks(
-  mapId: string
+  mapId: string,
 ): Promise<schema.Map[]> {
   const res = database
     .delete(schema.maps)
@@ -44,9 +44,7 @@ export async function deleteMapWithAllStacks(
   return res;
 }
 
-export async function getMapsByUserId(
-  userId: string
-): Promise<schema.Map[]> {
+export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {
   const prepared = database
     .select()
     .from(schema.maps)

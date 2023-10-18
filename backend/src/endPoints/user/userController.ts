@@ -1,17 +1,15 @@
-import * as schema from "../../db/schema";
-import * as types from "./types";
-import * as userModel from "./user.model";
 import bcrypt from "bcryptjs";
 import { TRPCError } from "trpc";
+import * as schema from "../../db/schema";
+import * as userModel from "./user.model";
 
-export async function controlUserCreation(
-  userInput: schema.NewUser,
-) {
-  
-  const userExists = await userModel.checkCredentials(userInput.email, userInput.username);
+export async function controlUserCreation(userInput: schema.NewUser) {
+  const userExists = await userModel.checkCredentials(
+    userInput.email,
+    userInput.username,
+  );
 
-  if (userExists[0])
-    return userExists[0]
+  if (userExists[0]) return userExists[0];
 
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
@@ -29,12 +27,8 @@ export async function getUserById(userId: string) {
   return res;
 }
 
-export async function controlUserUpdateById(
-  userInput: schema.User,
-) {
-  const updateCredentials = await userModel.fetchUpdateCredentials(
-    userInput
-  );
+export async function controlUserUpdateById(userInput: schema.User) {
+  const updateCredentials = await userModel.fetchUpdateCredentials(userInput);
   checkUpdateCredentials(updateCredentials, userInput);
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
@@ -44,7 +38,7 @@ export async function controlUserUpdateById(
 
 function checkUpdateCredentials(
   fetchedUser: schema.User[],
-  userInput: schema.User
+  userInput: schema.User,
 ) {
   for (let i = 0; i < fetchedUser.length; i++) {
     if (
@@ -60,9 +54,7 @@ function checkUpdateCredentials(
   }
 }
 
-export async function controlUserDeletionById(
-  userId: string
-) {
+export async function controlUserDeletionById(userId: string) {
   const res = await userModel.deleteUserById(userId);
   return res;
 }

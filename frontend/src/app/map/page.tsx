@@ -1,13 +1,13 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import ReactFlow, {
-  Controls,
   Background,
-  Node,
+  Controls,
   Edge,
+  Node,
+  addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  addEdge,
 } from "reactflow";
 import "reactflow/dist/style.css";
 import "@/_components/Flow/Flashcard";
@@ -83,7 +83,7 @@ export const Map: React.FC = () => {
   // applyChanges functions apply changes to current state of the element (either edge or node)
   const onNodesChange = useCallback(
     (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
+    [],
   );
 
   //   const onEdgesChange = useCallback(

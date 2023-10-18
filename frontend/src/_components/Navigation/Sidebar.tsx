@@ -1,11 +1,10 @@
 "use client";
-import React, { useState } from "react";
 import classNames from "classnames";
-import Link from "next/link";
-import styles from "./Sidebar.module.css";
+import { HelpCircle, Hourglass, Map, Sticker, Upload } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import { SidebarButton } from "../ui/SidebarButton";
-import { Map, HelpCircle, Upload, Sticker, Hourglass } from "lucide-react";
 
 interface SidebarElement {
   id: number;
@@ -41,7 +40,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
           "flex flex-col h-full text-white sm:flex sm:w-72 sm:flex-col sm:fixed sm:inset-y-0 z-[80]",
           {
             "bg-blue-700": isOpen,
-          }
+          },
         )}
         style={{
           width: isOpen ? "18rem" : "0",

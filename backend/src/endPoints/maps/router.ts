@@ -1,8 +1,7 @@
 import { z } from "zod";
-import { router, publicProcedure } from "../../trpc";
-import * as mapController from "./mapController";
-import * as schema from "../../db/schema";
 import { privateProcedure } from "../../middleware/jwt";
+import { router } from "../../trpc";
+import * as mapController from "./mapController";
 
 const createMapInput = z.object({
   user_id: z.string(),
@@ -22,9 +21,7 @@ export const mapRouter = router({
   }),
 
   getUsersMaps: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await mapController.controlGetUsersMaps(
-      opts.input
-    );
+    const res = await mapController.controlGetUsersMaps(opts.input);
     return res;
   }),
 
@@ -37,9 +34,7 @@ export const mapRouter = router({
   deleteMapWithAllStacks: privateProcedure
     .input(z.string())
     .mutation(async (opts) => {
-      const res = await mapController.controlDeleteMapWithAllStacks(
-        opts.input
-      );
+      const res = await mapController.controlDeleteMapWithAllStacks(opts.input);
       return res;
     }),
 });

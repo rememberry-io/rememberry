@@ -1,11 +1,10 @@
+import type { AppRouter } from "@backend/routers/_app";
 import {
   CreateTRPCProxyClient,
   createTRPCProxyClient,
   httpBatchLink,
 } from "@trpc/client";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import type { AppRouter } from "@backend/routers/_app";
-import { CreateTRPCReact, createTRPCReact } from "@trpc/react-query";
 
 class TRPCProxyClient {
   client: CreateTRPCProxyClient<AppRouter>;

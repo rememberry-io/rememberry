@@ -1,0 +1,91 @@
+name: Rememberry Backend CI
+
+on:
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/integration-backend.yml"
+    branches: [master]
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+      - run: bun run test
+        name: test with bun
+
+  lint: 
+    name: lint and format backend
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+      - run: bun run format
+        name: Format the code with prettier
+      - name: Commit format changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with: 
+          commit_message: "format: run prettier to format files"
+          branch: ${{ github.head_ref }}
+
+  test-build:
+    name: build to check compilation
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+      - run: bun run build
+        name: build the project with bun
+
+  build-image:
+    runs-on: ubuntu-22.04
+    name: build image
+    if: github.ref == 'refs/heads/master'
+    needs: [ lint, test ]
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+      - run: bun run build
+        name: build the project with bun

@@ -1,5 +1,5 @@
 "use client";
-import React, { FormEvent } from "react";
+import { FormEvent } from "react";
 import { UserCreate, userHooks } from "../_hooks/createUser";
 
 export default function TestButton({}) {

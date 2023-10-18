@@ -1,12 +1,12 @@
 import { relations } from "drizzle-orm";
 import {
-  integer,
-  pgTable,
-  varchar,
-  uuid,
-  timestamp,
   AnyPgColumn,
   date,
+  integer,
+  pgTable,
+  timestamp,
+  uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -14,7 +14,7 @@ export const users = pgTable("users", {
   username: varchar("username").unique().notNull(),
   email: varchar("email").unique().notNull(),
   password: varchar("user_password").notNull(),
-  refresh_token: varchar("refresh_token")
+  refresh_token: varchar("refresh_token"),
 });
 
 export const userRelations = relations(users, ({ many }) => ({
@@ -54,7 +54,7 @@ export const stacks = pgTable("stacks", {
   created_at: timestamp("created_at").defaultNow(),
   positioning: varchar("positioning"),
   parent_stack_id: uuid("parent_stack_id").references(
-    (): AnyPgColumn => stacks.stack_id
+    (): AnyPgColumn => stacks.stack_id,
   ),
 });
 
@@ -128,7 +128,7 @@ export const frontsideMediaRelations = relations(
       fields: [frontside_media.flashcard_id],
       references: [flashcards.flashcard_id],
     }),
-  })
+  }),
 );
 
 export type FrontsideMedia = typeof frontside_media.$inferSelect;
