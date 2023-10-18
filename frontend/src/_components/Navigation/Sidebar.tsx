@@ -27,7 +27,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   //   };
 
   const sidebarElements: SidebarElement[] = [
-    { id: 1, label: "Flashcard maps", icon: Map, link: "/map" },
+    { id: 1, label: "Flashcard maps", icon: Map, link: "/map/menu" },
     { id: 2, label: "How it works", icon: HelpCircle, link: "/tutorial" },
     { id: 3, label: "Upcoming features", icon: Hourglass, link: "/features" },
     { id: 4, label: "Give feedback", icon: Sticker, link: "/feedback" },
@@ -38,12 +38,14 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
     <aside>
       <div
         className={classNames(
-          "flex flex-col h-full text-white md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80]",
+          "flex flex-col h-full text-white sm:flex sm:w-72 sm:flex-col sm:fixed sm:inset-y-0 z-[80]",
           {
             "bg-blue-700": isOpen,
           }
         )}
-        style={{ width: isOpen ? "auto" : "0" }}
+        style={{
+          width: isOpen ? "18rem" : "0",
+        }}
       >
         <div
           className={classNames("space-y-4 py-4 flex flex-col h-full", {
@@ -72,7 +74,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
               <ul role="list" className="text-white font-small text-sm">
                 {sidebarElements.map((item) => (
                   <li
-                    className="flex flex-row items-center pl-6 hover:text-white hover:bg-white/10 rounded-lg transition"
+                    className="flex flex-row items-center pl-6 hover:text-white hover:bg-white/10 rounded-lg transition duration-300 ease"
                     key={item.id}
                   >
                     <div>
