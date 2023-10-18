@@ -19,7 +19,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
   return (
     <div>
       <div className="flex flex-row items-center">
-        <div className="flex text-center flex-col p-5 rounded-md bg-blue-700 text-white justify-center max-w-fit">
+        <div className="flex text-center flex-col p-6 rounded-md bg-blue-700 text-white justify-center max-w-fit">
           <div className={`${isFront ? "" : "hidden"}`}>{data.frontText}</div>
           <div className={`${isFront ? "hidden" : ""}`}>{data.backText}</div>
         </div>

@@ -61,7 +61,7 @@ const initialNodes: Node[] = [
     position: { x: 200, y: 500 },
     data: {
       frontText: "Explain the role of the cytoskeleton",
-      backText: "fwjf",
+      backText: "Set a value as an array and Motion will animate through each of these values in turn. By default, each keyframe will be spaced evenly throughout the animation, but the exact timing and easing can be configured via the transition property turn. By default, each keyframe will be spaced evenly throughout the animation, but the exact timing and easing can be configured via the transition property.",
       category: "#27 - Cellular Structure",
     },
   },
@@ -88,10 +88,11 @@ const Map: React.FC = () => {
   //   );
 
   return (
+	<div className="flex flex-column justify-center">
     <div
       style={{ height: "100vh", width: "100vw" }}
       className="flex justify-center items-center"
-    >
+	  >
       {/* <BackgroundCircle /> */}
       <ReactFlow
         nodes={nodes}
@@ -99,11 +100,12 @@ const Map: React.FC = () => {
         onNodesChange={onNodesChange}
         nodeTypes={nodeTypes}
         // onEdgesChange={onEdgesChange}
-        zoomOnPinch={false}
-      >
+        zoomOnPinch={true}
+		>
         <Background />
       </ReactFlow>
     </div>
+		  </div>
   );
 };
 
