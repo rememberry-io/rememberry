@@ -38,3 +38,4 @@ jobs:
         sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
         ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
 
+
