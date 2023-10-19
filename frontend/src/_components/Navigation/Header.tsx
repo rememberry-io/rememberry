@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({ isOpen, toggleSidebar }) => {
   //     setIsOpen(!isOpen);
   //   };
   return (
-    <nav className="w-full flex items-center gap-x-4 px-3 py-4">
+    <nav className="flex items-center gap-x-4 px-3 py-4">
       <SidebarButton isOpen={isOpen} toggleSidebar={toggleSidebar} />
     </nav>
   );
