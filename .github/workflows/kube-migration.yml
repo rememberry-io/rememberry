@@ -2,10 +2,13 @@ name: Database Migration
 
 on:
   push:
-    paths:
-    - 'drizzle/**'
     branches:
-    - master 
+      - deploy/backend-deploy-workflow
+  # push:
+  #   paths:
+  #   - 'drizzle/**'
+  #   branches:
+  #   - master 
 
 jobs:
   run-migrations:
