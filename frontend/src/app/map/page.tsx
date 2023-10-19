@@ -1,8 +1,7 @@
 "use client";
-import "@/_components/Flow/Flashcard";
 import { Flashcard } from "@/_components/Flow/Flashcard";
-import "@/_components/Flow/Stack";
 import { Stack } from "@/_components/Flow/Stack";
+import { MainStack } from "@/_components/Flow/MainStack"
 import { useCallback, useState } from "react";
 import ReactFlow, { Background, Node, applyNodeChanges } from "reactflow";
 import "reactflow/dist/style.css";
@@ -14,7 +13,7 @@ type NodeTypesType = {
   [key: string]: React.ComponentType<any>;
 };
 
-const nodeTypes: NodeTypesType = { flashcard: Flashcard, stack: Stack };
+const nodeTypes: NodeTypesType = { flashcard: Flashcard, stack: Stack, mainStack: MainStack };
 
 const initialNodes: Node[] = [
   {
@@ -88,7 +87,7 @@ const Map: React.FC = () => {
   //   );
 
   return (
-	<div className="flex flex-column justify-center">
+	<div className="flex flex-column">
     <div
       style={{ height: "100vh", width: "100vw" }}
       className="flex justify-center items-center"
