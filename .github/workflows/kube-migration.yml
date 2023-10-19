@@ -1,9 +1,9 @@
 name: Database Migration
 
 on:
-  push:
+  release:
     paths:
-    - 'drizzle/**'
+    - './backend/drizzle/**'
     branches:
     - master 
 
@@ -21,14 +21,17 @@ jobs:
           ./backend/scripts/run-kube-migration.sh
     - uses: azure/setup-kubectl@v3
       with:
-        version: 1.28
+        version: v1.28.0
       id: install
     - name: Run migrations
       env:
         KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
       run: |
+        
+        mkdir ~/.kube
+
         echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
 
-        sudo chmod +x run-kube-migration.sh
-        ./run-kube-migration
+        sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
+        ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
 
