@@ -11,7 +11,7 @@ sleep 2
 
 echo "Apply migration to $PG_HOST container..."
 
-docker exec $PG_HOST /bin/sh execute_sql_migration.sh
+docker exec $PG_HOST /bin/sh ./scripts/execute_sql_migration.sh
 
 echo "Finished migration"
 

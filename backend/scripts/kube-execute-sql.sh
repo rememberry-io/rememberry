@@ -1,6 +1,7 @@
 #!/bin/sh
 
-DIRECTORY="./drizzle" # You need to change this path
+DIRECTORY=/tmp/drizzle
+POSTGRES_DB=remproduction
 
 for file in "$DIRECTORY"/*
 do
