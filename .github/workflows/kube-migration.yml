@@ -2,13 +2,10 @@ name: Database Migration
 
 on:
   push:
+    paths:
+    - './backend/drizzle/**'
     branches:
-      - deploy/backend-deploy-workflow
-  # push:
-  #   paths:
-  #   - 'drizzle/**'
-  #   branches:
-  #   - master 
+    - master 
 
 jobs:
   run-migrations:
@@ -34,7 +31,6 @@ jobs:
         mkdir ~/.kube
 
         echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
-        cat ~/.kube/config
 
         sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
         ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
