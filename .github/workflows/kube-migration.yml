@@ -35,6 +35,6 @@ jobs:
         echo "$KUBECONFIG_DATA" 
         echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
 
-        sudo chmod +x ~/work/rememberry/rembemberry/backend/scripts/run-kube-migration.sh
+        sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
         ~/work/rememberry/rememberry/backend/scripts/run-kube-migration.sh
 
