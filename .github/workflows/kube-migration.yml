@@ -24,7 +24,7 @@ jobs:
           ./backend/scripts/run-kube-migration.sh
     - uses: azure/setup-kubectl@v3
       with:
-        version: 1.28
+        version: v1.28.0
       id: install
     - name: Run migrations
       env:
