@@ -1,12 +1,11 @@
 import bcrypt from "bcryptjs";
-import { config } from "dotenv";
 import jwt from "jsonwebtoken";
 import * as schema from "../../db/schema";
 import { readUserById } from "../user/user.model";
 import { controlUserCreation } from "../user/userController";
 import * as loginModel from "./loginModels";
 import * as types from "./types";
-config();
+import env from "../../env";
 
 export async function controlLogin(credentials: types.LoginCredentials) {
   const user = await loginModel.checkLoginCredentials(credentials);
@@ -48,7 +47,7 @@ export function signAccessToken(user: types.LoginUser) {
   const payload = {
     userId: user.user_id,
   };
-  const secret = process.env.ACCESS_TOKEN_SECRET!;
+  const secret = env.ACCESS_TOKEN_SECRET;
   const options = {
     expiresIn: "84600s", //24h
   };
@@ -60,7 +59,7 @@ export function signRefreshToken(user: types.LoginUser) {
   const payload = {
     userId: user.user_id,
   };
-  const secret = process.env.REFRESH_TOKEN_SECRET!;
+  const secret = env.REFRESH_TOKEN_SECRET;
   const options = {
     expiresIn: "1y",
   };
@@ -69,7 +68,7 @@ export function signRefreshToken(user: types.LoginUser) {
 }
 
 export async function refreshAccessToken(token: types.refreshTokenInputType) {
-  jwt.verify(token.refreshToken, process.env.REFRESH_TOKEN_SECRET!);
+  jwt.verify(token.refreshToken, env.REFRESH_TOKEN_SECRET);
   const decodedToken = jwt.decode(token.refreshToken) as types.JWTPayload;
   const tokensUserId = decodedToken.userId;
   const user = await readUserById(tokensUserId);

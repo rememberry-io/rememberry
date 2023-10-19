@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DIRECTORY=$DRIZZLE_DIR 
+DIRECTORY="./drizzle" # You need to change this path
 
 for file in "$DIRECTORY"/*
 do

@@ -1,21 +1,15 @@
-import { config } from "dotenv";
 import type { Config } from "drizzle-kit";
-config();
+import env from "./src/env"
+import { dbCredentials } from "./src/db/db";
 
-const pgHost = process.env.PG_HOST!;
-const pgPort = process.env.PG_PORT!;
-const pgDatabaseName = process.env.PG_DATABASE_NAME!;
-const pgUsername = process.env.PG_USERNAME!;
-const pgPassword = process.env.PG_PASSWORD!;
+const pgHost = env.PG_HOST;
+const pgPort = env.PG_PORT;
+const pgDatabaseName = env.PG_DATABASE_NAME;
+const pgUsername = env.PG_USERNAME;
+const pgPassword = env.PG_PASSWORD;
 
 export default {
   schema: "./src/db/schema.ts",
   driver: "pg",
-  dbCredentials: {
-    host: pgHost,
-    port: parseInt(pgPort),
-    user: pgUsername,
-    password: pgPassword,
-    database: pgDatabaseName,
-  },
+  dbCredentials,
 } satisfies Config;
