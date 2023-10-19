@@ -1,6 +1,6 @@
 import type { Config } from "drizzle-kit";
-import env from "./src/env"
 import { dbCredentials } from "./src/db/db";
+import env from "./src/env";
 
 const pgHost = env.PG_HOST;
 const pgPort = env.PG_PORT;

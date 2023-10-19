@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
+import env from "../env";
 import { middleware, publicProcedure } from "../trpc";
-import env from "../env"
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
   const { req } = ctx;

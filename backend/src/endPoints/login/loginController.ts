@@ -1,11 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as schema from "../../db/schema";
+import env from "../../env";
 import { readUserById } from "../user/user.model";
 import { controlUserCreation } from "../user/userController";
 import * as loginModel from "./loginModels";
 import * as types from "./types";
-import env from "../../env";
 
 export async function controlLogin(credentials: types.LoginCredentials) {
   const user = await loginModel.checkLoginCredentials(credentials);

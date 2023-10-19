@@ -13,4 +13,4 @@ client.user.createUser.query({
   username: "test",
   email: "test@gmail",
   password: "dongS",
-})
+});
