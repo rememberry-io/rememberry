@@ -1,9 +1,7 @@
 import { TRPCError } from "@trpc/server";
-import { config } from "dotenv";
 import jwt from "jsonwebtoken";
+import env from "../env";
 import { middleware, publicProcedure } from "../trpc";
-
-config();
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
   const { req } = ctx;
@@ -11,7 +9,7 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   if (!token) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!);
+  jwt.verify(token, env.ACCESS_TOKEN_SECRET);
   return next();
 });
 

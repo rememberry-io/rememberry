@@ -11,6 +11,8 @@ services:
       PG_DATABASE_NAME: ${PG_DATABASE_NAME}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_HOST: ${PG_HOST}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
     networks:
       - rem-backend-net
     ports:
@@ -29,7 +31,7 @@ services:
     volumes:
       - postgres:/data/postgres
       - ./drizzle:/drizzle
-      - .scripts/execute_sql_migration.sh:/execute_sql_migration.sh
+      - ./scripts/execute_sql_migration.sh:/execute_sql_migration.sh
     ports:
       - "127.0.0.1:5432:5432"
     networks:
