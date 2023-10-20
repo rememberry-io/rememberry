@@ -3,7 +3,7 @@ name: Deployment Backend
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'backend-v[0-9]+.[0-9]+.[0-9]+'
 
 defaults:
   run:
