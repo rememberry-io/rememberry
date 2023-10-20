@@ -33,7 +33,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with: 
-          images: ${{ env.IMG_NAME }}
+          images: notemann27/rememberry-backend
           tags: |
             type=semver,pattern={{raw}}
       - name: log in to Docker Hub
