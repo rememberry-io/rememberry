@@ -2,9 +2,12 @@
 import { Flashcard } from "@/_components/Flow/Flashcard";
 import { Stack } from "@/_components/Flow/Stack";
 import { MainStack } from "@/_components/Flow/MainStack"
+import { Button } from "@/_components/ui/button";
 import { useCallback, useState } from "react";
 import ReactFlow, { Background, Node, applyNodeChanges } from "reactflow";
 import "reactflow/dist/style.css";
+import { ArrowLeftCircle } from 'lucide-react';
+import { DropDown } from "@/_components/Flow/DropDown";
 
 // as reactflow is written in TS -> types don't have to be included separately
 
@@ -12,6 +15,9 @@ type NodeTypesType = {
   // any to bypass type checking
   [key: string]: React.ComponentType<any>;
 };
+
+const frontText = "1st year medicine @Charite";
+const backText = "Jehfbsjhdbf";
 
 const nodeTypes: NodeTypesType = { flashcard: Flashcard, stack: Stack, mainStack: MainStack };
 
@@ -68,6 +74,12 @@ const initialNodes: Node[] = [
 
 const Map: React.FC = () => {
   const [nodes, setNodes] = useState(initialNodes);
+  const [isFront, setIsFront] = useState(true);
+
+const toggleMainStack = useCallback(() => {
+		setIsFront((prevIsFront) => !prevIsFront)
+	}, []);
+
   // const [edges, setEdges] = useState(initialEdges);
 
   // applyChanges functions apply changes to current state of the element (either edge or node)
@@ -87,10 +99,10 @@ const Map: React.FC = () => {
   //   );
 
   return (
-	<div className="flex flex-column">
+	<div className="flex">
     <div
       style={{ height: "100vh", width: "100vw" }}
-      className="flex justify-center items-center"
+      className="flex flex-col justify-items-center"
 	  >
       {/* <BackgroundCircle /> */}
       <ReactFlow
@@ -101,10 +113,18 @@ const Map: React.FC = () => {
         // onEdgesChange={onEdgesChange}
         zoomOnPinch={true}
 		>
+		<div className="flex flex-row items-center justify-around">
+			<Button variant="ghost" className="">
+				<ArrowLeftCircle className="mr-2"/>
+				Back to menu
+			</Button>
+			<MainStack frontText={frontText} backText={backText} toggleMainStack={toggleMainStack} isFront={isFront}/>
+			<DropDown />
+		</div>
         <Background />
       </ReactFlow>
     </div>
-		  </div>
+	</div>
   );
 };
 

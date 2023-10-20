@@ -26,12 +26,12 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   return (
     <div>
       <div className="flex flex-row justify-center">
-        <div className="flex text-center flex-col p-2 rounded-md w-64 h-auto max-h-32 border-2 border-black bg-white mb-4 text-ellipsis overflow-hidden">
+        <div className="flex text-center flex-col p-2 rounded-md w-56 h-auto max-h-32 border-2 border-black bg-white mb-4">
           <div className="p-2">
             <div className="text-sm text-blue-500 ">{data.category}</div>
-
-            <div className={`${isFront ? "" : "hidden"}`}>{data.frontText}</div>
-            <div className={`${isFront ? "hidden" : ""}`}>{data.backText}</div>
+			<div className="line-clamp-3 text-black">
+				{isFront? data.frontText : data.backText}
+			</div>
           </div>
         </div>
 		<div className="flex flex-col space-y-4">
