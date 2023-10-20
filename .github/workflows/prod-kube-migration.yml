@@ -1,0 +1,38 @@
+name: Database Migration
+
+on: workflow_dispatch
+    
+  #  fork:
+  #    paths:
+  #    - './backend/drizzle/**'
+  #    branches:
+  #    - master 
+
+jobs:
+  run-migrations:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        sparse-checkout: | 
+          ./backend/drizzle
+          ./backend/scripts/kube-execute-sql.sh
+          ./backend/scripts/prod-run-kube-migration.sh
+    - uses: azure/setup-kubectl@v3
+      with:
+        version: v1.28.0
+      id: install
+    - name: Run migrations
+      env:
+        KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+      run: |
+        
+        mkdir ~/.kube
+
+        echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+
+        sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/prod-run-kube-migration.sh
+        ~/work/rememberry/rememberry/backend/scripts/prod-run-kube-migration.sh
+

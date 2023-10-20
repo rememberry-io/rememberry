@@ -16,7 +16,7 @@ jobs:
       # if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
-        name: Checkout backend
+        name: checkout backend
         with:
           sparse-checkout: |
             ./backend
@@ -49,3 +49,14 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
+
+  staging:
+    runs-on: ubuntu-22.04
+    name: deploy changes on staging
+      # if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
