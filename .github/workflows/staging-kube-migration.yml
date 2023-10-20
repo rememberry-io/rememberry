@@ -1,12 +1,11 @@
-name: Database Migration
+name: Staging Database Migration
 
-on: workflow_dispatch
-    
-  #  fork:
-  #    paths:
-  #    - './backend/drizzle/**'
-  #    branches:
-  #    - master 
+on:
+  push:
+    paths:
+    - './backend/drizzle/**'
+    branches:
+    - master 
 
 jobs:
   run-migrations:
@@ -19,7 +18,7 @@ jobs:
         sparse-checkout: | 
           ./backend/drizzle
           ./backend/scripts/kube-execute-sql.sh
-          ./backend/scripts/staging-run-kube-migration.sh
+          ./backend/scripts/staging-run-kube-migrations.sh
     - uses: azure/setup-kubectl@v3
       with:
         version: v1.28.0
@@ -28,11 +27,10 @@ jobs:
       env:
         KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
       run: |
-        
         mkdir ~/.kube
 
         echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
 
-        sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migration.sh
-        ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migration.sh
+        sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migrations.sh
+        ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migrations.sh
 

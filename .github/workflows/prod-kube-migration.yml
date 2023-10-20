@@ -1,4 +1,4 @@
-name: Database Migration
+name: Production Database Migration
 
 on: workflow_dispatch
     
