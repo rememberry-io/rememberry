@@ -4,7 +4,7 @@ import { Stack } from "@/_components/Flow/Stack";
 import { MainStack } from "@/_components/Flow/MainStack"
 import { Button } from "@/_components/ui/button";
 import { useCallback, useState } from "react";
-import ReactFlow, { Background, Node, applyNodeChanges } from "reactflow";
+import ReactFlow, { Background, Node, applyNodeChanges, Edge, applyEdgeChanges, addEdge, Handle, Position } from "reactflow";
 import "reactflow/dist/style.css";
 import { ArrowLeftCircle } from 'lucide-react';
 import { DropDown } from "@/_components/Flow/DropDown";
@@ -20,6 +20,15 @@ const frontText = "1st year medicine @Charite";
 const backText = "Jehfbsjhdbf";
 
 const nodeTypes: NodeTypesType = { flashcard: Flashcard, stack: Stack, mainStack: MainStack };
+
+const initialEdges: Edge[] = [
+	{
+		id: 'e2-3',
+		source: '2',
+		target: '3'
+	}
+]
+
 
 const initialNodes: Node[] = [
   {
@@ -80,7 +89,7 @@ const toggleMainStack = useCallback(() => {
 		setIsFront((prevIsFront) => !prevIsFront)
 	}, []);
 
-  // const [edges, setEdges] = useState(initialEdges);
+  const [edges, setEdges] = useState(initialEdges);
 
   // applyChanges functions apply changes to current state of the element (either edge or node)
   const onNodesChange = useCallback(
@@ -88,15 +97,15 @@ const toggleMainStack = useCallback(() => {
     [],
   );
 
-  //   const onEdgesChange = useCallback(
-  //     (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-  //     []
-  //   );
+    const onEdgesChange = useCallback(
+      (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+      []
+    );
 
-  //   const onConnectHandler = useCallback(
-  //     (params: any) => setEdges((eds) => addEdge(params, eds)),
-  //     []
-  //   );
+    const onConnectHandler = useCallback(
+      (params: any) => setEdges((eds) => addEdge(params, eds)),
+      []
+    );
 
   return (
 	<div className="flex">
@@ -107,10 +116,10 @@ const toggleMainStack = useCallback(() => {
       {/* <BackgroundCircle /> */}
       <ReactFlow
         nodes={nodes}
-        // edges={edges}
-        onNodesChange={onNodesChange}
         nodeTypes={nodeTypes}
-        // onEdgesChange={onEdgesChange}
+        onNodesChange={onNodesChange}
+        edges={edges}
+        onEdgesChange={onEdgesChange}
         zoomOnPinch={true}
 		>
 		<div className="flex flex-row items-center justify-around">

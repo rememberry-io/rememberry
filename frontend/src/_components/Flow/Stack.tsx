@@ -2,6 +2,7 @@ import { Button } from "@/_components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
 import { Maximize2 } from "lucide-react";
+import { Handle, Position } from "reactflow";
 
 interface StackProps {
 	data: {
@@ -25,6 +26,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
     <div>
       <div className="flex flex-row items-center">
         <div className="flex text-center flex-col p-5 rounded-md bg-blue-700 text-white justify-center w-56">
+		{/* <Handle type="source" position={Position.Top} /> */}
 			<div className="line-clamp-3">
 				{isFront? data.frontText : data.backText}
 			</div>

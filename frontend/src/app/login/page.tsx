@@ -52,7 +52,9 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Log in</Button>
+				<Link href={"/map"} className="w-full">
+              		<Button className="w-full">Log in</Button>
+				</Link>
             </CardFooter>
           </Card>
         </TabsContent>
