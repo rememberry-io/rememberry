@@ -33,7 +33,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v5
         with: 
-          image: ${{ env.IMG_NAME }}
+          images: ${{ env.IMG_NAME }}
           tags: |
             type=semver,pattern={{raw}}
       - name: log in to Docker Hub
