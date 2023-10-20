@@ -5,7 +5,6 @@ services:
       .
       # image: notemann27/rem-backend:v0.0.3 # wtfisthis #
     environment:
-      DATABASE_URL: ${DATABASE_URL}
       PG_PORT: ${PG_PORT}
       PG_USERNAME: ${PG_USERNAME}
       PG_DATABASE_NAME: ${PG_DATABASE_NAME}

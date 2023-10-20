@@ -8,7 +8,6 @@ import { z } from "zod";
 const EnvZod = z.object({
   NODE_ENV: z.enum(["production", "development", "testing", "staging"]),
   IS_PROD: z.boolean(),
-  DATABASE_URL: z.string(),
   PG_HOST: z.string(),
   PG_PORT: z.number(),
   PG_DATABASE_NAME: z.string(),
