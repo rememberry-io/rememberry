@@ -1,4 +1,27 @@
-#name: Deployment Backend
-#
-#on:
-#  
+name: Deployment Backend
+
+on:
+  release:
+    path:
+      - ./backend
+
+jobs:
+  build-image:
+    runs-on: ubuntu-22.04
+    name: build image
+    #if: github.ref == 'refs/heads/master'
+    needs: [ lint, test ]
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: Get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: Install dependecies
+      - run: bun run build
+        name: build the project with bun
