@@ -5,6 +5,10 @@ on:
     types:
       - prereleased
 
+defaults:
+  run:
+    working-directory: backend
+
 jobs:
   build-image:
     runs-on: ubuntu-22.04
