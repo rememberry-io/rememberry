@@ -1,11 +1,12 @@
 name: Database Migration
 
-on:
-  release:
-    paths:
-    - './backend/drizzle/**'
-    branches:
-    - master 
+on: workflow_dispatch
+    
+  #  fork:
+  #    paths:
+  #    - './backend/drizzle/**'
+  #    branches:
+  #    - master 
 
 jobs:
   run-migrations:

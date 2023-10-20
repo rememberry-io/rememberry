@@ -2,15 +2,14 @@ name: Deployment Backend
 
 on:
   release:
-    path:
-      - ./backend
+    types:
+      - prereleased
 
 jobs:
   build-image:
     runs-on: ubuntu-22.04
     name: build image
     #if: github.ref == 'refs/heads/master'
-    needs: [ lint, test ]
     steps:
       - uses: actions/checkout@v4
         name: Checkout backend
