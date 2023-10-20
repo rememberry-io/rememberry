@@ -1,9 +1,9 @@
 name: Deployment Backend
 
 on:
-  release:
-    types:
-      - prereleased
+  push:
+    tags:
+      -  'backend-v[0-9]+\.[0-9]+\.[0-9]+[a-zA-Z0-9\-]*'
 
 defaults:
   run:
@@ -13,18 +13,13 @@ jobs:
   build-image:
     runs-on: ubuntu-22.04
     name: build & push docker image
-    #if: github.ref == 'refs/heads/master'
-    env:
-      IMG_NAME: ${{ vars.BACKEND_IMAGE }}
+      # if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
         name: Checkout backend
         with:
           sparse-checkout: |
             ./backend
-      - name: debug
-        run: |
-          echo "backend image name -> $IMG_NAME"
       - name: set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: set up docker buildx
@@ -35,7 +30,7 @@ jobs:
         with: 
           images: notemann27/rememberry-backend
           tags: |
-            type=semver,pattern={{raw}}
+            type=semver,pattern={{version}}
       - name: log in to Docker Hub
         uses: docker/login-action@v3
         if: ${{ github.ref_type == 'tag' }}
