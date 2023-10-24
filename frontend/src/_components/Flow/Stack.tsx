@@ -1,14 +1,12 @@
 import { Button } from "@/_components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { Maximize2, RotateCcw } from "lucide-react";
 import React, { useState } from "react";
-import { Maximize2 } from "lucide-react";
-import { Handle, Position } from "reactflow";
 
 interface StackProps {
-	data: {
-		frontText: string;
-		backText: string;
-	}
+  data: {
+    frontText: string;
+    backText: string;
+  };
 }
 
 export const Stack: React.FC<StackProps> = ({ data }) => {
@@ -18,31 +16,34 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
     setIsFront(!isFront);
   };
 
-  const openCard = () => {
-
-  }
+  const openCard = () => {};
 
   return (
     <div>
       <div className="flex flex-row items-center">
         <div className="flex text-center flex-col p-5 rounded-md bg-blue-700 text-white justify-center w-56">
-		{/* <Handle type="source" position={Position.Top} /> */}
-			<div className="line-clamp-3">
-				{isFront? data.frontText : data.backText}
-			</div>
+          {/* <Handle type="source" position={Position.Top} /> */}
+          <div className="line-clamp-3">
+            {isFront ? data.frontText : data.backText}
+          </div>
         </div>
-		{/* <div className="flex flex-col space-y-4"></div> */}
-        	<Button
-          	onClick={toggleStack}
-          	variant="secondary"
-          	size="icon"
-          	className="ml-4"
-        	>
-          		<RotateCcw />
-        	</Button>
-			<Button onClick={openCard} variant="secondary" size="icon" className="ml-4">
-				<Maximize2 />
-			</Button>
+        {/* <div className="flex flex-col space-y-4"></div> */}
+        <Button
+          onClick={toggleStack}
+          variant="secondary"
+          size="icon"
+          className="ml-4"
+        >
+          <RotateCcw />
+        </Button>
+        <Button
+          onClick={openCard}
+          variant="secondary"
+          size="icon"
+          className="ml-4"
+        >
+          <Maximize2 />
+        </Button>
       </div>
     </div>
   );

@@ -1,19 +1,57 @@
-// import React from 'react'
+// hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
+import { Button } from "@/_components/ui/button";
+import { Maximize2, RotateCcw } from "lucide-react";
+import React, { useState } from "react";
+import { TrafficLights } from "./TrafficLights";
 
-// export const ZoomedOutView = ({ data, onClose }) => {
-// 	return (
-// 	  <div className="fixed inset-0 flex items-center justify-center z-50">
-// 		<div className="absolute inset-0 bg-gray-800 opacity-50"></div>
-// 		<div className="bg-white rounded-lg p-4 z-10">
-// 		  <div className="text-sm text-blue-500">{data.category}</div>
-// 		  <div className="p-2">{data.frontText}</div>
-// 		  <button
-// 			onClick={onClose}
-// 			className="bg-blue-500 text-white px-4 py-2 rounded-md"
-// 		  >
-// 			Close
-// 		  </button>
-// 		</div>
-// 	  </div>
-// 	);
-//   };
+interface FlashcardProps {
+  data: {
+    category: string;
+    frontText: string;
+    backText: string;
+  };
+}
+
+export const FlashcardModal: React.FC<FlashcardProps> = ({ data }) => {
+  const [isFront, setIsFront] = useState(true);
+
+  const toggleCard = () => {
+    setIsFront(!isFront);
+  };
+
+  const openCard = () => {};
+
+  return (
+    <div>
+      <div className="flex flex-row justify-center">
+        <div className="flex text-center flex-col p-2 rounded-md w-56 h-auto max-h-32 border-2 border-black bg-white mb-4">
+          <div className="p-2">
+            <div className="text-sm text-blue-500 ">{data.category}</div>
+            <div className="line-clamp-3 text-black">
+              {isFront ? data.frontText : data.backText}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col space-y-4">
+          <Button
+            onClick={toggleCard}
+            variant="secondary"
+            size="icon"
+            className="ml-4"
+          >
+            <RotateCcw />
+          </Button>
+          <Button
+            onClick={openCard}
+            variant="secondary"
+            size="icon"
+            className="ml-4"
+          >
+            <Maximize2 />
+          </Button>
+        </div>
+      </div>
+      <TrafficLights />
+    </div>
+  );
+};
