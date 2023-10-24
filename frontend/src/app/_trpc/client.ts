@@ -5,6 +5,7 @@ import {
   httpBatchLink,
 } from "@trpc/client";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import {env} from "../../lib/env"
 
 class TRPCProxyClient {
   client: CreateTRPCProxyClient<AppRouter>;
@@ -12,7 +13,7 @@ class TRPCProxyClient {
     this.client = createTRPCProxyClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: "http://localhost:3050",
+          url: env.BACKEND_URL,
         }),
       ],
     });
