@@ -1,6 +1,6 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/_components/ui/button";
-import { RotateCcw,  Maximize2 } from "lucide-react";
+import { Maximize2, RotateCcw } from "lucide-react";
 import React, { useState } from "react";
 import { TrafficLights } from "./TrafficLights";
 
@@ -19,9 +19,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
     setIsFront(!isFront);
   };
 
-  const openCard = () => {
-
-  }
+  const openCard = () => {};
 
   return (
     <div>
@@ -29,27 +27,31 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
         <div className="flex text-center flex-col p-2 rounded-md w-56 h-auto max-h-32 border-2 border-black bg-white mb-4">
           <div className="p-2">
             <div className="text-sm text-blue-500 ">{data.category}</div>
-			<div className="line-clamp-3 text-black">
-				{isFront? data.frontText : data.backText}
-			</div>
+            <div className="line-clamp-3 text-black">
+              {isFront ? data.frontText : data.backText}
+            </div>
           </div>
         </div>
-		<div className="flex flex-col space-y-4">
-
-        <Button
-          onClick={toggleCard}
-          variant="secondary"
-          size="icon"
-          className="ml-4"
-		  >
-          <RotateCcw />
-        </Button>
-		<Button onClick={openCard} variant="secondary" size="icon" className="ml-4">
-			<Maximize2 />
-		</Button>
-			</div>
+        <div className="flex flex-col space-y-4">
+          <Button
+            onClick={toggleCard}
+            variant="secondary"
+            size="icon"
+            className="ml-4"
+          >
+            <RotateCcw />
+          </Button>
+          <Button
+            onClick={openCard}
+            variant="secondary"
+            size="icon"
+            className="ml-4"
+          >
+            <Maximize2 />
+          </Button>
+        </div>
       </div>
-     	 <TrafficLights />
+      <TrafficLights />
     </div>
   );
 };
