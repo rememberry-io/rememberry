@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-22.04
     name: build & push docker image
       # if: github.ref == 'refs/heads/master'
+    # Current Solution is to directly pass in the pararmeter for the host and port 
+    # so there is no build time error should be fixed at some time
+    env:
+      NEXT_PUBLIC_BACKEND_HOST: "http://staging-backend-service"
+      NEXT_PUBLIC_BACKEND_PORT: "3050"
+
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend and backend
