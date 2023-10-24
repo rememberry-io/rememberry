@@ -5,13 +5,14 @@ import {
   httpBatchLink,
 } from "@trpc/client";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { env } from "../../lib/env"
+import { env } from "../../lib/env";
 
 class TRPCProxyClient {
   client: CreateTRPCProxyClient<AppRouter>;
   url: string;
   constructor() {
-    this.url = env.NEXT_PUBLIC_BACKEND_HOST + ":" + env.NEXT_PUBLIC_BACKEND_PORT
+    this.url =
+      env.NEXT_PUBLIC_BACKEND_HOST + ":" + env.NEXT_PUBLIC_BACKEND_PORT;
 
     this.client = createTRPCProxyClient<AppRouter>({
       links: [
