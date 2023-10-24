@@ -12,10 +12,6 @@ jobs:
       # if: github.ref == 'refs/heads/master'
     # Current Solution is to directly pass in the pararmeter for the host and port 
     # so there is no build time error should be fixed at some time
-    env:
-      NEXT_PUBLIC_BACKEND_HOST: "http://staging-backend-service"
-      NEXT_PUBLIC_BACKEND_PORT: "3050"
-
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend and backend
@@ -46,9 +42,16 @@ jobs:
         with:
           context: .
           file: ./frontend/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
+          build-args: |
+            "NEXT_PUBLIC_BACKEND_HOST=api.stage.rememberry.app"
+            "NEXT_PUBLIC_APP_ENV=staging"
+            "NEXT_PUBLIC_BACKEND_PORT=3050"
+            "APP_ENV=staging"
+
+
 
   staging:
     runs-on: ubuntu-22.04
