@@ -36,7 +36,6 @@ jobs:
   test:
     name: run tests
     runs-on: ubuntu-22.04
-    needs: [lint-format]
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
@@ -52,6 +51,9 @@ jobs:
     name: build with next to check compilation
     runs-on: ubuntu-22.04
     needs: [test]
+    env:
+      NEXT_PUBLIC_BACKEND_HOST: "http://localhost"
+      NEXT_PUBLIC_BACKEND_PORT: "3050"
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend

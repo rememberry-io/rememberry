@@ -1,0 +1,61 @@
+services:
+  backend:
+    container_name: rembackend
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    environment:
+      PG_PORT: ${PG_PORT}
+      PG_USERNAME: ${PG_USERNAME}
+      PG_DATABASE_NAME: ${PG_DATABASE_NAME}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_HOST: ${PG_HOST}
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
+      NODE_ENV: ${NODE_ENV}
+    networks:
+      - rem-net
+    ports:
+      - "127.0.0.1:3050:3050"
+    depends_on:
+      - postgres_database
+
+  postgres_database:
+    container_name: postgres_database
+    image: postgres:15.4
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      POSTGRES_DB: ${PG_DATABASE_NAME}
+    volumes:
+      - postgres:/data/postgres
+      - ./backend/drizzle:/drizzle
+      - ./scripts/execute_sql_migration.sh:/execute_sql_migration.sh
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - rem-net
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    environment:
+      NEXT_PUBLIC_BACKEND_HOST: ${NEXT_PUBLIC_BACKEND_HOST}
+      NEXT_PUBLIC_BACKEND_PORT: ${NEXT_PUBLIC_BACKEND_PORT}
+      PORT: ${NEXT_PORT}
+      NODE_ENV: ${NODE_ENV}
+    ports:
+      - "127.0.0.1:3030:3030"
+    networks:
+      - rem-net
+    depends_on:
+      - backend
+
+networks:
+  rem-net:
+
+volumes:
+  postgres:
+
