@@ -16,4 +16,5 @@ interface UserStore {
   };
 }
 
+// this is a hook now
 export const useUserStore = create<UserStore>();

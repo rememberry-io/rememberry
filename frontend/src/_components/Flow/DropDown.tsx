@@ -6,7 +6,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/_components/ui/dropdown-menu";
+import { Switch } from "@/_components/ui/switch";
 
 export const DropDown = () => {
   return (
@@ -17,10 +18,10 @@ export const DropDown = () => {
       <DropdownMenuContent>
         <DropdownMenuLabel></DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Billing</DropdownMenuItem>
-        <DropdownMenuItem>Team</DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Switch />
+          Subscription
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
