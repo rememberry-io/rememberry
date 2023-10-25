@@ -46,6 +46,8 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           build-args: |
             "NEXT_PUBLIC_BACKEND_HOST=api.stage.rememberry.app"
             "NEXT_PUBLIC_APP_ENV=staging"
@@ -56,8 +58,26 @@ jobs:
 
   staging:
     runs-on: ubuntu-22.04
-    name: deploy changes on staging
+    name: deploy changes on staging frontend
       # if: github.ref == 'refs/heads/master'
+    needs: [build-image]
     steps:
+      - name: set the kubernetes context
+        uses: azure/k8s-set-context@v3
+        with:
+          method: service-account
+          k8s-url: ${{ secrets.KUBE_SERVER_URL }}
+          k8s-secret: ${{ secrets.KUBE_SERVICE_ACC_SECRET }}
       - uses: actions/checkout@v4
-        name: checkout frontend and backend
+        name: checkout deployments
+        with:
+          sparse-checkout: |
+            ./deployments
+      - name: deploy to the kubernetes cluster
+        uses: azure/k8s-deploy@v4
+        with:
+          namespace: rememberry
+          manifests: |
+            deployments/staging-frontend-deployment.yml
+          images: |
+            notemann27/rememberry-frontend:latest
