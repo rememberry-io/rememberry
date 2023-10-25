@@ -1,28 +1,27 @@
-import { Button } from "@/_components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/_components/ui/dropdown-menu";
-import { Switch } from "@/_components/ui/switch";
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/_components/ui/select";
 
-export const DropDown = () => {
+export function DropDown() {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="secondary">Actions</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel></DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Switch />
-          Subscription
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Select>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="Show difficulty" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup className="flex flex-col">
+          <SelectLabel>How to show the difficulty</SelectLabel>
+          <SelectItem value="apple">Colored borders</SelectItem>
+          <SelectItem value="banana">Colored flashcards</SelectItem>
+          <SelectItem value="blueberry">Not at all</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
-};
+}
