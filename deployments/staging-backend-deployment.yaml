@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: rememberry
+  name: staging-backend-deployment
+  labels:
+    component: backend
+    service: trpc
+    environment: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: backend
+      service: trpc
+      environment: staging
+  template: 
+    metadata:
+      labels:
+        component: backend
+        service: trpc
+        environment: staging
+    spec:
+      containers:
+        - name: staging-backend-container
+          image: notemann27/rememberry-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3050
+              name: api
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          env:
+            - name: PG_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: PG_HOST
+            - name: PG_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: PG_PORT
+            - name: PG_DATABASE_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: PG_DB
+            - name: PG_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: staging-backend-secrets
+                  key: POSTGRES_USER
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: staging-backend-secrets
+                  key: POSTGRES_PASSWORD
+            - name: ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: staging-backend-secrets
+                  key: ACCESS_TOKEN_SECRET
+            - name: REFRESH_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: staging-backend-secrets
+                  key: REFRESH_TOKEN_SECRET
