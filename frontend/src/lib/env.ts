@@ -1,40 +1,51 @@
-import { config } from "dotenv";
+import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
-const EnvZod = z.object({
-  NODE_ENV: z.enum(["production", "development", "testing", "staging"]),
-  IS_PROD: z.boolean(),
-  NEXT_PUBLIC_BACKEND_HOST: z.string(),
-  NEXT_PUBLIC_BACKEND_PORT: z.number(),
-});
-
-export function getEnvSrc() {
-  const { error, parsed } = config();
-
-  if (error || parsed == null) return process.env as { [key: string]: string };
-
-  return parsed;
-}
-
-export function parseEnv(env: { [key: string]: string }) {
-  return {
-    NEXT_PUBLIC_BACKEND_HOST: process.env.NEXT_PUBLIC_BACKEND_HOST,
-    NEXT_PUBLIC_BACKEND_PORT: parseInt(process.env.NEXT_PUBLIC_BACKEND_PORT!),
+export const env = createEnv({
+  /*
+   * Serverside Environment variables, not available on the client.
+   * Will throw if you access these variables on the client.
+   */
+  server: {
+    NODE_ENV: z.enum(["production", "development", "test"]),
+    APP_ENV: z.enum(["production", "development", "staging", "testing"]),
+    IS_PROD: z.boolean(),
+    IS_STAGING: z.boolean(),
+    IS_DEV: z.boolean(),
+  },
+  /*
+   * Environment variables available on the client (and server).
+   *
+   * 💡 You'll get type errors if these are not prefixed with NEXT_PUBLIC_.
+   */
+  client: {
+    NEXT_PUBLIC_APP_ENV: z.enum([
+      "production",
+      "development",
+      "staging",
+      "testing",
+    ]),
+    NEXT_PUBLIC_IS_DEV: z.boolean(),
+    NEXT_PUBLIC_BACKEND_HOST: z.string(),
+    NEXT_PUBLIC_BACKEND_PORT: z.number(),
+  },
+  /*
+   * Due to how Next.js bundles environment variables on Edge and Client,test
+   * we need to manually destructure them to make sure all are included in bundle.
+   *
+   * 💡 You'll get type errors if not all variables from `server` & `client` are included here.
+   */
+  runtimeEnv: {
+    APP_ENV: process.env.APP_ENV,
     NODE_ENV: process.env.NODE_ENV,
     IS_PROD: process.env.NODE_ENV === "production",
-  };
-}
-
-function validateEnv(env: { [key: string]: any }) {
-  const parsedEnv = EnvZod.safeParse(env);
-
-  if (!parsedEnv.success)
-    throw new Error(
-      "Failed to Parse Environment Variables: " +
-        JSON.stringify(parsedEnv.error.issues, null, 2),
-    );
-
-  return parsedEnv.data;
-}
-
-export const env = validateEnv(parseEnv(getEnvSrc()));
+    IS_STAGING: process.env.APP_ENV === "staging",
+    IS_DEV: process.env.APP_ENV === "development",
+    NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+    NEXT_PUBLIC_IS_DEV: process.env.NEXT_PUBLIC_APP_ENV === "development",
+    NEXT_PUBLIC_BACKEND_HOST: process.env.NEXT_PUBLIC_BACKEND_HOST,
+    NEXT_PUBLIC_BACKEND_PORT: process.env.NEXT_PUBLIC_BACKEND_PORT
+      ? parseInt(process.env.NEXT_PUBLIC_BACKEND_PORT)
+      : 3050,
+  },
+});

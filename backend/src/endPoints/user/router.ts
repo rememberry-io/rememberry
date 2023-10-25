@@ -19,6 +19,7 @@ const User = z.object({
 export const userRouter = router({
   createUser: publicProcedure.input(createUserInput).query(async (opts) => {
     const res = await userController.controlUserCreation(opts.input);
+    console.log(res);
     return res;
   }),
 
