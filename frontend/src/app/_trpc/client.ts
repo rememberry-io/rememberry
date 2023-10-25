@@ -12,12 +12,16 @@ class TRPCProxyClient {
   url: string;
   constructor() {
     if (env.NEXT_PUBLIC_IS_DEV) {
-      this.url = "http://" + env.NEXT_PUBLIC_BACKEND_HOST + ":" + env.NEXT_PUBLIC_BACKEND_PORT;
+      this.url =
+        "http://" +
+        env.NEXT_PUBLIC_BACKEND_HOST +
+        ":" +
+        env.NEXT_PUBLIC_BACKEND_PORT;
     } else {
-        this.url = "https://" + env.NEXT_PUBLIC_BACKEND_HOST
+      this.url = "https://" + env.NEXT_PUBLIC_BACKEND_HOST;
     }
 
-    console.log(this.url)
+    console.log(this.url);
 
     this.client = createTRPCProxyClient<AppRouter>({
       links: [

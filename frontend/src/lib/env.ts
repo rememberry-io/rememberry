@@ -19,7 +19,12 @@ export const env = createEnv({
    * 💡 You'll get type errors if these are not prefixed with NEXT_PUBLIC_.
    */
   client: {
-    NEXT_PUBLIC_APP_ENV: z.enum(["production", "development", "staging", "testing"]),
+    NEXT_PUBLIC_APP_ENV: z.enum([
+      "production",
+      "development",
+      "staging",
+      "testing",
+    ]),
     NEXT_PUBLIC_IS_DEV: z.boolean(),
     NEXT_PUBLIC_BACKEND_HOST: z.string(),
     NEXT_PUBLIC_BACKEND_PORT: z.number(),
@@ -37,8 +42,10 @@ export const env = createEnv({
     IS_STAGING: process.env.APP_ENV === "staging",
     IS_DEV: process.env.APP_ENV === "development",
     NEXT_PUBLIC_APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
-    NEXT_PUBLIC_IS_DEV: process.env.NEXT_PUBLIC_APP_ENV  === "development",
+    NEXT_PUBLIC_IS_DEV: process.env.NEXT_PUBLIC_APP_ENV === "development",
     NEXT_PUBLIC_BACKEND_HOST: process.env.NEXT_PUBLIC_BACKEND_HOST,
-    NEXT_PUBLIC_BACKEND_PORT: process.env.NEXT_PUBLIC_BACKEND_PORT ? parseInt(process.env.NEXT_PUBLIC_BACKEND_PORT) : 3050,
+    NEXT_PUBLIC_BACKEND_PORT: process.env.NEXT_PUBLIC_BACKEND_PORT
+      ? parseInt(process.env.NEXT_PUBLIC_BACKEND_PORT)
+      : 3050,
   },
 });
