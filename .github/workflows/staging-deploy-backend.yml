@@ -5,9 +5,6 @@ on:
     tags:
       - 'backend-v[0-9]+.[0-9]+.[0-9]+-[a-zA-Z0-9]*'
 
-defaults:
-  run:
-    working-directory: backend
 
 jobs:
   build-image:
@@ -56,6 +53,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: deploy changes on staging
       # if: github.ref == 'refs/heads/master'
+    needs: [build-image]
     steps:
       - name: set the kubernetes context
         uses: azure/k8s-set-context@v3
@@ -64,12 +62,10 @@ jobs:
           k8s-url: ${{ secrets.KUBE_SERVER_URL }}
           k8s-secret: ${{ secrets.KUBE_SERVICE_ACC_SECRET }}
       - uses: actions/checkout@v4
-        name: checkout backend
+        name: checkout deployments
         with:
           sparse-checkout: |
             ./deployments
-      - run: ls
-        name: run ls
       - name: deploy to the kubernetes cluster
         uses: azure/k8s-deploy@v4
         with:

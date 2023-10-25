@@ -51,6 +51,11 @@ spec:
                 configMapKeyRef:
                   name: staging-backend-cfg
                   key: PG_DB
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: NODE_ENV
             - name: PG_USERNAME
               valueFrom:
                 secretKeyRef:
