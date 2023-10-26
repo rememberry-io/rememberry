@@ -19,6 +19,10 @@ sleep 1
 
 echo "Start backend service"
 
-docker compose up -d backend
+docker compose up -d rembackend --build
 
-echo "Database and backend successfully started"
+echo "Start frontend service"
+
+docker compose up -d frontend --build 
+
+echo "Database backend and frontend successfully started"

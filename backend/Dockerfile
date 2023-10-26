@@ -1,4 +1,4 @@
-FROM oven/bun:1.0.6-alpine AS base
+FROM oven/bun:1.0.7-alpine AS base
 
 FROM base AS deps
 WORKDIR /app
@@ -21,7 +21,6 @@ RUN bun run build
 
 FROM base AS runner
 WORKDIR /app
-ENV NODE_ENV production
 COPY --from=builder /app/dist ./dist
 CMD ["bun", "./dist/index.js"]
 

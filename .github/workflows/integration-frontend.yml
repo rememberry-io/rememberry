@@ -36,7 +36,6 @@ jobs:
   test:
     name: run tests
     runs-on: ubuntu-22.04
-    needs: [lint-format]
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
@@ -52,6 +51,11 @@ jobs:
     name: build with next to check compilation
     runs-on: ubuntu-22.04
     needs: [test]
+    env:
+      NEXT_PUBLIC_BACKEND_HOST: "localhost"
+      NEXT_PUBLIC_BACKEND_PORT: "3050"
+      NEXT_PUBLIC_APP_ENV: "development"
+      APP_ENV: "development"
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
@@ -70,20 +74,3 @@ jobs:
         working-directory: backend
       - run: npm run build
         name: build with nextjs
-  build-image:
-    name: run tests
-    runs-on: ubuntu-22.04
-    if: github.ref == 'refs/heads/master'
-    needs: [build-compile]
-    steps:
-      - uses: actions/checkout@v4
-        name: checkout frontend
-        with:
-          sparse-checkout: |
-            ./frontend
-      - uses: actions/setup-node@v3
-        name: get nodejs
-        with:
-          node-vesrion: 20
-      - run: npm ci
-        name: install dependecies

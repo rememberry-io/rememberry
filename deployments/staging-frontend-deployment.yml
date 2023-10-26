@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: rememberry
+  name: staging-frontend-deployment
+  labels:
+    component: frontend
+    service: nextjs
+    environment: staging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: frontend
+      service: nextjs
+      environment: staging
+  template: 
+    metadata:
+      labels:
+        component: frontend
+        service: nextjs
+        environment: staging
+    spec:
+      containers:
+        - name: staging-frontend-container
+          image: notemann27/rememberry-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+              name: webapp
+          env:
+            - name: NEXT_PUBLIC_BACKEND_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-frontend-cfg
+                  key: NEXT_PUBLIC_BACKEND_HOST
+            - name: NEXT_PUBLIC_BACKEND_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-frontend-cfg
+                  key: NEXT_PUBLIC_BACKEND_PORT
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-frontend-cfg
+                  key: NEXT_PORT
