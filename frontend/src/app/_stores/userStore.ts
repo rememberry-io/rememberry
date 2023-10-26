@@ -1,20 +1,36 @@
 import { create } from "zustand";
+import { UserCreateOut } from "../_hooks/createUser";
 
-type User = {
-  id: string;
+export type User = {
+  user_id?: string | undefined;
   username: string;
   email: string;
   password: string;
+  refresh_token?: string | undefined | null;
 };
 
 interface UserStore {
-  user: User;
+  user: User | null;
 
   actions: {
-    addUser: (user: User) => User;
-    updateUser: (user: User) => User;
+    setUser: (user: UserCreateOut) => UserCreateOut;
+    deleteUser: () => void;
   };
 }
 
-// this is a hook now
-export const useUserStore = create<UserStore>();
+export const useUserStore = create<UserStore>((set) => ({
+  user: null,
+  actions: {
+    setUser: (user): UserCreateOut => {
+      set(() => ({
+        user: user,
+      }));
+      return user;
+    },
+    deleteUser() {
+      set(() => ({
+        user: null,
+      }));
+    },
+  },
+}));

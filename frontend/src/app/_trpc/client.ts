@@ -4,36 +4,44 @@ import {
   createTRPCProxyClient,
   httpBatchLink,
 } from "@trpc/client";
+import { createTRPCReact } from "@trpc/react-query";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { env } from "../../lib/env";
 
-class TRPCProxyClient {
+export const getBackendUrl = () => {
+  if (env.NEXT_PUBLIC_IS_DEV) {
+    return (
+      "http://" +
+      env.NEXT_PUBLIC_BACKEND_HOST +
+      ":" +
+      env.NEXT_PUBLIC_BACKEND_PORT
+    );
+  } else {
+    return "https://" + env.NEXT_PUBLIC_BACKEND_HOST;
+  }
+};
+
+export const rqTrpc = createTRPCReact<AppRouter>();
+
+export class TRPCClientProvider {
   client: CreateTRPCProxyClient<AppRouter>;
   url: string;
   constructor() {
-    if (env.NEXT_PUBLIC_IS_DEV) {
-      this.url =
-        "http://" +
-        env.NEXT_PUBLIC_BACKEND_HOST +
-        ":" +
-        env.NEXT_PUBLIC_BACKEND_PORT;
-    } else {
-      this.url = "https://" + env.NEXT_PUBLIC_BACKEND_HOST;
-    }
-
-    console.log(this.url);
-
-    this.client = createTRPCProxyClient<AppRouter>({
+    this.url = getBackendUrl();
+    const clientOpts = {
       links: [
         httpBatchLink({
           url: this.url,
         }),
       ],
-    });
+    };
+    this.client = createTRPCProxyClient<AppRouter>(
+      clientOpts,
+    ) as CreateTRPCProxyClient<AppRouter>;
   }
 }
 
 export type RouterInput = inferRouterInputs<AppRouter>;
 export type RouterOutput = inferRouterOutputs<AppRouter>;
 
-export const tClient = new TRPCProxyClient();
+export const proxyClient = new TRPCClientProvider();
