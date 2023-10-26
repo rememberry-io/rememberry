@@ -21,7 +21,7 @@ jobs:
       - uses: actions/setup-node@v3
         name: get nodejs
         with:
-          node-vesrion: 20
+          node-version: 20
       - run: npm ci
         name: install dependecies
       - run: npm run lint
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/setup-node@v3
         name: get nodejs
         with:
-          node-vesrion: 20
+          node-version: 20
       - run: npm ci
         name: install dependecies
       - run: npm run test
@@ -62,11 +62,19 @@ jobs:
       - uses: actions/setup-node@v3
         name: get nodejs
         with:
-          node-vesrion: 20
+          node-version: 20
       - uses: oven-sh/setup-bun@v1
         name: get bun
         with:
           bun-version: 1.0.6
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.npm
+            ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
       - run: npm ci
         name: install dependecies frontend
       - run: bun install --frozen-lockfile
