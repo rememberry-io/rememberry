@@ -1,7 +1,8 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/_components/ui/button";
-import { Maximize2, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
+import { FlashcardDialog } from "./FlashcardDialog";
 import { TrafficLights } from "./TrafficLights";
 
 interface FlashcardProps {
@@ -18,8 +19,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   const toggleCard = () => {
     setIsFront(!isFront);
   };
-
-  const openCard = () => {};
 
   return (
     <div>
@@ -41,14 +40,11 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
           >
             <RotateCcw />
           </Button>
-          <Button
-            onClick={openCard}
-            variant="secondary"
-            size="icon"
-            className="ml-4"
-          >
-            <Maximize2 />
-          </Button>
+          <FlashcardDialog
+            flashcardCategory={data.category}
+            flashcardFrontText={data.frontText}
+            flashcardBackText={data.backText}
+          />
         </div>
       </div>
       <TrafficLights />

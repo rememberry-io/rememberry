@@ -1,5 +1,3 @@
-import { Button } from "@/_components/ui/button";
-import { RotateCcw } from "lucide-react";
 import React from "react";
 
 interface MainStackProps {
@@ -21,14 +19,14 @@ export const MainStack: React.FC<MainStackProps> = ({
         <div className="p-6 rounded-md bg-blue-500 text-white justify-center overflow-hidden ">
           <div>{isFront ? frontText : backText}</div>
         </div>
-        <Button
+        {/* <Button
           onClick={toggleMainStack}
           variant="secondary"
           size="icon"
           className="ml-4"
         >
           <RotateCcw />
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

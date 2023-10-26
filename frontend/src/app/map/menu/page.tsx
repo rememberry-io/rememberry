@@ -7,7 +7,7 @@ function MapMenu() {
   return (
     <main className="bg-white">
       <div className="flex flex-col space-y-8 justify-center items-center h-screen">
-        <h1 className="text-3xl font-medium max-w-xl">
+        <h1 className="text-3xl font-medium max-w-xl text-black">
           Map Menu coming soon...
         </h1>
         <Link href={"/map"}>
