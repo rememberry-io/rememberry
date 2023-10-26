@@ -15,13 +15,10 @@ export type LoginUser = {
 };
 
 export const refreshTokenInputSchema = z.object({
-  accessToken: z.string(),
   refreshToken: z.string(),
 });
 
-export type refreshTokenInputType = {
-  refreshToken: string;
-};
+export type refreshTokenInputType = string
 
 export type JWTPayload = {
   userId: string;
