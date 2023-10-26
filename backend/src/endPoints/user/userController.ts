@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { TRPCError } from "trpc";
+import { TRPCError } from "@trpc/server";
 import * as schema from "../../db/schema";
 import * as userModel from "./user.model";
 
@@ -45,11 +45,11 @@ function checkUpdateCredentials(
       fetchedUser[i].email === userInput.email &&
       fetchedUser[i].username === userInput.username
     ) {
-      throw new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" });
+      throw new TRPCError({code: "FORBIDDEN", message: "USERNAME AND EMAIL ALREADY EXIST" });
     } else if (fetchedUser[i].email === userInput.email) {
-      throw new TRPCError(403, { message: "EMAIL ALREADY EXISTS" });
+      throw new TRPCError({code: "FORBIDDEN", message: "EMAIL ALREADY EXISTS" });
     } else if (fetchedUser[i].username === userInput.username) {
-      throw new TRPCError(403, { message: "USERNAME ALREADY EXISTS" });
+      throw new TRPCError({code: "FORBIDDEN", message: "USERNAME ALREADY EXISTS" });
     }
   }
 }
