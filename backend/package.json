@@ -11,8 +11,8 @@
     "test": "ls"
   },
   "dependencies": {
-    "@trpc/client": "^10.40.0",
-    "@trpc/server": "^10.40.0",
+    "@trpc/client": "^10.43.0",
+    "@trpc/server": "^10.43.0",
     "@types/estree": "latest",
     "@types/jsonwebtoken": "^9.0.3",
     "@types/pg": "^8.10.3",

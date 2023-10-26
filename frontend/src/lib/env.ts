@@ -12,7 +12,6 @@ export const env = createEnv({
     IS_PROD: z.boolean(),
     IS_STAGING: z.boolean(),
     IS_DEV: z.boolean(),
-    TRPC_PROVIDER: z.enum(["PROXY", "REACT_QUERY", "NEXT"]),
   },
   /*
    * Environment variables available on the client (and server).
@@ -37,7 +36,6 @@ export const env = createEnv({
    * 💡 You'll get type errors if not all variables from `server` & `client` are included here.
    */
   runtimeEnv: {
-    TRPC_PROVIDER: process.env.TRPC_PROVIDER,
     APP_ENV: process.env.APP_ENV,
     NODE_ENV: process.env.NODE_ENV,
     IS_PROD: process.env.NODE_ENV === "production",
