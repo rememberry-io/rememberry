@@ -1,6 +1,6 @@
+import { TRPCError } from "@trpc/server";
 import { eq, ne, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { TRPCError } from "trpc";
 import { client } from "../../db/db";
 import * as schema from "../../db/schema";
 
@@ -17,6 +17,7 @@ export async function writeUser(
       username: userInput.username,
       email: userInput.email,
       password: hashedPwd,
+      refresh_token: null,
     })
     .returning();
 
@@ -52,17 +53,20 @@ export async function checkUserEmail(email: string) {
 export async function checkCredentials(email: string, username: string) {
   if ((await checkUserEmail(email)) && (await checkUsername(username))) {
     return [
-      new TRPCError(403, { message: "USERNAME AND EMAIL ALREADY EXIST" }),
+      new TRPCError({
+        code: "FORBIDDEN",
+        message: "USERNAME AND EMAIL ALREADY EXIST",
+      }),
       null,
     ] as const;
   } else if (await checkUserEmail(email)) {
     return [
-      new TRPCError(403, { message: "EMAIL ALREADY EXISTS" }),
+      new TRPCError({ code: "FORBIDDEN", message: "EMAIL ALREADY EXISTS" }),
       null,
     ] as const;
   } else if (await checkUsername(username)) {
     return [
-      new TRPCError(403, { message: "USERNAME ALREADY EXISTS" }),
+      new TRPCError({ code: "FORBIDDEN", message: "USERNAME ALREADY EXISTS" }),
       null,
     ] as const;
   }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-docker compose stop backend
+docker compose stop rembackend
 docker rm rembackend
 
-docker compose up -d --build
+docker compose up rembackend -d --build

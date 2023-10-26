@@ -3,7 +3,7 @@ import { Button } from "@/_components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-function Home() {
+export default function Home() {
   return (
     <main className="bg-white">
       <div className="flex flex-col space-y-8 justify-center items-center h-screen">
@@ -20,5 +20,3 @@ function Home() {
     </main>
   );
 }
-
-export default Home;

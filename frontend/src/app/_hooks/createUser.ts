@@ -1,5 +1,6 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { RouterInput, RouterOutput, tClient } from "../_trpc/client";
+import { TRPCClientError } from "@trpc/client";
+import { useUserStore } from "../_stores/userStore";
+import { RouterInput, RouterOutput, rqTrpc } from "../_trpc/client";
 
 interface UserModel {
   create: RouterInput["user"]["createUser"];
@@ -13,22 +14,27 @@ export type UserCreate = RouterInput["user"]["createUser"];
 export type UserUpdate = RouterInput["user"]["createUser"];
 export type UserCreateOut = RouterOutput["user"]["createUser"];
 
-export default function useCreateUser() {
-  const client = tClient;
-  const queryClient = useQueryClient();
-  //   const userStore = useUserStore();
-}
-class UserHooks {
-  constructor() {}
-  async createUser(userData: UserCreate) {
-    try {
-      const user = await tClient.client.user.createUser.query(userData);
-      console.log(user);
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
-}
+export type OutputUser = {
+  username: string;
+  email: string;
+  password: string;
+  user_id?: string | undefined;
+  refresh_token?: string;
+};
 
-export const userHooks = new UserHooks();
+export default function useCreateUser() {
+  const userCreator = rqTrpc.user.createUser.useMutation();
+  const userStore = useUserStore();
+  const createUser = async (params: { user: UserCreate }) => {
+    try {
+      const createUser = await userCreator.mutateAsync(params.user);
+
+      userStore.actions.setUser(createUser);
+    } catch (error) {
+      if (error instanceof TRPCClientError) console.log(error.data.httpStatus);
+      else console.log(error);
+    }
+    return "test";
+  };
+  return createUser;
+}
