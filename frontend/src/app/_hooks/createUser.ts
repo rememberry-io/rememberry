@@ -29,6 +29,8 @@ export default function useCreateUser() {
     try {
       const createUser = await userCreator.mutateAsync(params.user);
 
+
+
       userStore.actions.setUser(createUser);
     } catch (error) {
       if (error instanceof TRPCClientError) console.log(error.data.httpStatus);

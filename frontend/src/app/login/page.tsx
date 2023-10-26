@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/_components/ui/button";
 import {
   Card,
@@ -16,14 +17,26 @@ import {
   TabsTrigger,
 } from "@/_components/ui/tabs";
 import Link from "next/link";
+import { UserCreate } from "../_hooks/createUser";
 
 export default function Login() {
+
+  const createNewUser = () => {
+    const mockUser: UserCreate = {
+      username: "Test",
+      email: "test@test",
+      password: "Test",
+    }
+
+    
+    console.log("test")
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="my-8 text-2xl font-medium">
         Let&apos;s get you started 🫐
       </h1>
-      <Tabs defaultValue="account" className="w-[400px]">
+      <Tabs defaultValue="password" className="w-[400px]">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="account">Log in</TabsTrigger>
           <TabsTrigger value="password">Create Account</TabsTrigger>
@@ -87,7 +100,7 @@ export default function Login() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button className="w-full">Create Account</Button>
+              <Button className="w-full" onClick={createNewUser}>Create Account</Button>
             </CardFooter>
           </Card>
         </TabsContent>
