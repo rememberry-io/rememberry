@@ -1,6 +1,7 @@
 import { Button } from "@/_components/ui/button";
-import { Maximize2, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
+import { StackDialog } from "./StackDialog";
 
 interface StackProps {
   data: {
@@ -15,8 +16,6 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
   const toggleStack = () => {
     setIsFront(!isFront);
   };
-
-  const openCard = () => {};
 
   return (
     <div>
@@ -36,14 +35,10 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
         >
           <RotateCcw />
         </Button>
-        <Button
-          onClick={openCard}
-          variant="secondary"
-          size="icon"
-          className="ml-4"
-        >
-          <Maximize2 />
-        </Button>
+        <StackDialog
+          stackFrontText={data.frontText}
+          stackBackText={data.backText}
+        />
       </div>
     </div>
   );

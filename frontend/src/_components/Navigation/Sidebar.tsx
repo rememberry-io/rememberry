@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { SidebarButton } from "../ui/SidebarButton";
+import { SignOutButton } from "../ui/SignOutButton";
 
 interface SidebarElement {
   id: number;
@@ -106,6 +107,9 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
             </div>
             <div className="text-sm mr-6 truncate max-w-xs">
               Leonardo Di Caprio
+            </div>
+            <div>
+              <SignOutButton />
             </div>
           </div>
         </div>

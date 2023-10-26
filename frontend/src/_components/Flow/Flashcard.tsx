@@ -20,8 +20,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
     setIsFront(!isFront);
   };
 
-  const openModal = () => {};
-
   return (
     <div>
       <div className="flex flex-row justify-center">
