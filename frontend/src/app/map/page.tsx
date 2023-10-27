@@ -40,30 +40,6 @@ const nodeTypes: NodeTypesType = {
 const frontText = "1st year medicine @Charite";
 const backText = "Jehfbsjhdbf";
 
-// Layout using dagre
-
-// type Option = {};
-
-// const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
-
-// const apply getLayoutedElements = (nodes: Node[], edges: Edge[], options: { direction: 'TB' | 'LR' }) => {
-//   g.setGraph({ rankdir: options.direction });
-
-//   edges.forEach((edge) => g.setEdge(edge.source, edge.target));
-//   nodes.forEach((node) => g.setNode(node.id, node));
-
-//   Dagre.layout(g);
-
-//   return {
-// 	nodes: nodes.map((node) => {
-// 	  const { x, y } = g.node(node.id);
-
-// 	  return { ...node, position: { x, y } };
-// 	}),
-// 	edges,
-//   };
-// };
-
 const Map: React.FC = () => {
   const addFlashcard = useAddFlashcard();
   const addStack = useAddStack();
