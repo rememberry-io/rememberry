@@ -1,10 +1,10 @@
 "use client";
-import { DropDown } from "@/_components/Flow/DropDown";
-import { Flashcard } from "@/_components/Flow/Flashcard";
+import { Flashcard } from "@/_components/Flow/FlashcardComponents/Flashcard";
 import initialEdges from "@/_components/Flow/FlowElements/edges";
 import initialNodes from "@/_components/Flow/FlowElements/nodes";
-import { MainStack } from "@/_components/Flow/MainStack";
-import { Stack } from "@/_components/Flow/Stack";
+import { DropDown } from "@/_components/Flow/FlowHeader/DropDown";
+import { MainStack } from "@/_components/Flow/StackComponents/MainStack";
+import { Stack } from "@/_components/Flow/StackComponents/Stack";
 import { Button } from "@/_components/ui/button";
 import { ArrowLeftCircle } from "lucide-react";
 import Link from "next/link";
@@ -36,7 +36,30 @@ const nodeTypes: NodeTypesType = {
 
 const frontText = "1st year medicine @Charite";
 const backText = "Jehfbsjhdbf";
-let nodeId = 0;
+
+// Layout using dagre
+
+// type Option = {};
+
+// const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
+
+// const apply getLayoutedElements = (nodes: Node[], edges: Edge[], options: { direction: 'TB' | 'LR' }) => {
+//   g.setGraph({ rankdir: options.direction });
+
+//   edges.forEach((edge) => g.setEdge(edge.source, edge.target));
+//   nodes.forEach((node) => g.setNode(node.id, node));
+
+//   Dagre.layout(g);
+
+//   return {
+// 	nodes: nodes.map((node) => {
+// 	  const { x, y } = g.node(node.id);
+
+// 	  return { ...node, position: { x, y } };
+// 	}),
+// 	edges,
+//   };
+// };
 
 const Map: React.FC = () => {
   const [nodes, setNodes] = useState(initialNodes);
@@ -66,9 +89,12 @@ const Map: React.FC = () => {
 
   const reactFlowInstance = useReactFlow();
 
-  const addNode = useCallback(() => {
-    const id = `${++nodeId}`;
-    const newNode = {
+  let flashcardId = 5;
+  let stackId = 5;
+
+  const addFlashcard = useCallback(() => {
+    const id = `${++flashcardId}`;
+    const newFlashcard = {
       id: id,
       type: "flashcard",
       position: {
@@ -81,8 +107,25 @@ const Map: React.FC = () => {
         category: "Category",
       },
     };
-    reactFlowInstance.addNodes(newNode);
-  }, [reactFlowInstance]);
+    reactFlowInstance.addNodes(newFlashcard);
+  }, [reactFlowInstance, flashcardId]);
+
+  const addStack = useCallback(() => {
+    const id = `${++stackId}`;
+    const newStack = {
+      id: id,
+      type: "stack",
+      position: {
+        x: Math.random() * 1000,
+        y: Math.random() * 1000,
+      },
+      data: {
+        frontText: "Front text",
+        backText: "Back text",
+      },
+    };
+    reactFlowInstance.addNodes(newStack);
+  }, [reactFlowInstance, stackId]);
 
   return (
     <div className="flex">
@@ -90,24 +133,22 @@ const Map: React.FC = () => {
         style={{ height: "90vh", width: "100vw" }}
         className="flex flex-col justify-items-center"
       >
-        <div className="flex flex-row items-center justify-around ">
-          <Link href="/map/menu">
-            <Button variant="ghost">
-              <ArrowLeftCircle className="mr-2" />
-              Back to menu
-            </Button>
-          </Link>
-          <MainStack
-            frontText={frontText}
-            backText={backText}
-            toggleMainStack={toggleMainStack}
-            isFront={isFront}
-          />
-          <DropDown />
-          {/* <Button className="ml-5 z-50" onClick={addNode}>
-            Add Flashcard
-          </Button> */}
-          {/* <Button className="ml-5 z-50">Add Stack</Button> */}
+        <div>
+          <div className="flex flex-row items-center justify-around">
+            <Link href="/map/menu">
+              <Button variant="ghost">
+                <ArrowLeftCircle className="mr-2" />
+                Back to menu
+              </Button>
+            </Link>
+            <MainStack
+              frontText={frontText}
+              backText={backText}
+              toggleMainStack={toggleMainStack}
+              isFront={isFront}
+            />
+            <DropDown />
+          </div>
         </div>
         <ReactFlow
           nodes={nodes}
@@ -119,8 +160,10 @@ const Map: React.FC = () => {
         >
           <Background />
           <Panel position="bottom-center" className="space-x-4">
-            <Button>Add stack</Button>
-            <Button onClick={addNode}>Add Flashcard</Button>
+            <Button onClick={addStack}>Add stack</Button>
+            <Button onClick={addFlashcard}>Add Flashcard</Button>
+            {/* <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
+            <Button onClick={() => onLayout("TB")}>Vertical Layout</Button> */}
           </Panel>
           <Controls />
         </ReactFlow>

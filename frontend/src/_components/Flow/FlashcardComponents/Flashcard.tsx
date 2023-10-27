@@ -1,9 +1,9 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
+import { TrafficLights } from "@/_components/Flow/TrafficLights";
 import { Button } from "@/_components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
 import { FlashcardDialog } from "./FlashcardDialog";
-import { TrafficLights } from "./TrafficLights";
 
 interface FlashcardProps {
   data: {

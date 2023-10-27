@@ -38,12 +38,10 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               <div className="text-sm text-blue-500 leading-10">
                 {flashcardCategory}
               </div>
-              <div className=" text-black font-semibold leading-10">
+              <div className="font-semibold leading-10">
                 {flashcardFrontText}
               </div>
-              <div className="text-black leading-6 text-justify">
-                {flashcardBackText}
-              </div>
+              <div className="leading-6 text-justify">{flashcardBackText}</div>
             </div>
           </div>
         </DialogContent>
