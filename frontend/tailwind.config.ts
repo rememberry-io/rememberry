@@ -36,9 +36,8 @@ const config: Config = {
     },
   },
   textColors: {
-    primary: "#1370DD",
-    secondary: "#787777",
-    dark: "#000000",
+    primary: "#000000",
+    secondary: "#ffffff",
   },
   colors: {
     primary: "#1370DD",
