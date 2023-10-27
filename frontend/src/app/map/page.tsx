@@ -5,6 +5,10 @@ import initialNodes from "@/_components/Flow/FlowElements/nodes";
 import { DropDown } from "@/_components/Flow/FlowHeader/DropDown";
 import { MainStack } from "@/_components/Flow/StackComponents/MainStack";
 import { Stack } from "@/_components/Flow/StackComponents/Stack";
+import {
+  useAddFlashcard,
+  useAddStack,
+} from "@/_components/Flow/addFlashcardsAndStacks";
 import { Button } from "@/_components/ui/button";
 import { ArrowLeftCircle } from "lucide-react";
 import Link from "next/link";
@@ -17,7 +21,6 @@ import ReactFlow, {
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
-  useReactFlow,
 } from "reactflow";
 import "reactflow/dist/style.css";
 
@@ -62,6 +65,8 @@ const backText = "Jehfbsjhdbf";
 // };
 
 const Map: React.FC = () => {
+  const addFlashcard = useAddFlashcard();
+  const addStack = useAddStack();
   const [nodes, setNodes] = useState(initialNodes);
   const [isFront, setIsFront] = useState(true);
 
@@ -86,46 +91,6 @@ const Map: React.FC = () => {
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [],
   );
-
-  const reactFlowInstance = useReactFlow();
-
-  let flashcardId = 5;
-  let stackId = 5;
-
-  const addFlashcard = useCallback(() => {
-    const id = `${++flashcardId}`;
-    const newFlashcard = {
-      id: id,
-      type: "flashcard",
-      position: {
-        x: Math.random() * 1000,
-        y: Math.random() * 1000,
-      },
-      data: {
-        frontText: "Front text",
-        backText: "Back text",
-        category: "Category",
-      },
-    };
-    reactFlowInstance.addNodes(newFlashcard);
-  }, [reactFlowInstance, flashcardId]);
-
-  const addStack = useCallback(() => {
-    const id = `${++stackId}`;
-    const newStack = {
-      id: id,
-      type: "stack",
-      position: {
-        x: Math.random() * 1000,
-        y: Math.random() * 1000,
-      },
-      data: {
-        frontText: "Front text",
-        backText: "Back text",
-      },
-    };
-    reactFlowInstance.addNodes(newStack);
-  }, [reactFlowInstance, stackId]);
 
   return (
     <div className="flex">
