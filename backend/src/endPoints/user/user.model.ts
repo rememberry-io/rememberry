@@ -1,33 +1,42 @@
 import { TRPCError } from "@trpc/server";
-import { eq, ne, or } from "drizzle-orm";
-import { NodePgDatabase, drizzle } from "drizzle-orm/node-postgres";
-import { client } from "../../db/db";
+import { and, eq } from "drizzle-orm";
+import jwt from "jsonwebtoken";
+import { database, dbConnection } from "../../db/db";
 import * as schema from "../../db/schema";
+import { JWTPayload } from "../login/types.ts";
+import { UserCredentialCheckReturn, UserStatus } from "./types.ts";
 
-export const database = drizzle(client, { schema });
+type Token = string;
 
-type credStatus = readonly [TRPCError, null] | readonly [null, boolean];
+type Email = string;
 
-interface UserModel {
-  createUser: (input: schema.NewUser, hashedPwd: string) => Promise<schema.NewUser[]>;
+type GetUserCredStatus =
+  | readonly [TRPCError, null]
+  | readonly [null, UserCredentialCheckReturn];
+
+export interface UserModel {
+  createUser: (input: schema.NewUser, hashedPwd: string) => Promise<UserStatus>;
   getAllUsers: () => Promise<schema.User[]>;
-  getUserById: (userId: string) => Promise<schema.User>;
-  updateUserById: (userId: string, hashedPwd: string) => Promise<schema.User>;
-  deleteUserById: (userId: string) => Promise<schema.User>;
-  checkCredentials: (email: string, username: string) => Promise<credStatus>;
-  getUsersWithSameInputCredentials: (input: schema.User) => Promise<schema.User[]>;
+  getUserById: (userId: string) => Promise<UserStatus>;
+  updateUserById: (
+    userId: string,
+    userInput: schema.User,
+    hashedPwd: string,
+  ) => Promise<UserStatus>;
+  deleteUserById: (userId: string) => Promise<UserStatus>;
+  getUserIdAndPwByEmail: (email: Email) => Promise<GetUserCredStatus>;
+  updateUserRefreshToken: (token: string) => Promise<UserStatus>;
+  checkUsername: (input: string) => Promise<boolean>;
+  checkUserEmail: (input: string) => Promise<boolean>;
 }
 
 class UserModelDB implements UserModel {
-  db: NodePgDatabase<typeof import("../../db/schema.ts")>;
-  constructor(db: NodePgDatabase<typeof import("../../db/schema.ts")>) {
+  private db: dbConnection;
+  constructor(db: dbConnection) {
     this.db = db;
   }
-  async createUser(
-    input: schema.NewUser,
-    hashedPwd: string,
-  ): Promise<schema.NewUser[]> {
-    const newUser = await database
+  async createUser(input: schema.NewUser, hashedPwd: string) {
+    const newUser = await this.db
       .insert(schema.users)
       .values({
         username: input.username,
@@ -37,111 +46,126 @@ class UserModelDB implements UserModel {
       })
       .returning();
 
-    return newUser;
+    if (newUser.length < 0 || newUser.length > 1)
+      return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+
+    return [null, newUser[0]] as const;
   }
 
   async getAllUsers() {
-    const res = await database.select().from(schema.users);
+    const res = await this.db.select().from(schema.users);
     return res;
   }
 
-  //TODO: validate that its only one user
   async getUserById(userId: string) {
-    const user = await database
+    const user = await this.db
       .select()
       .from(schema.users)
       .where(eq(schema.users.user_id, userId));
-    return user[0];
+
+    if (user.length < 0)
+      return [new TRPCError({ code: "NOT_FOUND" }), null] as const;
+    if (user.length > 1)
+      return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+
+    return [null, user[0]] as const;
   }
 
-  //TODO: userId and get User and check only one user gets returned
   async updateUserById(
     userId: string,
+    userInput: schema.User,
     hashedPwd: string,
-  ): Promise<schema.User> {
-    const user = await this.getUserById(userId)
-    const updatedUser = await database
+  ) {
+    const updatedUser = await this.db
       .update(schema.users)
       .set({
-        username: user.username,
-        email: user.email,
+        username: userInput.username,
+        email: userInput.email,
         password: hashedPwd,
       })
       .where(eq(schema.users.user_id, userId))
       .returning();
-    return updatedUser[0];
+
+    if (updatedUser.length < 0 || updatedUser.length > 1)
+      return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+
+    return [null, updatedUser[0]] as const;
   }
 
-  //TODO: check only one user exsits
-  async deleteUserById(userId: string): Promise<schema.User> {
-    const deletedUser = await database
+  async deleteUserById(userId: string) {
+    const deletedUser = await this.db
       .delete(schema.users)
       .where(eq(schema.users.user_id, userId))
       .returning();
-    return deletedUser[0];
+
+    if (deletedUser.length < 0)
+      return [new TRPCError({ code: "NOT_FOUND" }), null] as const;
+    if (deletedUser.length > 1)
+      return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+
+    return [null, deletedUser[0]] as const;
   }
 
-  async checkCredentials(email: string, username: string): Promise<credStatus>{
-    if ((await this.checkUserEmail(email)) && (await this.checkUsername(username))) {
-      return [
-        new TRPCError({
-          code: "FORBIDDEN",
-          message: "USERNAME AND EMAIL ALREADY EXIST",
-        }),
-        null,
-      ] as const;
-    } else if (await this.checkUserEmail(email)) {
-      return [
-        new TRPCError({ code: "FORBIDDEN", message: "EMAIL ALREADY EXISTS" }),
-        null,
-      ] as const;
-    } else if (await this.checkUsername(username)) {
-      return [
-        new TRPCError({ code: "FORBIDDEN", message: "USERNAME ALREADY EXISTS" }),
-        null,
-      ] as const;
-    }
-    return [null, true] as const;
-  }
-
-  async getUsersWithSameInputCredentials(
-    input: schema.User,
-  ): Promise<schema.User[]> {
-    const res = await database
-      .select()
+  async getUserIdAndPwByEmail(email: Email) {
+    const res = await this.db
+      .select({
+        user_id: schema.users.user_id,
+        password: schema.users.password,
+      })
       .from(schema.users)
-      .where(
-        or(
-          eq(schema.users.email, input.email),
-          eq(schema.users.username, input.username),
-        ),
-      )
-      .where(ne(schema.users.user_id, input.user_id));
-    return res;
+      .where(and(eq(schema.users.email, email)));
+
+    if (res.length < 0)
+      return [new TRPCError({ code: "NOT_FOUND" }), null] as const;
+    if (res.length < 1)
+      return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+
+    const user: UserCredentialCheckReturn = {
+      userId: res[0].user_id,
+      password: res[0].password,
+    };
+
+    return [null, user] as const;
   }
-  private async checkUsername(username: string) {
-    const user = await database
+
+  async updateUserRefreshToken(token: Token) {
+    const decodedToken = jwt.decode(token) as JWTPayload;
+
+    const userId = decodedToken.userId;
+
+    const updatedUser = await this.db
+      .update(schema.users)
+      .set({
+        refresh_token: token,
+      })
+      .where(eq(schema.users.user_id, userId))
+      .returning();
+
+    if (updatedUser.length < 0 || updatedUser.length > 1)
+      return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+
+    return [null, updatedUser[0]] as const;
+  }
+
+  async checkUsername(username: string) {
+    const user = await this.db
       .select()
       .from(schema.users)
       .where(eq(schema.users.username, username));
-    if (user[0]) 
-      return true;
+    if (user[0]) return true;
 
     return false;
   }
 
-  private async checkUserEmail(email: string) {
-    const user = await database
+  async checkUserEmail(email: string) {
+    const user = await this.db
       .select()
       .from(schema.users)
       .where(eq(schema.users.email, email));
-    if (user[0]) 
-      return true;
+    if (user[0]) return true;
 
     return false;
   }
-
 }
-
 
 export const userModelDB = new UserModelDB(database);
