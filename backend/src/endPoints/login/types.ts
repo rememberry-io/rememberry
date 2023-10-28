@@ -1,8 +1,4 @@
 import z from "zod";
-export type LoginCredentials = {
-  email: string;
-  password: string;
-};
 
 export const LoginCredentialsSchema = z.object({
   email: z.string(),
@@ -18,7 +14,7 @@ export const refreshTokenInputSchema = z.object({
   refreshToken: z.string(),
 });
 
-export type refreshTokenInputType = string
+export type refreshTokenInputType = string;
 
 export type JWTPayload = {
   userId: string;
