@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
 import env from "../env";
+import * as schema from "./schema";
 
 export const dbCredentials = {
   host: env.PG_HOST,
@@ -22,4 +23,6 @@ const connectToDb = async () => {
 
 connectToDb();
 
-export const db = drizzle(client);
+export const database = drizzle(client, { schema });
+
+export type dbConnection = typeof database;
