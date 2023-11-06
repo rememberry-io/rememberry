@@ -37,11 +37,13 @@ export const userRouter = router({
 
   getAllUsers: privateProcedure.input(z.undefined()).query(async (opts) => {
     const res = await userController.getAllUsers();
+    console.log(opts.ctx.req);
+    
     return res;
   }),
 
-  getUserById: publicProcedure.input(User).query(async (opts) => {
-    const res = await userController.getUserById(opts.input.user_id);
+  getUserById: publicProcedure.input(z.string()).query(async (opts) => {
+    const res = await userController.getUserById(opts.input);
     return res;
   }),
 });
