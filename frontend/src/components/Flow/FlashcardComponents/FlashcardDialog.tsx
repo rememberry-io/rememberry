@@ -1,5 +1,5 @@
-import { Button } from "@/_components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/_components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Maximize2 } from "lucide-react";
 import React, { useState } from "react";
 

@@ -1,6 +1,6 @@
 "use client";
-import { Header } from "@/_components/Navigation/Header";
-import Sidebar from "@/_components/Navigation/Sidebar";
+import { Header } from "@/components/Navigation/Header";
+import Sidebar from "@/components/Navigation/Sidebar";
 import React, { useState } from "react";
 
 export default function MapLayout({ children }: { children: React.ReactNode }) {

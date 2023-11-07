@@ -1,9 +1,8 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
-import { TrafficLights } from "@/_components/Flow/TrafficLights";
-import { Button } from "@/_components/ui/button";
+import { TrafficLights } from "@/components/Flow/TrafficLights";
+import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
-import { Handle, Position } from "reactflow";
 import { FlashcardDialog } from "./FlashcardDialog";
 
 interface FlashcardProps {
@@ -24,7 +23,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   return (
     <div>
       <div className="flex flex-row justify-center">
-        <Handle type="target" position={Position.Top} />
         <div className="flex text-center flex-col p-2 rounded-md w-56 h-auto max-h-32 border-2 border-black bg-white mb-4">
           <div className="p-2">
             <div className="text-sm text-blue-500 ">{data.category}</div>

@@ -1,4 +1,4 @@
-import { Button } from "@/_components/ui/button";
+import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
 import { StackDialog } from "./StackDialog";
