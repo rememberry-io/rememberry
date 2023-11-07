@@ -1,17 +1,15 @@
 "use client";
-import { Flashcard } from "@/_components/Flow/FlashcardComponents/Flashcard";
-import initialEdges from "@/_components/Flow/FlowElements/edges";
-import initialNodes from "@/_components/Flow/FlowElements/nodes";
-import { DropDown } from "@/_components/Flow/FlowHeader/DropDown";
-import { MainStack } from "@/_components/Flow/StackComponents/MainStack";
-import { Stack } from "@/_components/Flow/StackComponents/Stack";
+import { Flashcard } from "@/components/Flow/FlashcardComponents/Flashcard";
+import initialEdges from "@/components/Flow/FlowElements/edges";
+import initialNodes from "@/components/Flow/FlowElements/nodes";
+import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
+import { MainStack } from "@/components/Flow/StackComponents/MainStack";
+import { Stack } from "@/components/Flow/StackComponents/Stack";
 import {
   useAddFlashcard,
   useAddStack,
-} from "@/_components/Flow/addFlashcardsAndStacks";
-import { Button } from "@/_components/ui/button";
-import { ArrowLeftCircle } from "lucide-react";
-import Link from "next/link";
+} from "@/components/Flow/addFlashcardsAndStacks";
+import { Button } from "@/components/ui/button";
 import { useCallback, useState } from "react";
 import ReactFlow, {
   Background,
@@ -69,46 +67,28 @@ const Map: React.FC = () => {
   );
 
   return (
-    <div className="flex">
-      <div
-        style={{ height: "90vh", width: "100vw" }}
-        className="flex flex-col justify-items-center"
+    <div
+      style={{ height: "90vh", width: "100vw" }}
+      className="flex flex-col justify-items-center"
+    >
+      <FlowHeader />
+      <ReactFlow
+        nodes={nodes}
+        nodeTypes={nodeTypes}
+        onNodesChange={onNodesChange}
+        edges={edges}
+        onEdgesChange={onEdgesChange}
+        zoomOnPinch={true}
       >
-        <div>
-          <div className="flex flex-row items-center justify-around">
-            <Link href="/map/menu">
-              <Button variant="ghost">
-                <ArrowLeftCircle className="mr-2" />
-                Back to menu
-              </Button>
-            </Link>
-            <MainStack
-              frontText={frontText}
-              backText={backText}
-              toggleMainStack={toggleMainStack}
-              isFront={isFront}
-            />
-            <DropDown />
-          </div>
-        </div>
-        <ReactFlow
-          nodes={nodes}
-          nodeTypes={nodeTypes}
-          onNodesChange={onNodesChange}
-          edges={edges}
-          onEdgesChange={onEdgesChange}
-          zoomOnPinch={true}
-        >
-          <Background />
-          <Panel position="bottom-center" className="space-x-4">
-            <Button onClick={addStack}>Add stack</Button>
-            <Button onClick={addFlashcard}>Add Flashcard</Button>
-            {/* <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
+        <Background />
+        <Panel position="bottom-center" className="space-x-4">
+          <Button onClick={addStack}>Add stack</Button>
+          <Button onClick={addFlashcard}>Add Flashcard</Button>
+          {/* <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
             <Button onClick={() => onLayout("TB")}>Vertical Layout</Button> */}
-          </Panel>
-          <Controls />
-        </ReactFlow>
-      </div>
+        </Panel>
+        <Controls />
+      </ReactFlow>
     </div>
   );
 };

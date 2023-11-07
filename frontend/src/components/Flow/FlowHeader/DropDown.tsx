@@ -6,7 +6,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/_components/ui/select";
+} from "@/components/ui/select";
 
 export function DropDown() {
   return (
