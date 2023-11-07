@@ -27,82 +27,40 @@ export async function createBasicFlashcard(
   return res;
 }
 
-export async function createBacksideMedia(
-  flashcard: types.Flashcards,
-  flashcardId: string,
-): Promise<schema.BacksideMedia[]> {
+async function createFlashcardMedia(flashcard: types.Flashcards, flashcardId: string){
   const prep = database
-    .insert(schema.backside_media)
+    .insert(schema.Media)
     .values({
       flashcard_id: sql.placeholder("id"),
-      media_link: sql.placeholder("link"),
-      positioning: sql.placeholder("positioning"),
+      frontside_media_link: sql.placeholder("frontside_media_link"),
+      frontside_media_positioning: sql.placeholder("frontside_media_positioing"),
+      backside_media_link: sql.placeholder("backside_media_link"),
+      backside_media_positioning: sql.placeholder("backside_media_positioning")
     })
     .returning()
-    .prepare("insert backside media");
-  const res = await prep.execute({
-    id: flashcardId,
-    link: flashcard.backside_media_link,
-    positioning: flashcard.backside_media_positioning,
-  });
-  return res;
-}
+    .prepare("insert_media")
 
-export async function createFrontsideMedia(
-  flashcard: types.Flashcards,
-  flashcardId: string,
-) {
-  const prep = database
-    .insert(schema.frontside_media)
-    .values({
-      flashcard_id: sql.placeholder("id"),
-      media_link: sql.placeholder("link"),
-      positioning: sql.placeholder("positioing"),
+    const res = await prep.execute({
+      id: flashcardId,
+      frontside_media_link: flashcard.frontside_media_link,
+      frontside_media_positioning: flashcard.frontside_media_positioning,
+      backside_media_link: flashcard.backside_media_link,
+      backside_media_positioning: flashcard.backside_media_positioning
     })
-    .returning()
-    .prepare("insert frontside media");
-  const res = await prep.execute({
-    id: flashcardId,
-    link: flashcard.frontside_media_link,
-    positioning: flashcard.frontside_media_positioning,
-  });
-  return res;
+    return res
+
 }
 
-export async function createFlashcardWithMedia(flashcard: types.Flashcards) {
-  const res = await database.transaction(async (tx) => {
+export async function createFlashcardWithMedia(flashcard: types.Flashcards){
+    const res = await database.transaction(async (tx) => {
     const basicFlashcard = await createBasicFlashcard(flashcard);
     const flashcardId = basicFlashcard[0].flashcard_id;
-    await createFrontsideMedia(flashcard, flashcardId);
-    await createBacksideMedia(flashcard, flashcardId);
+    const media = await createFlashcardMedia(flashcard, flashcardId)
     return basicFlashcard;
   });
-  return res;
+  return res
 }
 
-export async function createFlashcardWithFrontsideMedia(
-  flashcard: types.Flashcards,
-) {
-  const res = await database.transaction(async (tx) => {
-    const basicFlashcard = await createBasicFlashcard(flashcard);
-    const flashcardId = basicFlashcard[0].flashcard_id;
-    await createFrontsideMedia(flashcard, flashcardId);
-    return basicFlashcard;
-  });
-  return res;
-}
-
-export async function createFlashcardWithBackideMedia(
-  flashcard: types.Flashcards,
-) {
-  const res = await database.transaction(async (tx) => {
-    const basicFlashcard = await createBasicFlashcard(flashcard);
-    const flashcardId = basicFlashcard[0].flashcard_id;
-    await createBacksideMedia(flashcard, flashcardId);
-    return basicFlashcard;
-  });
-  return res;
-}
 
 export async function updateFlashcard(
   flashcard: types.Flashcards,
@@ -117,14 +75,11 @@ export async function updateFlashcard(
       })
       .returning();
 
-    await tx.update(schema.backside_media).set({
-      media_link: flashcard.backside_media_link,
-      positioning: flashcard.backside_media_positioning,
-    });
-
-    await tx.update(schema.frontside_media).set({
-      media_link: flashcard.frontside_media_link,
-      positioning: flashcard.frontside_media_positioning,
+    await tx.update(schema.Media).set({
+      backside_media_link: flashcard.backside_media_link,
+      backside_media_positioning: flashcard.backside_media_positioning,
+      frontside_media_link: flashcard.frontside_media_link,
+      frontside_media_positioning: flashcard.frontside_media_positioning,
     });
     return Basicflashcard;
   });
@@ -146,21 +101,17 @@ export async function getAllFlashcardsFromStack(stackId: string) {
     .select({
       flashcard_id: schema.flashcards.flashcard_id,
       frontside: schema.flashcards.frontside_text,
-      frontside_media: schema.frontside_media.media_link,
-      frontside_media_positioning: schema.frontside_media.positioning,
+      frontside_media: schema.Media.frontside_media_link,
+      frontside_media_positioning: schema.Media.frontside_media_positioning,
       backside: schema.flashcards.backside_text,
-      backside_media: schema.backside_media.media_link,
-      backside_media_positioning: schema.backside_media.positioning,
+      backside_media: schema.Media.backside_media_link,
+      backside_media_positioning: schema.Media.backside_media_positioning,
       learning_status: schema.session_data.learning_status,
     })
     .from(schema.flashcards)
     .leftJoin(
-      schema.frontside_media,
-      eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id),
-    )
-    .leftJoin(
-      schema.backside_media,
-      eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id),
+      schema.Media,
+      eq(schema.flashcards.flashcard_id, schema.Media.flashcard_id),
     )
     .where(eq(schema.flashcards.stack_id, sql.placeholder("stackId")))
     .prepare("getAllFlashcardsFromStack");
@@ -176,21 +127,17 @@ export async function getLearnableFlashcardsFromStack(
     .select({
       flashcard_id: schema.flashcards.flashcard_id,
       frontside: schema.flashcards.frontside_text,
-      frontside_media: schema.frontside_media.media_link,
-      frontside_media_positioning: schema.frontside_media.positioning,
+      frontside_media: schema.Media.frontside_media_link,
+      frontside_media_positioning: schema.Media.frontside_media_positioning,
       backside: schema.flashcards.backside_text,
-      backside_media: schema.backside_media.media_link,
-      backside_media_positioning: schema.backside_media.positioning,
+      backside_media: schema.Media.backside_media_link,
+      backside_media_positioning: schema.Media.backside_media_positioning,
       learning_status: schema.session_data.learning_status,
     })
     .from(schema.flashcards)
     .leftJoin(
-      schema.frontside_media,
-      eq(schema.flashcards.flashcard_id, schema.frontside_media.flashcard_id),
-    )
-    .leftJoin(
-      schema.backside_media,
-      eq(schema.flashcards.flashcard_id, schema.backside_media.flashcard_id),
+      schema.Media,
+      eq(schema.flashcards.flashcard_id, schema.Media.flashcard_id),
     )
     .innerJoin(
       schema.session_data,
@@ -228,14 +175,13 @@ export async function getAllFlashcardsFromStackAndChildStacks(
         flashcards.flashcard_id,
         flashcards.frontside_text,
         flashcards.backside_text,
-        frontside_media.media_link,
-        frontside_media.positioning,
-        backside_media.media_link,
-        backside_media.positioning
+        Media.frintside_media_link,
+        Media.frontside_media_positioning,
+        Media.backside_media_link,
+        Media_backside_media_positioning
     FROM cte_stacks
     JOIN flashcards ON cte_stacks.stack_id = flashcards.stack_id
-    LEFT JOIN frontside_media ON flashcards.flashcard_id = frontside_media.flashcard_id
-    LEFT JOIN backside_media ON flashcards.flashcard_id = backside_media.flashcard_id
+    LEFT JOIN Media ON flashcards.flashcard_id = Media.flashcard_id
     `);
   return res.rows;
 }
@@ -260,15 +206,14 @@ export async function getLearnableFlashcardsFromStackAndChilds(
         flashcards.flashcard_id,
         flashcards.frontside_text,
         flashcards.backside_text,
-        frontside_media.media_link,
-        frontside_media.positioning,
-        backside_media.media_link,
-        backside_media.positioning
+        Media.frontside_media_link,
+        Media.frontside_media_positioning,
+        Media.backside_media_link,
+        Media.backside_media_positioining
     FROM cte_stacks
     JOIN flashcards ON flashcards.stack_id = cte_stacks.stack_id
     JOIN session_data ON flashcards.flashcard_id = session_data.flashcard_id
-    LEFT JOIN frontside_media ON flashcards.flashcard_id = frontside_media.flashcard_id
-    LEFT JOIN backside_media ON flashcards.flashcard_id = backside_media.flashcard_id 
+    LEFT JOIN Media ON flashcards.flashcard_id = Media.flashcard_id
     WHERE session_data.learning_status=1;
     `);
   return res.rows;
