@@ -1,5 +1,5 @@
-import { Button } from "@/_components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/_components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Maximize2 } from "lucide-react";
 import React, { useState } from "react";
 
@@ -38,12 +38,10 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               <div className="text-sm text-blue-500 leading-10">
                 {flashcardCategory}
               </div>
-              <div className=" text-black font-semibold leading-10">
+              <div className="font-semibold leading-10">
                 {flashcardFrontText}
               </div>
-              <div className="text-black leading-6 text-justify">
-                {flashcardBackText}
-              </div>
+              <div className="leading-6 text-justify">{flashcardBackText}</div>
             </div>
           </div>
         </DialogContent>

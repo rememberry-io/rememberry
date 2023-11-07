@@ -20,12 +20,6 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
-  //   const [isOpen, setIsOpen] = useState(true);
-
-  //   const toggleSidebar = () => {
-  //     setIsOpen(!isOpen);
-  //   };
-
   const sidebarElements: SidebarElement[] = [
     { id: 1, label: "Flashcard maps", icon: Map, link: "/map/menu" },
     { id: 2, label: "How it works", icon: HelpCircle, link: "/tutorial" },
