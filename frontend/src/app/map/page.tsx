@@ -44,6 +44,12 @@ const Map: React.FC = () => {
   const [nodes, setNodes] = useState(initialNodes);
   const [isFront, setIsFront] = useState(true);
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
   const toggleMainStack = useCallback(() => {
     setIsFront((prevIsFront) => !prevIsFront);
   }, []);
@@ -68,10 +74,10 @@ const Map: React.FC = () => {
 
   return (
     <div
-      style={{ height: "90vh", width: "100vw" }}
+      style={{ height: "100vh", width: "100vw" }}
       className="flex flex-col justify-items-center"
     >
-      <FlowHeader />
+      <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
       <ReactFlow
         nodes={nodes}
         nodeTypes={nodeTypes}

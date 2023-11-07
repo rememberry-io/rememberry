@@ -1,6 +1,4 @@
 "use client";
-import { Header } from "@/components/Navigation/Header";
-import Sidebar from "@/components/Navigation/Sidebar";
 import React, { useState } from "react";
 
 export default function MapLayout({ children }: { children: React.ReactNode }) {
@@ -18,8 +16,8 @@ export default function MapLayout({ children }: { children: React.ReactNode }) {
         }`}
       > */}
       <div>
-        <Header isOpen={isOpen} toggleSidebar={toggleSidebar} />
-        <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} />
+        {/* <Header isOpen={isOpen} toggleSidebar={toggleSidebar} /> */}
+        {/* <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} /> */}
       </div>
       {children}
       {/* MapLayout will receive several React nodes as children that will be rendered in place here */}
