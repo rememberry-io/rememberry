@@ -194,3 +194,6 @@ export const invites_relations = relations(invites, ({ one }) => ({
   users: one(users),
   peers: one(Peers) 
 }))
+
+export type Invite = typeof invites.$inferSelect
+export type NewInvite = typeof invites.$inferInsert
