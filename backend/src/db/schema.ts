@@ -164,7 +164,7 @@ export const NewPeer = typeof Peers.$inferInsert
 export const Users_Peers = pgTable("Users_Peers", {
   user_id: uuid("user_id").references(() => users.user_id),
   peer_id: uuid("peer_id").references(() => Peers.peer_id),
-  is_peer_admin: boolean("is_peer_admin").default(false)
+  is_peer_admin: boolean("is_peer_admin").default(false).notNull()
 })
 
 export const users_peers_relations = relations(Users_Peers, ({ one }) => ({
