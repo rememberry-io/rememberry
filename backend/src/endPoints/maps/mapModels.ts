@@ -20,6 +20,20 @@ export async function createMap(
   return res;
 }
 
+export async function createSharedMap(map: schema.newMap): Promise<schema.newMap>{
+  const res = await database 
+    .insert(schema.maps)
+    .values({
+      user_id: map.user_id,
+      peer_id: map.peer_id,
+      map_name: map.map_name,
+      map_description: map.map_description
+    })
+    .returning()
+  
+    return res[0]
+}
+
 export async function updateMap(
   userInput: schema.newMap,
 ): Promise<schema.Map[]> {
