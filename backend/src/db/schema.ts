@@ -129,10 +129,11 @@ export const Media = pgTable("Media", {
   flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {
     onDelete: "cascade",
   }),
-  frontside_media_link: varchar("media_link"),
-  frontside_media_positioning: varchar("positioning"),
-  backside_media_link: varchar("media_link"),
-  backside_media_positioning: varchar("positioning")
+  frontside_media_link: varchar("frontside_media_link"),
+  frontside_media_positioning: varchar("frontside_media_positioning"),
+  backside_media_link: varchar("backside_media_link"),
+  backside_media_positioning: varchar("backside_media_positioning"),
+
 });
 
 export const media_relations = relations(Media, ({ one }) => ({
@@ -142,14 +143,13 @@ export const media_relations = relations(Media, ({ one }) => ({
   }),
 }));
 
-export type BacksideMedia = typeof Media.$inferSelect;
-export type NewBacksideMedia = typeof Media.$inferInsert;
+export type Medias = typeof Media.$inferSelect;
+export type NewMedia = typeof Media.$inferInsert;
 
 
 export const Peers = pgTable("Peers", {
   peer_id: uuid("peer_id").defaultRandom().primaryKey(),
-  name: varchar("name").notNull(),
-
+  name: varchar("name").notNull()
 })
 
 export const peers_relations = relations(Peers, ({ one, many }) => ({

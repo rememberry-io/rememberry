@@ -1,0 +1,1 @@
+ALTER TABLE "Media" ADD COLUMN "test" varchar;
