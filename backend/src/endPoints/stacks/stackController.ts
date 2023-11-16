@@ -5,14 +5,19 @@ import * as types from "./types";
 
 export async function controlCreateStack(stack: schema.NewStack) {
   const date = new Date();
-
-  const res = await stackModel.createStack(stack, date);
-  return res;
+  const [errorCheck, res] = await stackModel.createStack(stack, date);
+  if(errorCheck){
+    return [errorCheck, null] as const
+  }
+  return [null, res] as const;
 }
 
 export async function controlGetStackById(stackId: string) {
-  const res = await stackModel.getStackById(stackId);
-  return res;
+  const [errorCheck, res] = await stackModel.getStackById(stackId);
+  if(errorCheck){
+    return [errorCheck, null] as const 
+  }
+  return [null, res] as const;
 }
 
 export async function controlGetAllStacksFromMap(mapId: string) {
@@ -56,13 +61,23 @@ const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
 };
 
 export async function controlGetHighestOrderStacks(mapId: string) {
-  const res = await stackModel.getHighestOrderParentStacks(mapId);
-  return res;
+  const [errorCheck, res] = await stackModel.getHighestOrderParentStacks(mapId);
+  if(errorCheck){
+    return [errorCheck, null] as const 
+  }
+  return [null, res] as const;
 }
 
 export async function controlGetDirectChildsFromParent(parentStackId: string) {
-  const res = await stackModel.getDirectChildsFromParent(parentStackId);
-  return res;
+  const [errorCheck, res] = await stackModel.getDirectChildsFromParent(parentStackId);
+  if(errorCheck){
+    return [errorCheck, null] as const 
+  }
+  return [null, res] as const;
+}
+
+function isObject(value: any): value is object {
+  return typeof value === 'object' && value !== null;
 }
 
 function isObject(value: any): value is object {
@@ -85,30 +100,45 @@ export async function controlGetAllChildsFromParent(parentStackId: string) {
 }
 
 export async function controlGetParentFromStack(stackId: string) {
-  const res = await stackModel.getStackById(stackId);
-  return res;
+  const [errorCheck, res] = await stackModel.getStackById(stackId);
+  if(errorCheck){
+    return [errorCheck, null] as const
+  }
+  return [null, res] as const;
 }
 
 export async function controlChangeParentStack(
   parentAndChild: types.ParentAndChildId,
 ) {
-  const res = await stackModel.changeParentStack(parentAndChild);
-  return res;
+  const [errorCheck, res] = await stackModel.changeParentStack(parentAndChild);
+  if(errorCheck){
+    return [errorCheck, null] as const
+  }
+  return [null, res] as const;
 }
 
 export async function controlDeleteParentStackRelation(childStackId: string) {
-  const res = await stackModel.deleteParentStackRelation(childStackId);
-  return res;
+  const [errorCheck, res] = await stackModel.deleteParentStackRelation(childStackId);
+  if(errorCheck){
+    return [errorCheck, null] as const
+  }
+  return [null, res] as const;
 }
 
 export async function controlStackDeletionAndChildMoveUp(stackId: string) {
-  const res = await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId);
-  return res;
+  const [errorCheck, res] = await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId);
+  if(errorCheck){
+    return [errorCheck, null] as const 
+  }
+  return [null, res] as const;
 }
 
 export async function controlStackAndChildDeletion(stackId: string) {
-  const res = await stackModel.deleteStackAndChildren(stackId);
-  return res;
+  const [errorCheck, res] = await stackModel.deleteStackAndChildren(stackId);
+  if(errorCheck){
+    return [errorCheck, null] as const
+  }
+  return [null, res] as const;
 }
 
 
