@@ -78,6 +78,20 @@
       "when": 1699617104603,
       "tag": "0010_normal_wolfsbane",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1699617601868,
+      "tag": "0011_milky_loners",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1699617636451,
+      "tag": "0012_whole_titania",
+      "breakpoints": true
     }
   ]
 }
