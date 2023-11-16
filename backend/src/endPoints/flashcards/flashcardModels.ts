@@ -106,7 +106,6 @@ export async function getAllFlashcardsFromStack(stackId: string) {
       backside: schema.flashcards.backside_text,
       backside_media: schema.Media.backside_media_link,
       backside_media_positioning: schema.Media.backside_media_positioning,
-      learning_status: schema.session_data.learning_status,
     })
     .from(schema.flashcards)
     .leftJoin(
@@ -175,10 +174,10 @@ export async function getAllFlashcardsFromStackAndChildStacks(
         flashcards.flashcard_id,
         flashcards.frontside_text,
         flashcards.backside_text,
-        Media.frintside_media_link,
+        Media.frontside_media_link,
         Media.frontside_media_positioning,
         Media.backside_media_link,
-        Media_backside_media_positioning
+        Media.backside_media_positioning
     FROM cte_stacks
     JOIN flashcards ON cte_stacks.stack_id = flashcards.stack_id
     LEFT JOIN Media ON flashcards.flashcard_id = Media.flashcard_id
@@ -209,7 +208,7 @@ export async function getLearnableFlashcardsFromStackAndChilds(
         Media.frontside_media_link,
         Media.frontside_media_positioning,
         Media.backside_media_link,
-        Media.backside_media_positioining
+        Media.backside_media_positioning
     FROM cte_stacks
     JOIN flashcards ON flashcards.stack_id = cte_stacks.stack_id
     JOIN session_data ON flashcards.flashcard_id = session_data.flashcard_id
