@@ -2,12 +2,12 @@ import * as flashcardModels from "./flashcardModels";
 import * as types from "./types";
 
 export async function controlCreateFlashcard(flashcard: types.Flashcards) {
-  if(flashcard.frontside_media_link || flashcard.backside_media_link){
-    const res = flashcardModels.createFlashcardWithMedia(flashcard)
-    return res
-  }else{
-    const res = flashcardModels.createBasicFlashcard(flashcard)
-    return res 
+  if (flashcard.frontside_media_link || flashcard.backside_media_link) {
+    const res = flashcardModels.createFlashcardWithMedia(flashcard);
+    return res;
+  } else {
+    const res = flashcardModels.createBasicFlashcard(flashcard);
+    return res;
   }
 }
 

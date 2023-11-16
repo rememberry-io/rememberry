@@ -27,40 +27,43 @@ export async function createBasicFlashcard(
   return res;
 }
 
-async function createFlashcardMedia(flashcard: types.Flashcards, flashcardId: string){
+async function createFlashcardMedia(
+  flashcard: types.Flashcards,
+  flashcardId: string,
+) {
   const prep = database
     .insert(schema.Media)
     .values({
       flashcard_id: sql.placeholder("id"),
       frontside_media_link: sql.placeholder("frontside_media_link"),
-      frontside_media_positioning: sql.placeholder("frontside_media_positioing"),
+      frontside_media_positioning: sql.placeholder(
+        "frontside_media_positioing",
+      ),
       backside_media_link: sql.placeholder("backside_media_link"),
-      backside_media_positioning: sql.placeholder("backside_media_positioning")
+      backside_media_positioning: sql.placeholder("backside_media_positioning"),
     })
     .returning()
-    .prepare("insert_media")
+    .prepare("insert_media");
 
-    const res = await prep.execute({
-      id: flashcardId,
-      frontside_media_link: flashcard.frontside_media_link,
-      frontside_media_positioning: flashcard.frontside_media_positioning,
-      backside_media_link: flashcard.backside_media_link,
-      backside_media_positioning: flashcard.backside_media_positioning
-    })
-    return res
-
+  const res = await prep.execute({
+    id: flashcardId,
+    frontside_media_link: flashcard.frontside_media_link,
+    frontside_media_positioning: flashcard.frontside_media_positioning,
+    backside_media_link: flashcard.backside_media_link,
+    backside_media_positioning: flashcard.backside_media_positioning,
+  });
+  return res;
 }
 
-export async function createFlashcardWithMedia(flashcard: types.Flashcards){
-    const res = await database.transaction(async (tx) => {
+export async function createFlashcardWithMedia(flashcard: types.Flashcards) {
+  const res = await database.transaction(async (tx) => {
     const basicFlashcard = await createBasicFlashcard(flashcard);
     const flashcardId = basicFlashcard[0].flashcard_id;
-    const media = await createFlashcardMedia(flashcard, flashcardId)
+    const media = await createFlashcardMedia(flashcard, flashcardId);
     return basicFlashcard;
   });
-  return res
+  return res;
 }
-
 
 export async function updateFlashcard(
   flashcard: types.Flashcards,
