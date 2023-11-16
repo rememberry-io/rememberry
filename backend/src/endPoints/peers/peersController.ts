@@ -46,3 +46,33 @@ export async function controlKick(
   }
   return [new TRPCError({code:"UNAUTHORIZED"}), null]
 }
+
+export async function controlRemoveAdminStatus(userId:string, peerId:string, removerId:string){
+    const [error, adminStatus] = await peersModels.getAdminStatus(removerId, peerId)
+    if(error){
+        [error, null]
+    } else if (!adminStatus){
+        [new TRPCError({code:"UNAUTHORIZED"}), null]
+    }
+    const [secondError, res] = await peersModels.removeAdminStatus(userId, peerId)
+    if(secondError){
+        return [secondError, null]
+    }
+    return [null, res]
+
+}
+
+export async function controlAddAdminStatus(userId:string, peerId:string, removerId:string){
+    const [error, adminStatus] = await peersModels.getAdminStatus(removerId, peerId)
+    if(error){
+        [error, null]
+    } else if (!adminStatus){
+        [new TRPCError({code:"UNAUTHORIZED"}), null]
+    }
+    const [secondError, res] = await peersModels.addAdminStatus(userId, peerId)
+    if(secondError){
+        return [secondError, null]
+    }
+    return [null, res]
+
+}
