@@ -21,8 +21,7 @@ echo "Start backend service"
 
 docker compose up -d rembackend --build
 
-echo "Start frontend service"
-
-docker compose up -d frontend --build 
-
-echo "Database backend and frontend successfully started"
+# echo "Start frontend service"
+# docker compose up -d frontend --build 
+# echo "Database backend and frontend successfully started"
+echo "Please go into the frontend folder ( cd frontend ) and execute npm run dev"
