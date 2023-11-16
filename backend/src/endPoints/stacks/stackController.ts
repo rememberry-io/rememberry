@@ -1,5 +1,6 @@
 import * as schema from "../../db/schema";
 import * as stackModel from "./stackModels";
+import * as cacheModel from '../cache/cacheModel'
 import * as types from "./types";
 
 export async function controlCreateStack(stack: schema.NewStack) {
@@ -15,11 +16,15 @@ export async function controlGetStackById(stackId: string) {
 }
 
 export async function controlGetAllStacksFromMap(mapId: string) {
-  const stacks = await stackModel.getStacksFromMap(mapId);
-  console.log(stacks);
-
-  const res = transformToHierarchy(stacks);
-  return res;
+  const cacheResult = await cacheModel.readCache(mapId)
+  if(cacheResult){
+    return cacheResult
+  }else{
+    const stacks = await stackModel.getStacksFromMap(mapId);
+    const res = transformToHierarchy(stacks);
+    cacheModel.cacheValue(mapId, res)
+    return res;
+  }
 }
 
 const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
@@ -60,9 +65,23 @@ export async function controlGetDirectChildsFromParent(parentStackId: string) {
   return res;
 }
 
+function isObject(value: any): value is object {
+  return typeof value === 'object' && value !== null;
+}
+
 export async function controlGetAllChildsFromParent(parentStackId: string) {
-  const res = await stackModel.getAllChildsFromParent(parentStackId);
-  return res;
+  const cacheResult = await cacheModel.readCache(parentStackId)
+  if(cacheResult){
+    return cacheResult
+  }else{
+    const res = await stackModel.getAllChildsFromParent(parentStackId);
+    if(isObject(res)){
+      cacheModel.cacheValue(parentStackId, res)
+      return res;
+    }else{
+      return new Error("Value is not an Object")
+    }
+  }
 }
 
 export async function controlGetParentFromStack(stackId: string) {
@@ -91,3 +110,5 @@ export async function controlStackAndChildDeletion(stackId: string) {
   const res = await stackModel.deleteStackAndChildren(stackId);
   return res;
 }
+
+
