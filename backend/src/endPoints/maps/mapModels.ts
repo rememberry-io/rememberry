@@ -3,17 +3,15 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { client } from "../../db/db";
 import * as schema from "../../db/schema";
 import { TRPCError } from "@trpc/server";
-import { TRPCError } from "@trpc/server";
+
 
 const database = drizzle(client, { schema });
 
 const internalServerError = new TRPCError({code:"INTERNAL_SERVER_ERROR"})
 
-const internalServerError = new TRPCError({code:"INTERNAL_SERVER_ERROR"})
 
 export async function createMap(
   userInput: schema.newMap,
- ) {
  ) {
   const res = await database
     .insert(schema.maps)
@@ -46,7 +44,6 @@ export async function createSharedMap(map: schema.newMap): Promise<schema.newMap
 export async function updateMap(
   userInput: schema.newMap,
 ){
-){
   const res = await database
     .update(schema.maps)
     .set({
@@ -57,26 +54,18 @@ export async function updateMap(
     if(res.length < 1){
       return [internalServerError, null] as const
     }
-  return [null, res] as const;
-    if(res.length < 1){
-      return [internalServerError, null] as const
-    }
-  return [null, res] as const;
+    return [null, res] as const
 }
 
 export async function deleteMapWithAllStacks(
   mapId: string,
  ){
-  const res = await database
- ){
+
+
   const res = await database
     .delete(schema.maps)
     .where(eq(schema.maps.map_id, mapId))
     .returning();
-  if(res.length < 1){
-    return [internalServerError, null] as const
-  }
-  return [null, res] as const
   if(res.length < 1){
     return [internalServerError, null] as const
   }
