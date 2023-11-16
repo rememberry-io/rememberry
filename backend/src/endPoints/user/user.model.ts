@@ -20,7 +20,7 @@ export async function writeUser(
       refresh_token: null,
     })
     .returning();
-    if(newUser.length < 0 || newUser.length > 1){
+    if(newUser.length < 1 || newUser.length > 1){
       return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null] as const
     }
   return [null, newUser];
@@ -29,10 +29,10 @@ export async function writeUser(
 //READ
 export async function readAllUsers() {
   const res = await database.select().from(schema.users);
-  if(res.length < 0){
-    return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null]
+  if(res.length < 1){
+    return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null] as const
   }
-  return [null, res];
+  return [null, res] as const;
 }
 
 export async function checkUsername(username: string) {
@@ -41,7 +41,7 @@ export async function checkUsername(username: string) {
     .from(schema.users)
     .where(eq(schema.users.username, username));
   if (user[0]) {
-    return [null, true];
+    return [null, true] as const;
   }
 }
 
@@ -51,7 +51,7 @@ export async function checkUserEmail(email: string) {
     .from(schema.users)
     .where(eq(schema.users.email, email));
   if (user[0]) {
-    return [null, true];
+    return [null, true] as const;
   }
 }
 
@@ -121,10 +121,10 @@ export async function updateUserById(
     })
     .where(eq(schema.users.user_id, userId))
     .returning();
-  if(updatedUser.length < 0){
+  if(updatedUser.length < 1){
     return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null] as const 
   }
-  return [null, updatedUser[0]];
+  return [null, updatedUser[0]] as const;
 }
 
 
@@ -133,8 +133,8 @@ export async function deleteUserById(userId: string) {
     .delete(schema.users)
     .where(eq(schema.users.user_id, userId))
     .returning();
-    if(deletedUser.length < 0){
-      return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null]
+    if(deletedUser.length < 1){
+      return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null] as const
     }
-  return [null, deletedUser[0]];
+  return [null, deletedUser[0]] as const;
 }
