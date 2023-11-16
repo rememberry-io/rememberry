@@ -1,26 +1,48 @@
-import * as peersModels from './peersModels'
+import { TRPCError } from "@trpc/server";
+import * as peersModels from "./peersModels";
 
-export async function controlPeerCreation(userId:string, peerName:string){
-    const peerId = await peersModels.createPeer(peerName)
-    const res = await peersModels.createUsersPeersRelation(peerId, userId)
-    return res
+export async function controlPeerCreation(userId: string, peerName: string) {
+  const [errorCheck, peer] = await peersModels.createPeer(peerName);
+  if (errorCheck) {
+    return [errorCheck, null] as const;
+  }
+  const peerId = peer.peer_id;
+  const [secondErrorCheck, relation] =
+    await peersModels.createAdminPeerrelation(peerId, userId);
+  if (secondErrorCheck) {
+    return [secondErrorCheck, null] as const;
+  }
+  const res = {
+    peer,
+    relation,
+  };
+  return [null, res] as const;
 }
 
-export async function controlUpdatePeerName(newPeerName:string, peerId:string, userId:string){
-    const adminStatus = await peersModels.checkIfMemberIsAdmin(userId, peerId)
-    if(adminStatus){
-        const res = await peersModels.updatePeerName(newPeerName, peerId)
-        return res
-    }
-    const error =  new Error("UNAUTHORIZED")
-    return [adminStatus, error]
+export async function controlUpdatePeerName(
+  newPeerName: string,
+  peerId: string,
+  userId: string,
+) {
+  const adminStatus = await peersModels.getAdminStatus(userId, peerId);
+  if (adminStatus) {
+    const res = await peersModels.updatePeerName(newPeerName, peerId);
+    return [null, res] as const;
+  }
+  return [new TRPCError({code:"UNAUTHORIZED"}), null] as const ;
 }
 
-export async function controlKick(kickerId:string, kickedUserId:string, peerId:string) {
-    const adminStatus = await peersModels.checkIfMemberIsAdmin(kickerId, peerId)
-    if(adminStatus){
-        const res = peersModels.kickMember(kickedUserId, peerId)
-        return res
-    }
-     const error = new Error("UNAUTHORIZED")
+export async function controlKick(
+  kickerId: string,
+  kickedUserId: string,
+  peerId: string,
+) {
+  const [errorCheck, adminStatus] = await peersModels.getAdminStatus(kickerId, peerId);
+  if (adminStatus) {
+    const res = peersModels.kickMember(kickedUserId, peerId);
+    return [null, res] as const;
+  }else if(errorCheck){
+    return [errorCheck, null] as const 
+  }
+  return [new TRPCError({code:"UNAUTHORIZED"}), null]
 }
