@@ -67,3 +67,18 @@ export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {
   const res = await prepared.execute({ id: userId });
   return res;
 }
+
+export async function getUsersMaps(userId:string){
+  const res = await database.execute(sql`
+  SELECT m.map_id, m.map_name, m.map_description
+  FROM maps m
+  WHERE m.user_id = 'your_user_id'
+  UNION 
+  SELECT m.map_id, m.map_name, m.map_description
+  FROM maps m
+  JOIN peers p ON m.peer_id = p.peer_id
+  JOIN users_peers up ON p.peer_id = up.peer_id
+  WHERE up.user_id = 'your_user_id';
+`)
+  return res.rows
+}
