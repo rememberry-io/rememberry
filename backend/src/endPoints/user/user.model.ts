@@ -23,7 +23,7 @@ export async function writeUser(
     if(newUser.length < 1 || newUser.length > 1){
       return [new TRPCError({code:"INTERNAL_SERVER_ERROR"}), null] as const
     }
-  return [null, newUser];
+  return [null, newUser] as const;
 }
 
 //READ
