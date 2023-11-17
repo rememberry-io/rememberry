@@ -7,9 +7,7 @@ import * as types from "./types";
 
 const database = drizzle(client, { schema });
 
-export async function checkLoginCredentials(
-  credentials: types.LoginCredentials,
-) {
+export async function getLoginCredentials(credentials: types.LoginCredentials) {
   const user = await database
     .select({
       user_id: schema.users.user_id,
