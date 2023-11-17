@@ -8,7 +8,7 @@ const redis = new Redis({
   })
 
   export async function invalidateValue(key:string){
-    redis.json_del(key)
+      redis.json_del(key)
   }
 
   export async function cacheValue(key:string, value:object, timeToLive=0){
@@ -19,7 +19,11 @@ const redis = new Redis({
   }
 
   export async function readCache(key:string): Promise<object | null>{
-    const res = redis.json_get(key)
-    return res
+    try {
+      const res = redis.json_get(key)
+      return [null, res]
+    } catch (error) {
+      return [error, null]
+    }
   }
 
