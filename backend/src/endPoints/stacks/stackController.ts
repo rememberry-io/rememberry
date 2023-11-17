@@ -23,13 +23,33 @@ export async function controlGetStackById(stackId: string) {
 export async function controlGetAllStacksFromMap(mapId: string) {
   const cacheResult = await cacheModel.readCache(mapId)
   if(cacheResult){
-    return cacheResult
-  }else{
-    const stacks = await stackModel.getStacksFromMap(mapId);
-    const res = transformToHierarchy(stacks);
-    cacheModel.cacheValue(mapId, res)
-    return res;
+    return [null, cacheResult] as const 
   }
+    let [errorCheck, stacks] = await stackModel.getStacksFromMap(mapId);
+    if(errorCheck){
+      return [errorCheck, null] as const
+    }
+    if(isObject(stacks)){
+      stacks = transformToHierarchy(stacks);
+      cacheModel.cacheValue(mapId, stacks)
+    }
+    return [null, stacks] as const;
+  }
+
+
+export async function controlGetAllChildsFromParent(parentStackId: string) {
+    const cacheResult = await cacheModel.readCache(parentStackId)
+    if(cacheResult){
+      return [null, cacheResult] as const
+    }
+   const [errorCheck, res] = await stackModel.getAllChildsFromParent(parentStackId);
+  if(errorCheck){
+    return [errorCheck, null] as const 
+  }
+  if(isObject(res)){
+    cacheModel.cacheValue(parentStackId, res)
+  }
+  return [null, res] as const 
 }
 
 const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
@@ -80,24 +100,7 @@ function isObject(value: any): value is object {
   return typeof value === 'object' && value !== null;
 }
 
-function isObject(value: any): value is object {
-  return typeof value === 'object' && value !== null;
-}
 
-export async function controlGetAllChildsFromParent(parentStackId: string) {
-  const cacheResult = await cacheModel.readCache(parentStackId)
-  if(cacheResult){
-    return cacheResult
-  }else{
-    const res = await stackModel.getAllChildsFromParent(parentStackId);
-    if(isObject(res)){
-      cacheModel.cacheValue(parentStackId, res)
-      return res;
-    }else{
-      return new Error("Value is not an Object")
-    }
-  }
-}
 
 export async function controlGetParentFromStack(stackId: string) {
   const [errorCheck, res] = await stackModel.getStackById(stackId);
