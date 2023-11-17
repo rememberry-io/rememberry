@@ -57,7 +57,6 @@ $ ./start_docker_environment
 
 Go into the frontend folder, copy the .env.example into .env.local and run with npm
 ```bash
-$ cp .env.example .env.local
 $ cd frontend
 $ npm run dev
 ```
@@ -70,6 +69,15 @@ This will do the following (The ports are based of the .env.example and docker-c
   - http://localhost:3050/
 3. Start the frontend website on port 3000
   - http://localhost:3000
+
+Since there is no connection with the backend yet, there is not really a lot happening yet.
+
+These are some of the noticable endpoints on the frontend
+- http://localhost:3000
+- http://localhost:3000/login
+- http://localhost:3000/map
+
+Development is also slightly ahead of staging at this point
 
 ## Noticable Technologies 
 - Typescript

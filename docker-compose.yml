@@ -13,6 +13,7 @@ services:
       ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
       REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
       NODE_ENV: ${NODE_ENV}
+      PORT: ${PORT}
     networks:
       - rem-net
     ports:
