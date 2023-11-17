@@ -15,6 +15,7 @@ const EnvZod = z.object({
   PG_PASSWORD: z.string(),
   ACCESS_TOKEN_SECRET: z.string(),
   REFRESH_TOKEN_SECRET: z.string(),
+  PORT: z.number(),
 });
 
 function getEnvSrc() {
@@ -29,6 +30,7 @@ function parseEnv(env: { [key: string]: string }) {
   return {
     ...env,
     PG_PORT: parseInt(env.PG_PORT),
+    PORT: parseInt(env.PORT),
     NODE_ENV: env.NODE_ENV,
     IS_PROD: env.NODE_ENV === "production",
   };
