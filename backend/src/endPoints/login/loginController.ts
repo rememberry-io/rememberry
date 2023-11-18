@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as schema from "../../db/schema";
@@ -6,7 +7,6 @@ import { readUserById } from "../user/user.model";
 import { controlUserCreation } from "../user/userController";
 import * as loginModel from "./loginModels";
 import * as types from "./types";
-import { TRPCError } from "@trpc/server";
 
 export async function controlLogin(credentials: types.LoginCredentials) {
   const user = await loginModel.getLoginCredentials(credentials);
@@ -21,13 +21,13 @@ export async function controlLogin(credentials: types.LoginCredentials) {
     };
     return [null, tokens];
   }
-  return [new TRPCError({code:"FORBIDDEN"}), null];
+  return [new TRPCError({ code: "FORBIDDEN" }), null];
 }
 
 export async function controlRegistration(user: schema.NewUser) {
   const [errorCheck, newUser] = await controlUserCreation(user);
-  if(errorCheck){
-    return [errorCheck, null] as const 
+  if (errorCheck) {
+    return [errorCheck, null] as const;
   }
   const userCredentials = {
     email: user.email,
@@ -44,7 +44,7 @@ export async function controlRegistration(user: schema.NewUser) {
       refreshToken: refreshToken,
     },
   };
-  return [null, res] as const ;
+  return [null, res] as const;
 }
 
 export function signAccessToken(user: types.LoginUser) {
@@ -76,10 +76,10 @@ export async function refreshAccessToken(token: types.refreshTokenInputType) {
   const decodedToken = jwt.decode(token.refreshToken) as types.JWTPayload;
   const tokensUserId = decodedToken.userId;
   const [errorCheck, user] = await readUserById(tokensUserId);
-  if(errorCheck){
-    return [errorCheck, null]
+  if (errorCheck) {
+    return [errorCheck, null];
   }
-  if(user){
+  if (user) {
     const logInUser = {
       user_id: user.user_id,
       password: user.password,
@@ -90,6 +90,5 @@ export async function refreshAccessToken(token: types.refreshTokenInputType) {
         newAccessToken,
       };
     }
-
   }
 }

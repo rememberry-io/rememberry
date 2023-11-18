@@ -9,8 +9,8 @@ export const loginRouter = router({
     .input(types.LoginCredentialsSchema)
     .query(async (opts) => {
       const [errorCheck, res] = await loginController.controlLogin(opts.input);
-      if(errorCheck){
-        throw errorCheck
+      if (errorCheck) {
+        throw errorCheck;
       }
       return res;
     }),
@@ -18,9 +18,11 @@ export const loginRouter = router({
   registerUser: publicProcedure
     .input(types.registerInput)
     .query(async (opts) => {
-      const [errorCheck, res] = await loginController.controlRegistration(opts.input);
-      if(errorCheck){
-        throw errorCheck
+      const [errorCheck, res] = await loginController.controlRegistration(
+        opts.input,
+      );
+      if (errorCheck) {
+        throw errorCheck;
       }
       return res;
     }),
