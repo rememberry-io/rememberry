@@ -18,7 +18,7 @@ const User = z.object({
 });
 
 export const userRouter = router({
-  createUser: publicProcedure.input(createUserInput).query(async (opts) => {
+  createUser: publicProcedure.input(createUserInput).mutation(async (opts) => {
     const res = await userController.controlUserCreation(opts.input);
     if (res instanceof TRPCError) throw res;
     console.log(res);

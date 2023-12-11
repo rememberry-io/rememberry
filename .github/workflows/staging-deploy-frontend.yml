@@ -2,17 +2,61 @@ name: Staging Deployment Frontend
 
 on:
   push:
-    tags:
-      - 'frontend-v[0-9]+.[0-9]+.[0-9]+-[a-zA-Z0-9]*'
+    paths:
+      - "frontend/**"
+      - ".github/workflows/staging-deploy-frontend.yml"
+    branches:
+      - master
 
 jobs:
+  lint-format:
+    name: run linter and formatter
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-version: 20
+      - run: npm ci
+        name: install dependecies
+        working-directory: frontend
+      - run: npm run lint
+        name: linter
+        working-directory: frontend
+      - run: |
+          if ! npx prettier --check .; then
+            echo "Please format the code by running: npm run format"
+            exit 1
+          fi
+        name: check formatting
+        working-directory: frontend
+
+  test:
+    name: run tests
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-version: 20
+      - run: npm ci
+        name: install dependecies
+        working-directory: frontend
+      - run: npm run test
+        working-directory: frontend
+        name: run tests
+
   build-image:
     runs-on: ubuntu-22.04
+    needs: [lint-format, test]
     name: build & push docker image
-      # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     # Current Solution is to directly pass in the pararmeter for the host and port 
     # so there is no build time error should be fixed at some time
-    #
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend and backend
@@ -20,22 +64,16 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: set up docker buildx
         uses: docker/setup-buildx-action@v3
-      - name: Prepare tag
-        id: prepare
-        shell: bash
-        run: |
-          echo "tag=${GITHUB_REF#refs/tags/frontend-}" >> $GITHUB_ENV
       - name: docker metadata
         id: metadata
         uses: docker/metadata-action@v5
         with: 
           images: notemann27/rememberry-frontend
           tags: |
-            type=raw,value=${{ env.tag }}
+            type=raw,value=${{ github.sha }}
             type=raw,value=latest
       - name: log in to Docker Hub
         uses: docker/login-action@v3
-        if: ${{ github.ref_type == 'tag' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -60,7 +98,7 @@ jobs:
   staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging frontend
-      # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: [build-image]
     steps:
       - name: set the kubernetes context
@@ -81,4 +119,4 @@ jobs:
           manifests: |
             deployments/staging-frontend-deployment.yml
           images: |
-            notemann27/rememberry-frontend:latest
+            notemann27/rememberry-frontend:${{ github.sha }}
