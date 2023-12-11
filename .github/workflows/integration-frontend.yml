@@ -26,13 +26,13 @@ jobs:
         name: install dependecies
       - run: npm run lint
         name: linter
-      - run: npm run format
-        name: formatter
-      - name: commit format changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with: 
-          commit_message: "format: run prettier to format files"
-          branch: ${{ github.head_ref }}
+      - run: |
+          if npx prettier --check .; then
+            echo "Please format the code by running: npm run format"
+            exit 1
+          fi
+        name: check formatting
+
   test:
     name: run tests
     runs-on: ubuntu-22.04
