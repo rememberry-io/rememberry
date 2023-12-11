@@ -56,6 +56,7 @@ jobs:
 
   build-image:
     runs-on: ubuntu-22.04
+    needs: [lint-format, test]
     name: build & push docker image
     steps:
       - uses: actions/checkout@v4

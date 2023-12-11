@@ -9,8 +9,50 @@ on:
       - master
 
 jobs:
+  lint-format:
+    name: run linter and formatter
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-version: 20
+      - run: npm ci
+        name: install dependecies
+        working-directory: frontend
+      - run: npm run lint
+        name: linter
+        working-directory: frontend
+      - run: |
+          if ! npx prettier --check .; then
+            echo "Please format the code by running: npm run format"
+            exit 1
+          fi
+        name: check formatting
+        working-directory: frontend
+
+  test:
+    name: run tests
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout frontend
+      - uses: actions/setup-node@v3
+        name: get nodejs
+        with:
+          node-version: 20
+      - run: npm ci
+        name: install dependecies
+        working-directory: frontend
+      - run: npm run test
+        working-directory: frontend
+        name: run tests
+
   build-image:
     runs-on: ubuntu-22.04
+    needs: [lint-format, test]
     name: build & push docker image
     if: github.ref == 'refs/heads/master'
     # Current Solution is to directly pass in the pararmeter for the host and port 
