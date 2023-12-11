@@ -27,7 +27,7 @@ jobs:
       - run: npm run lint
         name: linter
       - run: |
-          if npx prettier --check .; then
+          if ! npx prettier --check .; then
             echo "Please format the code by running: npm run format"
             exit 1
           fi
@@ -47,6 +47,7 @@ jobs:
         name: install dependecies
       - run: npm run test
         name: run tests
+
   build-compile:
     name: build with next to check compilation
     runs-on: ubuntu-22.04
