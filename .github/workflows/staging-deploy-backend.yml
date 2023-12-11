@@ -2,11 +2,58 @@ name: Staging Deployment Backend
 
 on:
   push:
-    tags:
-      - 'backend-v[0-9]+.[0-9]+.[0-9]+-[a-zA-Z0-9]*'
+    paths:
+      - "backend/**"
+      - ".github/workflows/staging-deploy-backend.yml"
+    branches:
+      - master
 
 
 jobs:
+
+  test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: install dependecies
+        working-directory: backend
+      - run: bun run test
+        name: test with bun
+        working-directory: backend
+
+  lint-format: 
+    name: lint and format backend
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        name: checkout backend
+        with:
+          sparse-checkout: |
+            ./backend
+      - uses: oven-sh/setup-bun@v1
+        name: get bun
+        with:
+          bun-version: 1.0.6
+      - run: bun install --frozen-lockfile
+        name: install dependecies
+        working-directory: backend
+      - run: |
+          if ! bunx prettier --check .; then
+            echo "Please format the code by running: bun run format"
+            exit 1
+          fi
+        name: check code formatting
+        working-directory: backend
+
   build-image:
     runs-on: ubuntu-22.04
     name: build & push docker image
@@ -31,11 +78,10 @@ jobs:
         with: 
           images: notemann27/rememberry-backend
           tags: |
-            type=raw,value=${{ env.tag }}
+            type=raw,value=${{ github.sha }}
             type=raw,value=latest
       - name: log in to Docker Hub
         uses: docker/login-action@v3
-        if: ${{ github.ref_type == 'tag' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -52,8 +98,8 @@ jobs:
   staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging
-      # if: github.ref == 'refs/heads/master'
-    needs: [build-image]
+    if: github.ref == 'refs/heads/master'
+    needs: build-image
     steps:
       - name: set the kubernetes context
         uses: azure/k8s-set-context@v3
@@ -69,8 +115,12 @@ jobs:
       - name: deploy to the kubernetes cluster
         uses: azure/k8s-deploy@v4
         with:
+          action: deploy
+          force: true
+          strategy: basic
           namespace: rememberry
           manifests: |
             deployments/staging-backend-deployment.yaml
           images: |
-            notemann27/rememberry-backend:latest
+            notemann27/rememberry-backend:${{ github.sha }}
+
