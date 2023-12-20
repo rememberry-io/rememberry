@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { privateProcedure } from "../../middleware/jwt";
 import { publicProcedure, router } from "../../trpc";
@@ -19,31 +18,53 @@ const User = z.object({
 
 export const userRouter = router({
   createUser: publicProcedure.input(createUserInput).mutation(async (opts) => {
-    const res = await userController.controlUserCreation(opts.input);
-    if (res instanceof TRPCError) throw res;
-    console.log(res);
+    const [errorCheck, res] = await userController.controlUserCreation(
+      opts.input,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   updateUser: privateProcedure.input(User).query(async (opts) => {
-    const res = await userController.controlUserUpdateById(opts.input);
+    const [errorCheck, res] = await userController.controlUserUpdateById(
+      opts.input.password,
+      opts.input.email,
+      opts.input.username,
+      opts.input.user_id,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   deleteUserById: privateProcedure.input(User).mutation(async (opts) => {
-    const res = await userController.controlUserDeletionById(
+    const [errorCheck, res] = await userController.controlUserDeletionById(
       opts.input.user_id,
     );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getAllUsers: privateProcedure.input(z.undefined()).query(async (opts) => {
-    const res = await userController.getAllUsers();
+    const [errorCheck, res] = await userController.getAllUsers();
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getUserById: publicProcedure.input(User).query(async (opts) => {
-    const res = await userController.getUserById(opts.input.user_id);
+    const [errorCheck, res] = await userController.getUserById(
+      opts.input.user_id,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 });

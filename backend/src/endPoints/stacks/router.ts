@@ -25,78 +25,116 @@ const changeParentStackInput = z.object({
 
 export const stackRouter = router({
   create: privateProcedure.input(stackInput).query(async (opts) => {
-    const res = await stackController.controlCreateStack(opts.input);
+    const [errorCheck, res] = await stackController.controlCreateStack(
+      opts.input,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getById: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await stackController.controlGetStackById(opts.input);
-
+    const [errorCheck, res] = await stackController.controlGetStackById(
+      opts.input,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getOldestParentsFromMap: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const res = await stackController.controlGetHighestOrderStacks(
-        opts.input,
-      );
+      const [errorCheck, res] =
+        await stackController.controlGetHighestOrderStacks(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
   getDirectChilds: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await stackController.controlGetDirectChildsFromParent(
-      opts.input,
-    );
+    const [errorCheck, res] =
+      await stackController.controlGetDirectChildsFromParent(opts.input);
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getAllChildren: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await stackController.controlGetAllChildsFromParent(opts.input);
+    const [errorCheck, res] =
+      await stackController.controlGetAllChildsFromParent(opts.input);
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getAll: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await stackController.controlGetAllStacksFromMap(opts.input);
+    const [errorCheck, res] = await stackController.controlGetAllStacksFromMap(
+      opts.input,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   getParent: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await stackController.controlGetParentFromStack(opts.input);
+    const [errorCheck, res] = await stackController.controlGetParentFromStack(
+      opts.input,
+    );
+    if (errorCheck) {
+      throw errorCheck;
+    }
     return res;
   }),
 
   changeParent: privateProcedure
     .input(changeParentStackInput)
     .mutation(async (opts) => {
-      const res = await stackController.controlChangeParentStack(opts.input);
+      const [errorCheck, res] = await stackController.controlChangeParentStack(
+        opts.input,
+      );
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
   deleteParentRelation: privateProcedure
     .input(z.string())
     .mutation(async (opts) => {
-      const res = await stackController.controlDeleteParentStackRelation(
-        opts.input,
-      );
+      const [errorCheck, res] =
+        await stackController.controlDeleteParentStackRelation(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
   deleteAndMoveChildsUp: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const res = await stackController.controlStackDeletionAndChildMoveUp(
-        opts.input,
-      );
+      const [errorCheck, res] =
+        await stackController.controlStackDeletionAndChildMoveUp(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
   deleteWithAllChilds: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const res = await stackController.controlStackAndChildDeletion(
-        opts.input,
-      );
+      const [errorCheck, res] =
+        await stackController.controlStackAndChildDeletion(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 });

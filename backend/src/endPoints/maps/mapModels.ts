@@ -1,14 +1,14 @@
+import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { client } from "../../db/db";
 import * as schema from "../../db/schema";
 
 const database = drizzle(client, { schema });
-type dbConnection = typeof database;
 
-export async function createMap(
-  userInput: schema.newMap,
-): Promise<schema.Map[]> {
+const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+
+export async function createMap(userInput: schema.newMap) {
   const res = await database
     .insert(schema.maps)
     .values({
@@ -17,7 +17,10 @@ export async function createMap(
       map_description: userInput.map_description,
     })
     .returning();
-  return res;
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res[0]] as const;
 }
 
 export async function createSharedMap(
@@ -36,9 +39,7 @@ export async function createSharedMap(
   return res[0];
 }
 
-export async function updateMap(
-  userInput: schema.newMap,
-): Promise<schema.Map[]> {
+export async function updateMap(userInput: schema.newMap) {
   const res = await database
     .update(schema.maps)
     .set({
@@ -46,18 +47,29 @@ export async function updateMap(
       map_description: userInput.map_description,
     })
     .returning();
-
-  return res;
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res] as const;
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res] as const;
 }
 
-export async function deleteMapWithAllStacks(
-  mapId: string,
-): Promise<schema.Map[]> {
-  const res = database
+export async function deleteMapWithAllStacks(mapId: string) {
+  const res = await database
     .delete(schema.maps)
     .where(eq(schema.maps.map_id, mapId))
     .returning();
-  return res;
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res] as const;
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res] as const;
 }
 
 export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {

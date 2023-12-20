@@ -7,10 +7,7 @@ import * as schema from "../../db/schema";
 export const database = drizzle(client, { schema });
 
 //WRITE
-export async function writeUser(
-  userInput: schema.NewUser,
-  hashedPwd: string,
-): Promise<schema.NewUser[]> {
+export async function writeUser(userInput: schema.NewUser, hashedPwd: string) {
   const newUser = await database
     .insert(schema.users)
     .values({
@@ -20,14 +17,19 @@ export async function writeUser(
       refresh_token: null,
     })
     .returning();
-
-  return newUser;
+  if (newUser.length < 1 || newUser.length > 1) {
+    return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+  }
+  return [null, newUser];
 }
 
 //READ
 export async function readAllUsers() {
   const res = await database.select().from(schema.users);
-  return res;
+  if (res.length < 1) {
+    return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+  }
+  return [null, res] as const;
 }
 
 export async function checkUsername(username: string) {
@@ -36,7 +38,7 @@ export async function checkUsername(username: string) {
     .from(schema.users)
     .where(eq(schema.users.username, username));
   if (user[0]) {
-    return true;
+    return [null, true] as const;
   }
 }
 
@@ -46,7 +48,7 @@ export async function checkUserEmail(email: string) {
     .from(schema.users)
     .where(eq(schema.users.email, email));
   if (user[0]) {
-    return true;
+    return [null, true] as const;
   }
 }
 
@@ -78,47 +80,56 @@ export async function readUserById(userId: string) {
     .select()
     .from(schema.users)
     .where(eq(schema.users.user_id, userId));
-  return user;
+  if (user.length < 1) {
+    return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+  }
+  return [null, user[0]];
 }
 
 export async function fetchUpdateCredentials(
-  userInput: schema.User,
-): Promise<schema.User[]> {
+  email: string,
+  username: string,
+  userId: string,
+) {
   const res = await database
     .select()
     .from(schema.users)
     .where(
-      or(
-        eq(schema.users.email, userInput.email),
-        eq(schema.users.password, userInput.password),
-      ),
+      or(eq(schema.users.email, email), eq(schema.users.password, username)),
     )
-    .where(ne(schema.users.user_id, userInput.user_id));
+    .where(ne(schema.users.user_id, userId));
   return res;
 }
 
 //UPDATE
 export async function updateUserById(
-  userInput: schema.User,
+  username: string,
+  userEmail: string,
   hashedPwd: string,
-): Promise<schema.User[]> {
+  userId: string,
+) {
   const updatedUser = await database
     .update(schema.users)
     .set({
-      username: userInput.username,
-      email: userInput.email,
+      username: username,
+      email: userEmail,
       password: hashedPwd,
     })
-    .where(eq(schema.users.user_id, userInput.user_id))
+    .where(eq(schema.users.user_id, userId))
     .returning();
-  return updatedUser;
+  if (updatedUser.length < 1) {
+    return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+  }
+  return [null, updatedUser[0]] as const;
 }
 
-//DELETE
-export async function deleteUserById(userId: string): Promise<schema.User[]> {
+export async function deleteUserById(userId: string) {
   const deletedUser = await database
     .delete(schema.users)
     .where(eq(schema.users.user_id, userId))
     .returning();
-  return deletedUser;
+  if (deletedUser.length < 1) {
+    return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
+  }
+  return [null, deletedUser[0]] as const;
 }
