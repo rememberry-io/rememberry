@@ -132,8 +132,7 @@ export const Media = pgTable("media", {
   frontside_media_link: varchar("frontside_media_link"),
   frontside_media_positioning: varchar("frontside_media_positioning"),
   backside_media_link: varchar("backside_media_link"),
-  backside_media_positioning: varchar("backside_media_positioning"),,
-
+  backside_media_positioning: varchar("backside_media_positioning"),
 });
 
 export const media_relations = relations(Media, ({ one }) => ({
@@ -146,10 +145,9 @@ export const media_relations = relations(Media, ({ one }) => ({
 export type Medias = typeof Media.$inferSelect;
 export type NewMedia = typeof Media.$inferInsert;
 
-
 export const Peers = pgTable("peers", {
   peer_id: uuid("peer_id").defaultRandom().primaryKey(),
-  name: varchar("name").notNull()
+  name: varchar("name").notNull(),
 });
 
 export const peers_relations = relations(Peers, ({ one, many }) => ({
