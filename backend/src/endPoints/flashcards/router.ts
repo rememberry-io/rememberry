@@ -56,7 +56,7 @@ export const flashcardRouter = router({
       return res;
     }),
 
-  getLearnableCardsFromStackAndChilds: privateProcedure
+  getLearnableCardsFromParentAndChilds: privateProcedure
     .input(z.string())
     .query(async (opts) => {
       const res =

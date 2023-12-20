@@ -1,0 +1,1 @@
+ALTER TABLE "Peers" ADD COLUMN "test" varchar;

@@ -1,0 +1,1 @@
+ALTER TABLE "Users_Peers" ALTER COLUMN "is_peer_admin" SET NOT NULL;

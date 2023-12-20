@@ -124,15 +124,15 @@ export const session_data_relations = relations(session_data, ({ one }) => ({
 export type SessionData = typeof session_data.$inferSelect;
 export type NewSessionData = typeof session_data.$inferInsert;
 
-export const Media = pgTable("Media", {
+export const Media = pgTable("media", {
   media_id: uuid("media_id").defaultRandom().primaryKey(),
   flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {
     onDelete: "cascade",
   }),
-  frontside_media_link: varchar("media_link"),
-  frontside_media_positioning: varchar("positioning"),
-  backside_media_link: varchar("media_link"),
-  backside_media_positioning: varchar("positioning"),
+  frontside_media_link: varchar("frontside_media_link"),
+  frontside_media_positioning: varchar("frontside_media_positioning"),
+  backside_media_link: varchar("backside_media_link"),
+  backside_media_positioning: varchar("backside_media_positioning"),
 });
 
 export const media_relations = relations(Media, ({ one }) => ({
@@ -142,10 +142,10 @@ export const media_relations = relations(Media, ({ one }) => ({
   }),
 }));
 
-export type BacksideMedia = typeof Media.$inferSelect;
-export type NewBacksideMedia = typeof Media.$inferInsert;
+export type Medias = typeof Media.$inferSelect;
+export type NewMedia = typeof Media.$inferInsert;
 
-export const Peers = pgTable("Peers", {
+export const Peers = pgTable("peers", {
   peer_id: uuid("peer_id").defaultRandom().primaryKey(),
   name: varchar("name").notNull(),
 });
@@ -159,10 +159,10 @@ export const peers_relations = relations(Peers, ({ one, many }) => ({
 export const Peer = typeof Peers.$inferSelect;
 export const NewPeer = typeof Peers.$inferInsert;
 
-export const Users_Peers = pgTable("Users_Peers", {
+export const Users_Peers = pgTable("users_peers", {
   user_id: uuid("user_id").references(() => users.user_id),
   peer_id: uuid("peer_id").references(() => Peers.peer_id),
-  is_peer_admin: boolean("is_peer_admin").default(false),
+  is_peer_admin: boolean("is_peer_admin").default(false).notNull(),
 });
 
 export const users_peers_relations = relations(Users_Peers, ({ one }) => ({

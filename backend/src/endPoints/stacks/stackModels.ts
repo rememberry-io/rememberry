@@ -3,9 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { client } from "../../db/db";
 import * as schema from "../../db/schema";
 import * as types from "./types";
-
 const database = drizzle(client, { schema });
-type dbConnection = typeof database;
 
 export async function createStack(
   stack: schema.NewStack,
@@ -65,21 +63,21 @@ export async function getDirectChildsFromParent(parentStackId: string) {
 }
 
 export async function getAllChildsFromParent(stackId: string) {
-  const res = await database.execute(sql`
-  WITH RECURSIVE cte_substacks AS (
-      
-      SELECT * FROM stacks WHERE stack_id=${stackId}
-  
-      UNION ALL
-  
-      SELECT stacks.* FROM stacks 
-      JOIN cte_substacks ON stacks.parent_stack_id = cte_substacks.stack_id
-      
-      )
-      SELECT * 
-      FROM cte_substacks
-  `);
-  return res.rows;
+  try {
+    const dbResult = await database.execute(sql`
+        WITH RECURSIVE cte_substacks AS (
+          SELECT * FROM stacks WHERE stack_id = ${stackId}
+          UNION ALL
+          SELECT stacks.* FROM stacks 
+          JOIN cte_substacks ON stacks.parent_stack_id = cte_substacks.stack_id
+        )
+        SELECT * FROM cte_substacks
+      `);
+    return dbResult.rows;
+  } catch (error) {
+    console.error("Error fetching child stacks:", error);
+    return error;
+  }
 }
 
 export async function getStackById(stackId: string) {

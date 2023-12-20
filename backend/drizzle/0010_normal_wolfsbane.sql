@@ -1,0 +1,1 @@
+ALTER TABLE "Peers" DROP COLUMN IF EXISTS "test";
