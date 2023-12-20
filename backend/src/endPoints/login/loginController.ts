@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import * as schema from "../../db/schema";
@@ -8,7 +9,7 @@ import * as loginModel from "./loginModels";
 import * as types from "./types";
 
 export async function controlLogin(credentials: types.LoginCredentials) {
-  const user = await loginModel.checkLoginCredentials(credentials);
+  const user = await loginModel.getLoginCredentials(credentials);
   const pwdCorrect = await bcrypt.compare(credentials.password, user.password);
   if (pwdCorrect) {
     const accessToken = signAccessToken(user);
@@ -18,13 +19,16 @@ export async function controlLogin(credentials: types.LoginCredentials) {
       access: accessToken,
       refresh: refreshToken,
     };
-    return tokens;
+    return [null, tokens];
   }
-  return { message: "UNAUTHORIZED" };
+  return [new TRPCError({ code: "FORBIDDEN" }), null];
 }
 
 export async function controlRegistration(user: schema.NewUser) {
-  const newUser = await controlUserCreation(user);
+  const [errorCheck, newUser] = await controlUserCreation(user);
+  if (errorCheck) {
+    return [errorCheck, null] as const;
+  }
   const userCredentials = {
     email: user.email,
     password: user.password,
@@ -40,7 +44,7 @@ export async function controlRegistration(user: schema.NewUser) {
       refreshToken: refreshToken,
     },
   };
-  return res;
+  return [null, res] as const;
 }
 
 export function signAccessToken(user: types.LoginUser) {
@@ -71,15 +75,20 @@ export async function refreshAccessToken(token: types.refreshTokenInputType) {
   jwt.verify(token.refreshToken, env.REFRESH_TOKEN_SECRET);
   const decodedToken = jwt.decode(token.refreshToken) as types.JWTPayload;
   const tokensUserId = decodedToken.userId;
-  const user = await readUserById(tokensUserId);
-  const logInUser = {
-    user_id: user[0].user_id,
-    password: user[0].password,
-  };
-  if (user && user[0].refresh_token === token.refreshToken) {
-    const newAccessToken = signAccessToken(logInUser);
-    return {
-      newAccessToken,
+  const [errorCheck, user] = await readUserById(tokensUserId);
+  if (errorCheck) {
+    return [errorCheck, null];
+  }
+  if (user) {
+    const logInUser = {
+      user_id: user.user_id,
+      password: user.password,
     };
+    if (user && user.refresh_token === token.refreshToken) {
+      const newAccessToken = signAccessToken(logInUser);
+      return {
+        newAccessToken,
+      };
+    }
   }
 }

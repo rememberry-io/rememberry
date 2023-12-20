@@ -18,6 +18,10 @@ export async function cacheValue(key: string, value: object, timeToLive = 0) {
 }
 
 export async function readCache(key: string): Promise<object | null> {
-  const res = redis.json_get(key);
-  return res;
+  try {
+    const res = redis.json_get(key);
+    return [null, res];
+  } catch (error) {
+    return [error, null];
+  }
 }

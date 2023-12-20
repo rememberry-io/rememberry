@@ -4,13 +4,12 @@ import * as schema from "../../db/schema";
 import * as userModel from "./user.model";
 
 export async function controlUserCreation(userInput: schema.NewUser) {
-  const userExists = await userModel.checkCredentials(
+  const [error, unUsed] = await userModel.checkCredentials(
     userInput.email,
     userInput.username,
   );
 
-  if (userExists[0]) return [userExists[0], null];
-
+  if (error) return [error, null];
   const salt = await bcrypt.genSalt(10);
   const hashedPwd = await bcrypt.hash(userInput.password, salt);
   const [errorCheck, res] = await userModel.writeUser(userInput, hashedPwd);

@@ -20,6 +20,7 @@ export async function createMap(userInput: schema.newMap) {
   if (res.length < 1) {
     return [internalServerError, null] as const;
   }
+
   return [null, res[0]] as const;
 }
 
@@ -51,10 +52,6 @@ export async function updateMap(userInput: schema.newMap) {
     return [internalServerError, null] as const;
   }
   return [null, res] as const;
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
-  }
-  return [null, res] as const;
 }
 
 export async function deleteMapWithAllStacks(mapId: string) {
@@ -62,10 +59,6 @@ export async function deleteMapWithAllStacks(mapId: string) {
     .delete(schema.maps)
     .where(eq(schema.maps.map_id, mapId))
     .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
-  }
-  return [null, res] as const;
   if (res.length < 1) {
     return [internalServerError, null] as const;
   }

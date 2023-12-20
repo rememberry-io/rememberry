@@ -156,8 +156,8 @@ export const peers_relations = relations(Peers, ({ one, many }) => ({
   invites: many(invites),
 }));
 
-export const Peer = typeof Peers.$inferSelect;
-export const NewPeer = typeof Peers.$inferInsert;
+export type Peer = typeof Peers.$inferSelect;
+export type NewPeer = typeof Peers.$inferInsert;
 
 export const Users_Peers = pgTable("users_peers", {
   user_id: uuid("user_id").references(() => users.user_id),

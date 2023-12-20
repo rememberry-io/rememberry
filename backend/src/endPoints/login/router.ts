@@ -8,14 +8,22 @@ export const loginRouter = router({
   loginUser: publicProcedure
     .input(types.LoginCredentialsSchema)
     .query(async (opts) => {
-      const res = loginController.controlLogin(opts.input);
+      const [errorCheck, res] = await loginController.controlLogin(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
   registerUser: publicProcedure
     .input(types.registerInput)
     .query(async (opts) => {
-      const res = await loginController.controlRegistration(opts.input);
+      const [errorCheck, res] = await loginController.controlRegistration(
+        opts.input,
+      );
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
