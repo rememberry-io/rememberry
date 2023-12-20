@@ -2,16 +2,11 @@ import * as flashcardModels from "./flashcardModels";
 import * as types from "./types";
 
 export async function controlCreateFlashcard(flashcard: types.Flashcards) {
-  if (flashcard.frontside_media_link && flashcard.backside_media_link) {
-    const res = await flashcardModels.createFlashcardWithMedia(flashcard);
+  if (flashcard.frontside_media_link || flashcard.backside_media_link) {
+    const res = flashcardModels.createFlashcardWithMedia(flashcard);
     return res;
-  } else if (flashcard.frontside_media_link && !flashcard.backside_media_link) {
-    const res =
-      await flashcardModels.createFlashcardWithFrontsideMedia(flashcard);
-    return res;
-  } else if (flashcard.backside_media_link && !flashcard.frontside_media_link) {
-    const res =
-      await flashcardModels.createFlashcardWithBackideMedia(flashcard);
+  } else {
+    const res = flashcardModels.createBasicFlashcard(flashcard);
     return res;
   }
 }

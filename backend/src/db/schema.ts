@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   AnyPgColumn,
+  boolean,
   date,
   integer,
   pgTable,
@@ -29,6 +30,7 @@ export const maps = pgTable("maps", {
   user_id: uuid("user_id").references(() => users.user_id, {
     onDelete: "cascade",
   }),
+  peer_id: uuid("peer_id").references(() => Peers.peer_id),
   map_name: varchar("map_name"),
   map_description: varchar("map_description"),
 });
@@ -37,6 +39,10 @@ export const mapRelations = relations(maps, ({ one, many }) => ({
   users: one(users, {
     fields: [maps.user_id],
     references: [users.user_id],
+  }),
+  peers: one(Peers, {
+    fields: [maps.peer_id],
+    references: [Peers.peer_id],
   }),
   stacks: many(stacks),
 }));
@@ -84,8 +90,7 @@ export const flashcardsRelations = relations(flashcards, ({ one, many }) => ({
     fields: [flashcards.stack_id],
     references: [stacks.stack_id],
   }),
-  frontside_media: many(frontside_media),
-  backside_media: many(backside_media),
+  Media: many(Media),
   session_data: many(session_data),
 }));
 
@@ -95,6 +100,9 @@ export type NewFlashcard = typeof flashcards.$inferInsert;
 export const session_data = pgTable("session_data", {
   session_id: uuid("session_id").defaultRandom().primaryKey(),
   flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {
+    onDelete: "cascade",
+  }),
+  user_id: uuid("user_id").references(() => users.user_id, {
     onDelete: "cascade",
   }),
   times_learned: integer("times_learned"),
@@ -107,48 +115,82 @@ export const session_data_relations = relations(session_data, ({ one }) => ({
     fields: [session_data.flashcard_id],
     references: [flashcards.flashcard_id],
   }),
+  users: one(users, {
+    fields: [session_data.user_id],
+    references: [users.user_id],
+  }),
 }));
 
 export type SessionData = typeof session_data.$inferSelect;
 export type NewSessionData = typeof session_data.$inferInsert;
 
-export const frontside_media = pgTable("frontside_media", {
+export const Media = pgTable("Media", {
   media_id: uuid("media_id").defaultRandom().primaryKey(),
   flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {
     onDelete: "cascade",
   }),
-  media_link: varchar("media_link"),
-  positioning: varchar("positioning"),
+  frontside_media_link: varchar("media_link"),
+  frontside_media_positioning: varchar("positioning"),
+  backside_media_link: varchar("media_link"),
+  backside_media_positioning: varchar("positioning"),
 });
 
-export const frontsideMediaRelations = relations(
-  frontside_media,
-  ({ one }) => ({
-    flashcards: one(flashcards, {
-      fields: [frontside_media.flashcard_id],
-      references: [flashcards.flashcard_id],
-    }),
-  }),
-);
-
-export type FrontsideMedia = typeof frontside_media.$inferSelect;
-export type NewFrontsideMedia = typeof frontside_media.$inferInsert;
-
-export const backside_media = pgTable("backside_media", {
-  media_id: uuid("media_id").defaultRandom().primaryKey(),
-  flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {
-    onDelete: "cascade",
-  }),
-  media_link: varchar("media_link"),
-  positioning: varchar("positioning"),
-});
-
-export const backsideMediaRelations = relations(backside_media, ({ one }) => ({
+export const media_relations = relations(Media, ({ one }) => ({
   flashcards: one(flashcards, {
-    fields: [backside_media.flashcard_id],
+    fields: [Media.flashcard_id],
     references: [flashcards.flashcard_id],
   }),
 }));
 
-export type BacksideMedia = typeof backside_media.$inferSelect;
-export type NewBacksideMedia = typeof backside_media.$inferInsert;
+export type BacksideMedia = typeof Media.$inferSelect;
+export type NewBacksideMedia = typeof Media.$inferInsert;
+
+export const Peers = pgTable("Peers", {
+  peer_id: uuid("peer_id").defaultRandom().primaryKey(),
+  name: varchar("name").notNull(),
+});
+
+export const peers_relations = relations(Peers, ({ one, many }) => ({
+  Users_Peers: many(Users_Peers),
+  maps: many(maps),
+  invites: many(invites),
+}));
+
+export const Peer = typeof Peers.$inferSelect;
+export const NewPeer = typeof Peers.$inferInsert;
+
+export const Users_Peers = pgTable("Users_Peers", {
+  user_id: uuid("user_id").references(() => users.user_id),
+  peer_id: uuid("peer_id").references(() => Peers.peer_id),
+  is_peer_admin: boolean("is_peer_admin").default(false),
+});
+
+export const users_peers_relations = relations(Users_Peers, ({ one }) => ({
+  users: one(users, {
+    fields: [Users_Peers.user_id],
+    references: [users.user_id],
+  }),
+  Peers: one(Peers, {
+    fields: [Users_Peers.peer_id],
+    references: [Peers.peer_id],
+  }),
+}));
+
+export type UsersPeers = typeof Users_Peers.$inferSelect;
+export type NewUsersPeers = typeof Users_Peers.$inferInsert;
+
+export const invites = pgTable("invites", {
+  invite_id: uuid("invite_id").defaultRandom(),
+  receiver_id: uuid("reveiver_id").references(() => users.user_id),
+  sender_id: uuid("sender_id").references(() => users.user_id),
+  peer_id: uuid("peer_id").references(() => Peers.peer_id),
+  text: varchar("text"),
+});
+
+export const invites_relations = relations(invites, ({ one }) => ({
+  users: one(users),
+  peers: one(Peers),
+}));
+
+export type Invite = typeof invites.$inferSelect;
+export type NewInvite = typeof invites.$inferInsert;
