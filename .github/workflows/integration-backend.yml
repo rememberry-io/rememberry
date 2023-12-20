@@ -29,7 +29,7 @@ jobs:
       - run: bun run test
         name: test with bun
 
-  lint: 
+  lint-format: 
     name: lint and format backend
     runs-on: ubuntu-20.04
     steps:
@@ -44,13 +44,12 @@ jobs:
           bun-version: 1.0.6
       - run: bun install --frozen-lockfile
         name: Install dependecies
-      - run: bun run format
-        name: Format the code with prettier
-      - name: Commit format changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with: 
-          commit_message: "format: run prettier to format files"
-          branch: ${{ github.head_ref }}
+      - run: |
+          if ! bunx prettier --check .; then
+            echo "Please format the code by running: bun run format"
+            exit 1
+          fi
+        name: Check code formatting
 
   test-build:
     name: build to check compilation

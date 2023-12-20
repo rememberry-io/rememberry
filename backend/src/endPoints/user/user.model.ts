@@ -83,6 +83,7 @@ export async function readUserById(userId: string) {
   if (user.length < 1) {
     return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
   }
+
   return [null, user[0]];
 }
 
@@ -131,5 +132,6 @@ export async function deleteUserById(userId: string) {
   if (deletedUser.length < 1) {
     return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
   }
+
   return [null, deletedUser[0]] as const;
 }

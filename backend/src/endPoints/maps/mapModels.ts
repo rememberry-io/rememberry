@@ -20,6 +20,7 @@ export async function createMap(userInput: schema.newMap) {
   if (res.length < 1) {
     return [internalServerError, null] as const;
   }
+
   return [null, res[0]] as const;
 }
 
