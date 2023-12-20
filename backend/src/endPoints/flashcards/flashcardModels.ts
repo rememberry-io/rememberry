@@ -1,16 +1,14 @@
+import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { client } from "../../db/db";
 import * as schema from "../../db/schema";
 import * as types from "./types";
-import { TRPCError } from "@trpc/server";
 const database = drizzle(client, { schema });
 
-const internalServerError = new TRPCError({code:"INTERNAL_SERVER_ERROR"})
+const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
-export async function createBasicFlashcard(
-  flashcard: types.Flashcards,
-){
+export async function createBasicFlashcard(flashcard: types.Flashcards) {
   const prep = database
     .insert(schema.flashcards)
     .values({
@@ -25,13 +23,13 @@ export async function createBasicFlashcard(
     frontside_text: flashcard.frontside_text,
     backside_text: flashcard.backside_text,
   });
-  if(res.length < 1){
-    return [internalServerError, null] as const
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
   }
   return [null, res[0]] as const;
 }
 
-export async function createMedia(media:schema.NewMedia){
+export async function createMedia(media: schema.NewMedia) {
   const res = await database
     .insert(schema.Media)
     .values({
@@ -39,18 +37,16 @@ export async function createMedia(media:schema.NewMedia){
       frontside_media_link: media.frontside_media_link,
       frontside_media_positioning: media.frontside_media_positioning,
       backside_media_link: media.backside_media_link,
-      backside_media_positioning:media.backside_media_positioning
+      backside_media_positioning: media.backside_media_positioning,
     })
-    .returning()
-    if(res.length < 1){
-      return [internalServerError, null] as const
-    }
-    return [null, res] as const 
+    .returning();
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res] as const;
 }
 
-export async function updateFlashcard(
-  flashcard: types.Flashcards,
-){
+export async function updateFlashcard(flashcard: types.Flashcards) {
   const res = await database.transaction(async (tx) => {
     const Basicflashcard = await tx
       .update(schema.flashcards)
@@ -63,33 +59,31 @@ export async function updateFlashcard(
       .returning();
 
     await tx
-    .update(schema.Media)
-    .set({
-      backside_media_link: flashcard.backside_media_link,
-      backside_media_positioning: flashcard.backside_media_positioning,
-      frontside_media_link: flashcard.frontside_media_link,
-      frontside_media_positioning: flashcard.frontside_media_positioning,
-    })
-    .where(eq(schema.flashcards.flashcard_id, flashcard.id))
+      .update(schema.Media)
+      .set({
+        backside_media_link: flashcard.backside_media_link,
+        backside_media_positioning: flashcard.backside_media_positioning,
+        frontside_media_link: flashcard.frontside_media_link,
+        frontside_media_positioning: flashcard.frontside_media_positioning,
+      })
+      .where(eq(schema.flashcards.flashcard_id, flashcard.id));
 
     return Basicflashcard;
   });
-  if(res.length < 1){
-    return [internalServerError, null]
+  if (res.length < 1) {
+    return [internalServerError, null];
   }
   return [null, res[0]];
 }
 
-export async function deleteFlashcard(
-  flashcardId: string,
-){
+export async function deleteFlashcard(flashcardId: string) {
   const res = await database
     .delete(schema.flashcards)
     .where(eq(schema.flashcards.flashcard_id, flashcardId))
     .returning();
-    if(res.length < 1){
-      return [internalServerError, null]
-    }
+  if (res.length < 1) {
+    return [internalServerError, null];
+  }
   return [null, res[0]];
 }
 
@@ -112,17 +106,15 @@ export async function getAllFlashcardsFromStack(stackId: string) {
       )
       .where(eq(schema.flashcards.stack_id, sql.placeholder("stackId")))
       .prepare("getAllFlashcardsFromStack");
-  
+
     const res = await prep.execute({ stackId: stackId });
-    return [null, res]
+    return [null, res];
   } catch (error) {
-    return [error, null]
+    return [error, null];
   }
 }
 
-export async function getLearnableFlashcardsFromStack(
-  stackId: string,
-){
+export async function getLearnableFlashcardsFromStack(stackId: string) {
   try {
     const prep = database
       .select({
@@ -147,20 +139,21 @@ export async function getLearnableFlashcardsFromStack(
       .where(
         and(
           eq(schema.flashcards.stack_id, sql.placeholder("stack_id")),
-          eq(schema.session_data.learning_status, types.LearningStatus.learnable),
+          eq(
+            schema.session_data.learning_status,
+            types.LearningStatus.learnable,
+          ),
         ),
       )
       .prepare("getLearnableFlashcardsFromStack");
     const res = await prep.execute({ stack_id: stackId });
     return [null, res];
   } catch (error) {
-    return [error, null]
+    return [error, null];
   }
 }
 
-export async function getAllFlashcardsFromStackAndChildStacks(
-  stackId: string,
-){
+export async function getAllFlashcardsFromStackAndChildStacks(stackId: string) {
   try {
     const res = await database.execute(sql`
       WITH RECURSIVE cte_stacks AS (
@@ -189,13 +182,13 @@ export async function getAllFlashcardsFromStackAndChildStacks(
       `);
     return [null, res.rows];
   } catch (error) {
-   return [error, null] 
+    return [error, null];
   }
 }
 
 export async function getLearnableFlashcardsFromStackAndChilds(
   stackId: string,
-){
+) {
   try {
     const res = await database.execute(sql`
     WITH RECURSIVE cte_stacks AS(
@@ -225,8 +218,7 @@ export async function getLearnableFlashcardsFromStackAndChilds(
       WHERE session_data.learning_status=1;
       `);
     return [null, res.rows];
-    
   } catch (error) {
-    return [error, null]
+    return [error, null];
   }
 }

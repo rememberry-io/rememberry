@@ -11,9 +11,10 @@ export const flashcardRouter = router({
   createFlashcard: privateProcedure
     .input(types.FlashcardsSchema)
     .mutation(async (opts) => {
-      const [errorCheck, res] = await flashcardController.controlCreateFlashcard(opts.input);
-      if(errorCheck){
-        throw errorCheck
+      const [errorCheck, res] =
+        await flashcardController.controlCreateFlashcard(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
       }
       return res;
     }),
@@ -21,9 +22,10 @@ export const flashcardRouter = router({
   updateFlashcard: privateProcedure
     .input(types.FlashcardsSchema)
     .mutation(async (opts) => {
-      const [errorCheck, res] = await flashcardController.controlUpdateFlashcard(opts.input);
-      if(errorCheck){
-        throw errorCheck
+      const [errorCheck, res] =
+        await flashcardController.controlUpdateFlashcard(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
       }
       return res;
     }),
@@ -36,11 +38,10 @@ export const flashcardRouter = router({
   getAllCardsFromStack: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] = await flashcardController.controlGetAllFlashcardsFromStack(
-        opts.input,
-      );
-      if(errorCheck){
-        throw errorCheck
+      const [errorCheck, res] =
+        await flashcardController.controlGetAllFlashcardsFromStack(opts.input);
+      if (errorCheck) {
+        throw errorCheck;
       }
       return res;
     }),
@@ -52,9 +53,9 @@ export const flashcardRouter = router({
         await flashcardController.controlGetLearnableFlashcardsFromStack(
           opts.input,
         );
-        if(errorCheck){
-          throw errorCheck
-        }
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
@@ -65,9 +66,9 @@ export const flashcardRouter = router({
         await flashcardController.controlgetAllFlashcardsFromStackAndChildStacks(
           opts.input,
         );
-        if(errorCheck){
-          throw errorCheck
-        }
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 
@@ -78,9 +79,9 @@ export const flashcardRouter = router({
         await flashcardController.getLearnableFlashcardsFromStackAndChilds(
           opts.input,
         );
-        if(errorCheck){
-          throw errorCheck
-        }
+      if (errorCheck) {
+        throw errorCheck;
+      }
       return res;
     }),
 });

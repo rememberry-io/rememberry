@@ -1,18 +1,15 @@
+import { TRPCError } from "@trpc/server";
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { client } from "../../db/db";
 import * as schema from "../../db/schema";
 import * as types from "./types";
-import { TRPCError } from "@trpc/server";
 
 const database = drizzle(client, { schema });
 
-const internalServerError = new TRPCError({code:"INTERNAL_SERVER_ERROR"})
+const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
-export async function createStack(
-  stack: schema.NewStack,
-  date: Date,
- ) {
+export async function createStack(stack: schema.NewStack, date: Date) {
   const res = await database
     .insert(schema.stacks)
     .values({
@@ -26,9 +23,9 @@ export async function createStack(
       parent_stack_id: stack.parent_stack_id,
     })
     .returning();
-    if(res.length < 1){
-      return [internalServerError, null] as const 
-    }
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
   return [null, res] as const;
 }
 
@@ -42,13 +39,11 @@ export async function getStacksFromMap(mapId: string) {
     const res = await prep.execute({ id: mapId });
     return [null, res] as const;
   } catch (error) {
-    return [error, null] as const
+    return [error, null] as const;
   }
 }
 
-export async function getHighestOrderParentStacks(
-  mapId: string,
-){
+export async function getHighestOrderParentStacks(mapId: string) {
   try {
     const prep = database
       .select()
@@ -63,7 +58,7 @@ export async function getHighestOrderParentStacks(
     const res = await prep.execute({ id: mapId });
     return [null, res] as const;
   } catch (error) {
-    return [error, null] as const
+    return [error, null] as const;
   }
 }
 
@@ -77,7 +72,7 @@ export async function getDirectChildsFromParent(parentStackId: string) {
     const res = await prep.execute({ id: parentStackId });
     return [null, res] as const;
   } catch (error) {
-    return [error, null] as const 
+    return [error, null] as const;
   }
 }
 
@@ -99,7 +94,7 @@ export async function getAllChildsFromParent(stackId: string) {
     `);
     return [null, res.rows] as const;
   } catch (error) {
-    return [error, null] as const
+    return [error, null] as const;
   }
 }
 
@@ -113,7 +108,7 @@ export async function getStackById(stackId: string) {
     const res = await prep.execute({ id: stackId });
     return [null, res] as const;
   } catch (error) {
-    return [error, null] as const 
+    return [error, null] as const;
   }
 }
 
@@ -125,24 +120,22 @@ export async function changeParentStack(
     .set({ parent_stack_id: parentAndChild.new_parent_id })
     .where(eq(schema.stacks.stack_id, parentAndChild.child_id))
     .returning();
-    if(res.length < 1){
-      return [internalServerError, null] as const 
-    }
-  return [null, res[0]] as const ;
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
+  }
+  return [null, res[0]] as const;
 }
 
-export async function deleteParentStackRelation(
-  childStackId: string,
-){
+export async function deleteParentStackRelation(childStackId: string) {
   const res = await database
     .update(schema.stacks)
     .set({ parent_stack_id: null })
     .where(eq(schema.stacks.stack_id, childStackId))
     .returning();
-  if(res.length < 1){
-    return [internalServerError, null] as const 
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
   }
-  return [null, res[0]] as const ;
+  return [null, res[0]] as const;
 }
 
 export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
@@ -166,10 +159,10 @@ export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
       .where(eq(schema.stacks.stack_id, stackId));
     return updatedStacks;
   });
-  if(res.length < 1){
-    return [internalServerError, null] as const 
+  if (res.length < 1) {
+    return [internalServerError, null] as const;
   }
-  return [null, res] as const ;
+  return [null, res] as const;
 }
 export async function deleteStackAndChildren(stackId: string) {
   try {
@@ -189,7 +182,6 @@ export async function deleteStackAndChildren(stackId: string) {
     `);
     return [null, res.rows];
   } catch (error) {
-    return [error, null]
+    return [error, null];
   }
-
 }

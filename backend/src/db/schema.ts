@@ -30,7 +30,7 @@ export const maps = pgTable("maps", {
   user_id: uuid("user_id").references(() => users.user_id, {
     onDelete: "cascade",
   }),
-  peer_id: uuid("peer_id").references(()=> Peers.peer_id),
+  peer_id: uuid("peer_id").references(() => Peers.peer_id),
   map_name: varchar("map_name"),
   map_description: varchar("map_description"),
 });
@@ -42,7 +42,7 @@ export const mapRelations = relations(maps, ({ one, many }) => ({
   }),
   peers: one(Peers, {
     fields: [maps.peer_id],
-    references: [Peers.peer_id]
+    references: [Peers.peer_id],
   }),
   stacks: many(stacks),
 }));
@@ -102,7 +102,9 @@ export const session_data = pgTable("session_data", {
   flashcard_id: uuid("flashcard_id").references(() => flashcards.flashcard_id, {
     onDelete: "cascade",
   }),
-  user_id: uuid("user_id").references(()=> users.user_id, {onDelete: "cascade"}),
+  user_id: uuid("user_id").references(() => users.user_id, {
+    onDelete: "cascade",
+  }),
   times_learned: integer("times_learned"),
   last_learned: date("last_learned"),
   learning_status: integer("learning_status").default(0),
@@ -115,14 +117,12 @@ export const session_data_relations = relations(session_data, ({ one }) => ({
   }),
   users: one(users, {
     fields: [session_data.user_id],
-    references: [users.user_id]
-  })
+    references: [users.user_id],
+  }),
 }));
 
 export type SessionData = typeof session_data.$inferSelect;
 export type NewSessionData = typeof session_data.$inferInsert;
-
-
 
 export const Media = pgTable("media", {
   media_id: uuid("media_id").defaultRandom().primaryKey(),
@@ -133,7 +133,6 @@ export const Media = pgTable("media", {
   frontside_media_positioning: varchar("frontside_media_positioning"),
   backside_media_link: varchar("backside_media_link"),
   backside_media_positioning: varchar("backside_media_positioning"),
-
 });
 
 export const media_relations = relations(Media, ({ one }) => ({
@@ -146,54 +145,52 @@ export const media_relations = relations(Media, ({ one }) => ({
 export type Medias = typeof Media.$inferSelect;
 export type NewMedia = typeof Media.$inferInsert;
 
-
 export const Peers = pgTable("peers", {
   peer_id: uuid("peer_id").defaultRandom().primaryKey(),
-  name: varchar("name").notNull()
-})
+  name: varchar("name").notNull(),
+});
 
 export const peers_relations = relations(Peers, ({ one, many }) => ({
   Users_Peers: many(Users_Peers),
   maps: many(maps),
-  invites: many(invites)
-}))
+  invites: many(invites),
+}));
 
-export const Peer = typeof Peers.$inferSelect
-export const NewPeer = typeof Peers.$inferInsert
+export const Peer = typeof Peers.$inferSelect;
+export const NewPeer = typeof Peers.$inferInsert;
 
 export const Users_Peers = pgTable("users_peers", {
   user_id: uuid("user_id").references(() => users.user_id),
   peer_id: uuid("peer_id").references(() => Peers.peer_id),
-  is_peer_admin: boolean("is_peer_admin").default(false).notNull()
-})
+  is_peer_admin: boolean("is_peer_admin").default(false).notNull(),
+});
 
 export const users_peers_relations = relations(Users_Peers, ({ one }) => ({
   users: one(users, {
     fields: [Users_Peers.user_id],
-    references: [users.user_id]
+    references: [users.user_id],
   }),
   Peers: one(Peers, {
     fields: [Users_Peers.peer_id],
-    references: [Peers.peer_id]
-  })
-}))
+    references: [Peers.peer_id],
+  }),
+}));
 
-export type UsersPeers = typeof Users_Peers.$inferSelect
-export type NewUsersPeers = typeof Users_Peers.$inferInsert
-
+export type UsersPeers = typeof Users_Peers.$inferSelect;
+export type NewUsersPeers = typeof Users_Peers.$inferInsert;
 
 export const invites = pgTable("invites", {
   invite_id: uuid("invite_id").defaultRandom(),
   receiver_id: uuid("reveiver_id").references(() => users.user_id),
-  sender_id: uuid("sender_id").references(()=>users.user_id),
-  peer_id: uuid("peer_id").references(()=>Peers.peer_id),
-  text: varchar("text")
-})
+  sender_id: uuid("sender_id").references(() => users.user_id),
+  peer_id: uuid("peer_id").references(() => Peers.peer_id),
+  text: varchar("text"),
+});
 
 export const invites_relations = relations(invites, ({ one }) => ({
   users: one(users),
-  peers: one(Peers) 
-}))
+  peers: one(Peers),
+}));
 
-export type Invite = typeof invites.$inferSelect
-export type NewInvite = typeof invites.$inferInsert
+export type Invite = typeof invites.$inferSelect;
+export type NewInvite = typeof invites.$inferInsert;

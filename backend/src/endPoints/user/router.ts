@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { privateProcedure } from "../../middleware/jwt";
 import { publicProcedure, router } from "../../trpc";
@@ -19,17 +18,24 @@ const User = z.object({
 
 export const userRouter = router({
   createUser: publicProcedure.input(createUserInput).mutation(async (opts) => {
-    const [errorCheck, res] = await userController.controlUserCreation(opts.input);
-    if(errorCheck){
-      throw errorCheck
+    const [errorCheck, res] = await userController.controlUserCreation(
+      opts.input,
+    );
+    if (errorCheck) {
+      throw errorCheck;
     }
     return res;
   }),
 
   updateUser: privateProcedure.input(User).query(async (opts) => {
-    const [errorCheck, res] = await userController.controlUserUpdateById(opts.input.password, opts.input.email, opts.input.username, opts.input.user_id);
-    if(errorCheck){
-      throw errorCheck
+    const [errorCheck, res] = await userController.controlUserUpdateById(
+      opts.input.password,
+      opts.input.email,
+      opts.input.username,
+      opts.input.user_id,
+    );
+    if (errorCheck) {
+      throw errorCheck;
     }
     return res;
   }),
@@ -38,24 +44,26 @@ export const userRouter = router({
     const [errorCheck, res] = await userController.controlUserDeletionById(
       opts.input.user_id,
     );
-    if(errorCheck){
-      throw errorCheck
+    if (errorCheck) {
+      throw errorCheck;
     }
     return res;
   }),
 
   getAllUsers: privateProcedure.input(z.undefined()).query(async (opts) => {
     const [errorCheck, res] = await userController.getAllUsers();
-    if(errorCheck){
-      throw errorCheck
+    if (errorCheck) {
+      throw errorCheck;
     }
     return res;
   }),
 
   getUserById: publicProcedure.input(User).query(async (opts) => {
-    const [errorCheck, res] = await userController.getUserById(opts.input.user_id);
-    if(errorCheck){
-      throw errorCheck
+    const [errorCheck, res] = await userController.getUserById(
+      opts.input.user_id,
+    );
+    if (errorCheck) {
+      throw errorCheck;
     }
     return res;
   }),

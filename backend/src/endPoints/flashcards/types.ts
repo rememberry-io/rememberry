@@ -2,7 +2,7 @@ import z from "zod";
 import { database } from "../user/user.model";
 
 export type Flashcards = {
-  id:string
+  id: string;
   stack_id: string;
   frontside_text: string | null;
   backside_text: string | null;
@@ -18,7 +18,7 @@ export enum LearningStatus {
 }
 
 export const FlashcardsSchema = z.object({
-  id:z.string(),
+  id: z.string(),
   stack_id: z.string(),
   frontside_text: z.string(),
   backside_text: z.string(),

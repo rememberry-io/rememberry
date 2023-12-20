@@ -52,12 +52,8 @@
           "name": "media_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "media",
           "tableTo": "flashcards",
-          "columnsFrom": [
-            "flashcard_id"
-          ],
-          "columnsTo": [
-            "flashcard_id"
-          ],
+          "columnsFrom": ["flashcard_id"],
+          "columnsTo": ["flashcard_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -118,12 +114,8 @@
           "name": "Users_Peers_user_id_users_user_id_fk",
           "tableFrom": "Users_Peers",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -131,12 +123,8 @@
           "name": "Users_Peers_peer_id_peers_peer_id_fk",
           "tableFrom": "Users_Peers",
           "tableTo": "peers",
-          "columnsFrom": [
-            "peer_id"
-          ],
-          "columnsTo": [
-            "peer_id"
-          ],
+          "columnsFrom": ["peer_id"],
+          "columnsTo": ["peer_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -180,12 +168,8 @@
           "name": "flashcards_stack_id_stacks_stack_id_fk",
           "tableFrom": "flashcards",
           "tableTo": "stacks",
-          "columnsFrom": [
-            "stack_id"
-          ],
-          "columnsTo": [
-            "stack_id"
-          ],
+          "columnsFrom": ["stack_id"],
+          "columnsTo": ["stack_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -235,12 +219,8 @@
           "name": "invites_reveiver_id_users_user_id_fk",
           "tableFrom": "invites",
           "tableTo": "users",
-          "columnsFrom": [
-            "reveiver_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["reveiver_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -248,12 +228,8 @@
           "name": "invites_sender_id_users_user_id_fk",
           "tableFrom": "invites",
           "tableTo": "users",
-          "columnsFrom": [
-            "sender_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["sender_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -261,12 +237,8 @@
           "name": "invites_peer_id_peers_peer_id_fk",
           "tableFrom": "invites",
           "tableTo": "peers",
-          "columnsFrom": [
-            "peer_id"
-          ],
-          "columnsTo": [
-            "peer_id"
-          ],
+          "columnsFrom": ["peer_id"],
+          "columnsTo": ["peer_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -316,12 +288,8 @@
           "name": "maps_user_id_users_user_id_fk",
           "tableFrom": "maps",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -329,12 +297,8 @@
           "name": "maps_peer_id_peers_peer_id_fk",
           "tableFrom": "maps",
           "tableTo": "peers",
-          "columnsFrom": [
-            "peer_id"
-          ],
-          "columnsTo": [
-            "peer_id"
-          ],
+          "columnsFrom": ["peer_id"],
+          "columnsTo": ["peer_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -391,12 +355,8 @@
           "name": "session_data_flashcard_id_flashcards_flashcard_id_fk",
           "tableFrom": "session_data",
           "tableTo": "flashcards",
-          "columnsFrom": [
-            "flashcard_id"
-          ],
-          "columnsTo": [
-            "flashcard_id"
-          ],
+          "columnsFrom": ["flashcard_id"],
+          "columnsTo": ["flashcard_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -404,12 +364,8 @@
           "name": "session_data_user_id_users_user_id_fk",
           "tableFrom": "session_data",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["user_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -484,12 +440,8 @@
           "name": "stacks_map_id_maps_map_id_fk",
           "tableFrom": "stacks",
           "tableTo": "maps",
-          "columnsFrom": [
-            "map_id"
-          ],
-          "columnsTo": [
-            "map_id"
-          ],
+          "columnsFrom": ["map_id"],
+          "columnsTo": ["map_id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -497,12 +449,8 @@
           "name": "stacks_parent_stack_id_stacks_stack_id_fk",
           "tableFrom": "stacks",
           "tableTo": "stacks",
-          "columnsFrom": [
-            "parent_stack_id"
-          ],
-          "columnsTo": [
-            "stack_id"
-          ],
+          "columnsFrom": ["parent_stack_id"],
+          "columnsTo": ["stack_id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -553,16 +501,12 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       }
     }
