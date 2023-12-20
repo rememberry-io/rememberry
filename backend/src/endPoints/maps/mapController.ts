@@ -17,6 +17,6 @@ export async function controlDeleteMapWithAllStacks(mapId: string) {
 }
 
 export async function controlGetUsersMaps(userId: string) {
-  const res = mapModels.getUsersMaps(userId)
+  const res = mapModels.getUsersMaps(userId);
   return res;
 }

@@ -20,18 +20,20 @@ export async function createMap(
   return res;
 }
 
-export async function createSharedMap(map: schema.newMap): Promise<schema.newMap>{
-  const res = await database 
+export async function createSharedMap(
+  map: schema.newMap,
+): Promise<schema.newMap> {
+  const res = await database
     .insert(schema.maps)
     .values({
       user_id: map.user_id,
       peer_id: map.peer_id,
       map_name: map.map_name,
-      map_description: map.map_description
+      map_description: map.map_description,
     })
-    .returning()
-  
-    return res[0]
+    .returning();
+
+  return res[0];
 }
 
 export async function updateMap(
@@ -68,7 +70,7 @@ export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {
   return res;
 }
 
-export async function getUsersMaps(userId:string){
+export async function getUsersMaps(userId: string) {
   const res = await database.execute(sql`
   SELECT m.map_id, m.map_name, m.map_description
   FROM maps m
@@ -79,6 +81,6 @@ export async function getUsersMaps(userId:string){
   JOIN peers p ON m.peer_id = p.peer_id
   JOIN users_peers up ON p.peer_id = up.peer_id
   WHERE up.user_id = 'your_user_id';
-`)
-  return res.rows
+`);
+  return res.rows;
 }

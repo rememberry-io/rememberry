@@ -26,13 +26,13 @@ export async function createStack(
 }
 
 export async function getStacksFromMap(mapId: string) {
-    const prep = database
-      .select()
-      .from(schema.stacks)
-      .where(eq(schema.stacks.map_id, sql.placeholder("id")))
-      .prepare("stacks");
-    const res = await prep.execute({ id: mapId });
-    return res;
+  const prep = database
+    .select()
+    .from(schema.stacks)
+    .where(eq(schema.stacks.map_id, sql.placeholder("id")))
+    .prepare("stacks");
+  const res = await prep.execute({ id: mapId });
+  return res;
 }
 
 export async function getHighestOrderParentStacks(
@@ -64,7 +64,7 @@ export async function getDirectChildsFromParent(parentStackId: string) {
 
 export async function getAllChildsFromParent(stackId: string) {
   try {
-      const dbResult = await database.execute(sql`
+    const dbResult = await database.execute(sql`
         WITH RECURSIVE cte_substacks AS (
           SELECT * FROM stacks WHERE stack_id = ${stackId}
           UNION ALL
@@ -73,9 +73,9 @@ export async function getAllChildsFromParent(stackId: string) {
         )
         SELECT * FROM cte_substacks
       `);
-      return dbResult.rows;
-    }catch (error) {
-    console.error('Error fetching child stacks:', error);
+    return dbResult.rows;
+  } catch (error) {
+    console.error("Error fetching child stacks:", error);
     return error;
   }
 }

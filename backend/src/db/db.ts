@@ -1,8 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Client } from "pg";
+import * as cacheController from "../endPoints/cache/cacheController";
 import env from "../env";
-import * as cacheModels from '../endPoints/cache/cacheModel'
-import * as cacheController from '../endPoints/cache/cacheController'
 
 export const dbCredentials = {
   host: env.PG_HOST,
@@ -24,14 +23,12 @@ const connectToDb = async () => {
 
 connectToDb();
 
-
 export async function initDbListener() {
-  client.query('LISTEN stack_change')
-  client.on('notification', async(message) => {
-    cacheController.controlTriggerMessage(message)
+  client.query("LISTEN stack_change");
+  client.on("notification", async (message) => {
+    cacheController.controlTriggerMessage(message);
   });
 }
-initDbListener()
-
+initDbListener();
 
 export const db = drizzle(client);
