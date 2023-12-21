@@ -32,7 +32,7 @@ export async function controlRegistration(user: schema.NewUser) {
   const userCredentials = {
     email: user.email,
     password: user.password,
-    user_id: user.user_id!,
+    id: user.id!,
   };
   const accessToken = signAccessToken(userCredentials);
   const refreshToken = signRefreshToken(userCredentials);
@@ -49,7 +49,7 @@ export async function controlRegistration(user: schema.NewUser) {
 
 export function signAccessToken(user: types.LoginUser) {
   const payload = {
-    userId: user.user_id,
+    userId: user.id,
   };
   const secret = env.ACCESS_TOKEN_SECRET;
   const options = {
@@ -61,7 +61,7 @@ export function signAccessToken(user: types.LoginUser) {
 
 export function signRefreshToken(user: types.LoginUser) {
   const payload = {
-    userId: user.user_id,
+    userId: user.id,
   };
   const secret = env.REFRESH_TOKEN_SECRET;
   const options = {
@@ -81,7 +81,7 @@ export async function refreshAccessToken(token: types.refreshTokenInputType) {
   }
   if (user) {
     const logInUser = {
-      user_id: user.user_id,
+      id: user.id,
       password: user.password,
     };
     if (user && user.refresh_token === token.refreshToken) {

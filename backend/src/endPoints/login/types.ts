@@ -10,7 +10,7 @@ export const LoginCredentialsSchema = z.object({
 });
 
 export type LoginUser = {
-  user_id: string;
+  id: string;
   password: string;
 };
 

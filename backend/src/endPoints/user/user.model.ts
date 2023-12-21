@@ -1,14 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { eq, ne, or } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { client } from "../../db/db";
+import { db } from "../../db/db";
 import * as schema from "../../db/schema";
-
-export const database = drizzle(client, { schema });
 
 //WRITE
 export async function writeUser(userInput: schema.NewUser, hashedPwd: string) {
-  const newUser = await database
+  const newUser = await db
     .insert(schema.users)
     .values({
       username: userInput.username,
@@ -25,7 +22,7 @@ export async function writeUser(userInput: schema.NewUser, hashedPwd: string) {
 
 //READ
 export async function readAllUsers() {
-  const res = await database.select().from(schema.users);
+  const res = await db.select().from(schema.users);
   if (res.length < 1) {
     return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
   }
@@ -33,7 +30,7 @@ export async function readAllUsers() {
 }
 
 export async function checkUsername(username: string) {
-  const user = await database
+  const user = await db
     .select()
     .from(schema.users)
     .where(eq(schema.users.username, username));
@@ -43,7 +40,7 @@ export async function checkUsername(username: string) {
 }
 
 export async function checkUserEmail(email: string) {
-  const user = await database
+  const user = await db
     .select()
     .from(schema.users)
     .where(eq(schema.users.email, email));
@@ -76,10 +73,10 @@ export async function checkCredentials(email: string, username: string) {
 }
 
 export async function readUserById(userId: string) {
-  const user = await database
+  const user = await db
     .select()
     .from(schema.users)
-    .where(eq(schema.users.user_id, userId));
+    .where(eq(schema.users.id, userId));
   if (user.length < 1) {
     return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
   }
@@ -92,13 +89,13 @@ export async function fetchUpdateCredentials(
   username: string,
   userId: string,
 ) {
-  const res = await database
+  const res = await db
     .select()
     .from(schema.users)
     .where(
       or(eq(schema.users.email, email), eq(schema.users.password, username)),
     )
-    .where(ne(schema.users.user_id, userId));
+    .where(ne(schema.users.id, userId));
   return res;
 }
 
@@ -109,14 +106,14 @@ export async function updateUserById(
   hashedPwd: string,
   userId: string,
 ) {
-  const updatedUser = await database
+  const updatedUser = await db
     .update(schema.users)
     .set({
       username: username,
       email: userEmail,
       password: hashedPwd,
     })
-    .where(eq(schema.users.user_id, userId))
+    .where(eq(schema.users.id, userId))
     .returning();
   if (updatedUser.length < 1) {
     return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;
@@ -125,9 +122,9 @@ export async function updateUserById(
 }
 
 export async function deleteUserById(userId: string) {
-  const deletedUser = await database
+  const deletedUser = await db
     .delete(schema.users)
-    .where(eq(schema.users.user_id, userId))
+    .where(eq(schema.users.id, userId))
     .returning();
   if (deletedUser.length < 1) {
     return [new TRPCError({ code: "INTERNAL_SERVER_ERROR" }), null] as const;

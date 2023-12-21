@@ -58,7 +58,7 @@ const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
 
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
-    lookup[item.stack_id] = item;
+    lookup[item.id] = item;
     item.children = [];
   }
 

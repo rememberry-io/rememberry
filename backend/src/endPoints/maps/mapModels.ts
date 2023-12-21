@@ -1,18 +1,15 @@
 import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { client } from "../../db/db";
+import { db } from "../../db/db";
 import * as schema from "../../db/schema";
-
-const database = drizzle(client, { schema });
 
 const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
 export async function createMap(userInput: schema.newMap) {
-  const res = await database
+  const res = await db
     .insert(schema.maps)
     .values({
-      user_id: userInput.user_id,
+      userId: userInput.userId,
       map_name: userInput.map_name,
       map_description: userInput.map_description,
     })
@@ -27,10 +24,10 @@ export async function createMap(userInput: schema.newMap) {
 export async function createSharedMap(
   map: schema.newMap,
 ): Promise<schema.newMap> {
-  const res = await database
+  const res = await db
     .insert(schema.maps)
     .values({
-      user_id: map.user_id,
+      userId: map.userId,
       peer_id: map.peer_id,
       map_name: map.map_name,
       map_description: map.map_description,
@@ -41,7 +38,7 @@ export async function createSharedMap(
 }
 
 export async function updateMap(userInput: schema.newMap) {
-  const res = await database
+  const res = await db
     .update(schema.maps)
     .set({
       map_name: userInput.map_name,
@@ -55,9 +52,9 @@ export async function updateMap(userInput: schema.newMap) {
 }
 
 export async function deleteMapWithAllStacks(mapId: string) {
-  const res = await database
+  const res = await db
     .delete(schema.maps)
-    .where(eq(schema.maps.map_id, mapId))
+    .where(eq(schema.maps.id, mapId))
     .returning();
   if (res.length < 1) {
     return [internalServerError, null] as const;
@@ -66,26 +63,26 @@ export async function deleteMapWithAllStacks(mapId: string) {
 }
 
 export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {
-  const prepared = database
+  const prepared = db
     .select()
     .from(schema.maps)
-    .where(eq(schema.maps.user_id, sql.placeholder("id")))
+    .where(eq(schema.maps.userId, sql.placeholder("id")))
     .prepare("maps");
   const res = await prepared.execute({ id: userId });
   return res;
 }
 
 export async function getUsersMaps(userId: string) {
-  const res = await database.execute(sql`
-  SELECT m.map_id, m.map_name, m.map_description
+  const res = await db.execute(sql`
+  SELECT m.id, m.map_name, m.map_description
   FROM maps m
-  WHERE m.user_id = 'your_user_id'
+  WHERE m.userId = 'your_user_id'
   UNION 
-  SELECT m.map_id, m.map_name, m.map_description
+  SELECT m.id, m.map_name, m.map_description
   FROM maps m
-  JOIN peers p ON m.peer_id = p.peer_id
-  JOIN users_peers up ON p.peer_id = up.peer_id
-  WHERE up.user_id = 'your_user_id';
+  JOIN peers p ON m.peerId = p.peerId
+  JOIN users_peers up ON p.peerId = up.peerId
+  WHERE up.userId = 'your_user_id';
 `);
   return res.rows;
 }

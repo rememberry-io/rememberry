@@ -50,7 +50,7 @@ export const userRouter = router({
     return res;
   }),
 
-  getAllUsers: privateProcedure.input(z.undefined()).query(async (opts) => {
+  getAllUsers: privateProcedure.input(z.undefined()).query(async () => {
     const [errorCheck, res] = await userController.getAllUsers();
     if (errorCheck) {
       throw errorCheck;

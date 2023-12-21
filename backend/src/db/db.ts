@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
-import { Client } from "pg";
-import * as cacheController from "../endPoints/cache/cacheController";
+import { Pool } from "pg";
 import env from "../env";
+import * as schema from "./schema";
 
 export const dbCredentials = {
   host: env.PG_HOST,
@@ -10,11 +10,12 @@ export const dbCredentials = {
   password: env.PG_PASSWORD,
   database: env.PG_DATABASE_NAME,
 };
-export const client = new Client(dbCredentials);
+
+export const pool = new Pool(dbCredentials);
 
 const connectToDb = async () => {
   try {
-    await client.connect();
+    await pool.connect();
   } catch (e) {
     console.log(e);
     throw e;
@@ -24,11 +25,13 @@ const connectToDb = async () => {
 connectToDb();
 
 export async function initDbListener() {
-  client.query("LISTEN stack_change");
-  client.on("notification", async (message) => {
-    cacheController.controlTriggerMessage(message);
+  pool.query("LISTEN stack_change");
+  pool.on("connect", async (message) => {
+    //cacheController.controlTriggerMessage(message);
   });
 }
 initDbListener();
 
-export const db = drizzle(client);
+export const db = drizzle(pool, { schema });
+
+export type dbConnection = typeof db;
