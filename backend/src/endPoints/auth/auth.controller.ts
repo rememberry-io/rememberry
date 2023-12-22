@@ -1,39 +1,12 @@
-import { LuciaError, User } from "lucia";
+import { LuciaError } from "lucia";
 import { Auth, auth } from "../../auth/lucia";
 import { TRPCError } from "@trpc/server";
-import * as http from "http"
-
-export type TRPCStatus<T> = readonly [TRPCError, null] | readonly [null, T]
-
-export type AuthOutput = {
-  user: User;
-  sessionCookie: string;
-}
+import { AuthOutput, LoginInput, LogoutInput, RegisterInput, TRPCStatus } from "./types";
 
 export interface AuthenticationController {
   register(input: RegisterInput): Promise<TRPCStatus<AuthOutput>>;
   login(input: LoginInput): Promise<TRPCStatus<AuthOutput>>;
   logout(input: LogoutInput): Promise<TRPCStatus<AuthOutput>>;
-}
-
-export type RegisterInput = {
-  email: string;
-  username: string;
-  password: string;
-}
-
-export type LoginInput = {
-  email: string;
-  password: string;
-}
-
-export type LogoutInput = {
-  opts: {
-    ctx: {
-      req: http.IncomingMessage
-      res: http.ServerResponse<http.IncomingMessage>
-    }
-  }
 }
 
 class LuciaAuthentication implements AuthenticationController {

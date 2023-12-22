@@ -1,10 +1,10 @@
 import { publicProcedure, router } from "../../trpc";
-import * as types from "./types";
 import { luciaAuthentication } from "./auth.controller";
+import { LoginRouteInput, RegisterRouteInput } from "./types";
 
 export const authRouter = router({
   register: publicProcedure
-    .input(types.registerInput)
+    .input(RegisterRouteInput)
     .mutation(async (opts) => {
       const [errorCheck, res] = await luciaAuthentication.register(opts.input);
       if (errorCheck) {
@@ -14,7 +14,7 @@ export const authRouter = router({
       return res.user;
     }),
   login: publicProcedure
-    .input(types.LoginCredentialsSchema)
+    .input(LoginRouteInput)
     .query(async (opts) => {
       const [errorCheck, res] = await luciaAuthentication.login(opts.input);
       if (errorCheck) {
@@ -32,13 +32,6 @@ export const authRouter = router({
       opts.ctx.res.setHeader("Set-Cookie", res.sessionCookie)
       return res.user;
     }),
-
-  // refreshToken: publicProcedure
-  //   .input(types.refreshTokenInputSchema)
-  //   .query(async (opts) => {
-  //     const res = await loginController.refreshAccessToken(opts.input);
-  //     return res;
-  //   }),
 });
 
 export type authRouter = typeof authRouter;
