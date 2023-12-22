@@ -1,8 +1,8 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
-import { client } from "./db";
+import { pool } from "./db";
 
-const db = drizzle(client);
+const db = drizzle(pool);
 
 async function migrateDb() {
   try {

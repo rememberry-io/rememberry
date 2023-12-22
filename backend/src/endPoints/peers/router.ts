@@ -1,4 +1,4 @@
-import { privateProcedure } from "../../middleware/jwt";
+import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
 import * as peerController from "./peersController";
 import * as types from "./types";

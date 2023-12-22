@@ -13,8 +13,6 @@ const EnvZod = z.object({
   PG_DATABASE_NAME: z.string(),
   PG_USERNAME: z.string(),
   PG_PASSWORD: z.string(),
-  ACCESS_TOKEN_SECRET: z.string(),
-  REFRESH_TOKEN_SECRET: z.string(),
   PORT: z.number(),
   REDIS_PORT: z.number(),
   REDIS_HOST: z.string(),

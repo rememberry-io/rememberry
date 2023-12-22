@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import z from "zod";
-import { privateProcedure } from "../../middleware/jwt";
+import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
 import * as flashcardController from "./flashCardController";
 import * as types from "./types";
