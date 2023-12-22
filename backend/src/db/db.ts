@@ -30,7 +30,7 @@ export async function initDbListener() {
     //cacheController.controlTriggerMessage(message);
   });
 }
-initDbListener();
+//initDbListener();
 
 export const db = drizzle(pool, { schema });
 

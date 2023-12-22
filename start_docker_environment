@@ -18,7 +18,7 @@ echo "Finished migration"
 sleep 1
 
 echo "Start $REDIS_HOST docker container:"
-docker compose up -d $REDIS_HOST
+#docker compose up -d $REDIS_HOST
 
 sleep 1
 
