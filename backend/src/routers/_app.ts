@@ -1,5 +1,5 @@
-import { flashcardRouter } from "../endPoints/flashcards/router";
 import { authRouter } from "../endPoints/auth/auth.router";
+import { flashcardRouter } from "../endPoints/flashcards/router";
 import { mapRouter } from "../endPoints/maps/router";
 import { stackRouter } from "../endPoints/stacks/router";
 import { userRouter } from "../endPoints/user/user.router";
