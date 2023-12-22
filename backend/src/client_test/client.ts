@@ -9,8 +9,26 @@ const client = createTRPCProxyClient<AppRouter>({
   ],
 });
 
-client.user.createUser.query({
-  username: "test",
-  email: "test@gmail",
-  password: "dongS",
-});
+const testUser = {
+  username: "Laurin",
+  email: "test@test",
+  password: "test",
+}
+
+//const user = client.auth.register.mutate({
+//  username: testUser.username,
+//  email: testUser.email,
+//  password: testUser.password,
+//})
+//
+//
+const main = async () => {
+  const user = await client.auth.login.query({
+    email: testUser.email,
+    password: testUser.password
+  })
+  console.log(user)
+}
+
+
+main()

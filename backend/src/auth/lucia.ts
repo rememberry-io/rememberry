@@ -8,7 +8,18 @@ export const auth = lucia({
   middleware: node(),
   adapter: pg(pool, {
     user: "users",
-    key: "auth_key",
-    session: "auth_session",
+    key: "user_key",
+    session: "user_session",
   }),
+  getUserAttributes: (data) => {
+    return {
+      username: data.username,
+      email: data.email
+    }; 
+  },
+  sessionCookie: {
+    expires: false
+  }
 });
+
+export type Auth = typeof auth;

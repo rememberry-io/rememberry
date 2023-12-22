@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "3878b9b5-f2cc-4288-bbc1-cfd02753bb98",
+  "id": "b7902917-c664-4cb0-ae33-b494c8bc9834",
   "prevId": "ae33f384-fc1d-419e-a671-e6e5a95e06fe",
   "tables": {
     "media": {
@@ -52,8 +52,12 @@
           "name": "media_flashcard_id_flashcards_id_fk",
           "tableFrom": "media",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -114,8 +118,12 @@
           "name": "users_peers_user_id_users_id_fk",
           "tableFrom": "users_peers",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -123,8 +131,12 @@
           "name": "users_peers_peer_id_peers_id_fk",
           "tableFrom": "users_peers",
           "tableTo": "peers",
-          "columnsFrom": ["peer_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "peer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -168,8 +180,12 @@
           "name": "flashcards_stack_id_stacks_id_fk",
           "tableFrom": "flashcards",
           "tableTo": "stacks",
-          "columnsFrom": ["stack_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "stack_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -219,8 +235,12 @@
           "name": "invites_reveiver_id_users_id_fk",
           "tableFrom": "invites",
           "tableTo": "users",
-          "columnsFrom": ["reveiver_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "reveiver_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -228,8 +248,12 @@
           "name": "invites_sender_id_users_id_fk",
           "tableFrom": "invites",
           "tableTo": "users",
-          "columnsFrom": ["sender_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "sender_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -237,8 +261,12 @@
           "name": "invites_peer_id_peers_id_fk",
           "tableFrom": "invites",
           "tableTo": "peers",
-          "columnsFrom": ["peer_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "peer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -258,7 +286,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(15)",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -275,9 +303,13 @@
           "name": "user_key_user_id_users_id_fk",
           "tableFrom": "user_key",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -326,8 +358,12 @@
           "name": "maps_user_id_users_id_fk",
           "tableFrom": "maps",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -335,8 +371,12 @@
           "name": "maps_peer_id_peers_id_fk",
           "tableFrom": "maps",
           "tableTo": "peers",
-          "columnsFrom": ["peer_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "peer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -356,7 +396,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(15)",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -379,9 +419,13 @@
           "name": "user_session_user_id_users_id_fk",
           "tableFrom": "user_session",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "no action",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -437,8 +481,12 @@
           "name": "session_data_flashcard_id_flashcards_id_fk",
           "tableFrom": "session_data",
           "tableTo": "flashcards",
-          "columnsFrom": ["flashcard_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "flashcard_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -446,8 +494,12 @@
           "name": "session_data_user_id_users_id_fk",
           "tableFrom": "session_data",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -522,8 +574,12 @@
           "name": "stacks_map_id_maps_id_fk",
           "tableFrom": "stacks",
           "tableTo": "maps",
-          "columnsFrom": ["map_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "map_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -531,8 +587,12 @@
           "name": "stacks_parent_stack_id_stacks_id_fk",
           "tableFrom": "stacks",
           "tableTo": "stacks",
-          "columnsFrom": ["parent_stack_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "parent_stack_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -548,8 +608,7 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "username": {
           "name": "username",
@@ -562,18 +621,6 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
-        },
-        "user_password": {
-          "name": "user_password",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "refresh_token": {
-          "name": "refresh_token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
@@ -583,12 +630,16 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       }
     }

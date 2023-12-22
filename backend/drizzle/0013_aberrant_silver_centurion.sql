@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS "user_key" (
 	"id" varchar(255) PRIMARY KEY NOT NULL,
-	"user_id" varchar(15) NOT NULL,
+	"user_id" uuid NOT NULL,
 	"hashed_password" varchar(255)
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "user_session" (
 	"id" varchar(128) PRIMARY KEY NOT NULL,
-	"user_id" varchar(15) NOT NULL,
+	"user_id" uuid NOT NULL,
 	"active_expires" bigint NOT NULL,
 	"idle_expires" bigint NOT NULL
 );
@@ -44,6 +44,7 @@ ALTER TABLE "stacks" DROP CONSTRAINT "stacks_map_id_maps_map_id_fk";
 --> statement-breakpoint
 ALTER TABLE "stacks" DROP CONSTRAINT "stacks_parent_stack_id_stacks_stack_id_fk";
 --> statement-breakpoint
+ALTER TABLE "users" ALTER COLUMN "id" DROP DEFAULT;--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "media" ADD CONSTRAINT "media_flashcard_id_flashcards_id_fk" FOREIGN KEY ("flashcard_id") REFERENCES "flashcards"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
@@ -122,14 +123,16 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
+ALTER TABLE "users" DROP COLUMN IF EXISTS "user_password";--> statement-breakpoint
+ALTER TABLE "users" DROP COLUMN IF EXISTS "refresh_token";--> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "user_key" ADD CONSTRAINT "user_key_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "user_key" ADD CONSTRAINT "user_key_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
 DO $$ BEGIN
- ALTER TABLE "user_session" ADD CONSTRAINT "user_session_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE no action ON UPDATE no action;
+ ALTER TABLE "user_session" ADD CONSTRAINT "user_session_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

@@ -12,15 +12,15 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  id: uuid("id").primaryKey().notNull(),
   username: varchar("username").unique().notNull(),
   email: varchar("email").unique().notNull(),
-  password: varchar("user_password").notNull(),
-  refresh_token: varchar("refresh_token"),
 });
 
 export const session = pgTable("user_session", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  id: varchar("id", {
+    length: 128
+  }).primaryKey(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, {
@@ -34,8 +34,11 @@ export const session = pgTable("user_session", {
   }).notNull(),
 });
 
+
 export const key = pgTable("user_key", {
-  id: uuid("id").defaultRandom().primaryKey().notNull(),
+  id: varchar("id", {
+    length: 255
+  }).primaryKey(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, {
@@ -45,6 +48,14 @@ export const key = pgTable("user_key", {
     length: 255,
   }),
 });
+
+export const userKeyRelation = relations(users, ({ many }) => ({
+  maps: many(key),
+}));
+
+export const userSessionRelation = relations(users, ({ many }) => ({
+  maps: many(session),
+}));
 
 export const userRelations = relations(users, ({ many }) => ({
   maps: many(maps),

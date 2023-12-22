@@ -50,4 +50,4 @@ export const mapRouter = router({
     }),
 });
 
-export type MapRouter = typeof mapRouter;
+export type mapRouter = typeof mapRouter;
