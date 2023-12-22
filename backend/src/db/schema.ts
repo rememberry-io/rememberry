@@ -19,7 +19,7 @@ export const users = pgTable("users", {
 
 export const session = pgTable("user_session", {
   id: varchar("id", {
-    length: 128
+    length: 128,
   }).primaryKey(),
   userId: uuid("user_id")
     .notNull()
@@ -34,10 +34,9 @@ export const session = pgTable("user_session", {
   }).notNull(),
 });
 
-
 export const key = pgTable("user_key", {
   id: varchar("id", {
-    length: 255
+    length: 255,
   }).primaryKey(),
   userId: uuid("user_id")
     .notNull()

@@ -14,12 +14,12 @@ export const auth = lucia({
   getUserAttributes: (data) => {
     return {
       username: data.username,
-      email: data.email
-    }; 
+      email: data.email,
+    };
   },
   sessionCookie: {
-    expires: false
-  }
+    expires: false,
+  },
 });
 
 export type Auth = typeof auth;

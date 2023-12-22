@@ -13,7 +13,7 @@ const testUser = {
   username: "Laurin",
   email: "test@test",
   password: "test",
-}
+};
 
 //const user = client.auth.register.mutate({
 //  username: testUser.username,
@@ -25,10 +25,9 @@ const testUser = {
 const main = async () => {
   const user = await client.auth.login.query({
     email: testUser.email,
-    password: testUser.password
-  })
-  console.log(user)
-}
+    password: testUser.password,
+  });
+  console.log(user);
+};
 
-
-main()
+main();

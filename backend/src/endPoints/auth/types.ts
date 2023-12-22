@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import * as http from "http"
+import * as http from "http";
 import { User } from "lucia";
 import z from "zod";
 
@@ -14,29 +14,29 @@ export const RegisterRouteInput = z.object({
   password: z.string(),
 });
 
-export type TRPCStatus<T> = readonly [TRPCError, null] | readonly [null, T]
+export type TRPCStatus<T> = readonly [TRPCError, null] | readonly [null, T];
 
 export type AuthOutput = {
   user: User;
   sessionCookie: string;
-}
+};
 
 export type RegisterInput = {
   email: string;
   username: string;
   password: string;
-}
+};
 
 export type LoginInput = {
   email: string;
   password: string;
-}
+};
 
 export type LogoutInput = {
   opts: {
     ctx: {
-      req: http.IncomingMessage
-      res: http.ServerResponse<http.IncomingMessage>
-    }
-  }
-}
+      req: http.IncomingMessage;
+      res: http.ServerResponse<http.IncomingMessage>;
+    };
+  };
+};
