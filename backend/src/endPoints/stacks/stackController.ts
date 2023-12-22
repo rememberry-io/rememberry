@@ -22,26 +22,26 @@ export async function controlGetStackById(stackId: string) {
 }
 
 export async function controlGetAllStacksFromMap(mapId: string) {
- //const cacheResult = await cacheModel.readCache(mapId);
- //if (cacheResult) {
- //  return [null, cacheResult] as const;
- //}
+  //const cacheResult = await cacheModel.readCache(mapId);
+  //if (cacheResult) {
+  //  return [null, cacheResult] as const;
+  //}
   let [errorCheck, stacks] = await stackModel.getStacksFromMap(mapId);
   if (errorCheck) {
     return [errorCheck, null] as const;
   }
   if (isObject(stacks)) {
     stacks = transformToHierarchy(stacks);
-  //  cacheModel.cacheValue(mapId, stacks);
+    //  cacheModel.cacheValue(mapId, stacks);
   }
   return [null, stacks] as const;
 }
 
 export async function controlGetAllChildsFromParent(parentStackId: string) {
   //const cacheResult = await cacheModel.readCache(parentStackId);
- // if (cacheResult) {
- //   return [null, cacheResult] as const;
- // }
+  // if (cacheResult) {
+  //   return [null, cacheResult] as const;
+  // }
   const [errorCheck, res] =
     await stackModel.getAllChildsFromParent(parentStackId);
   if (errorCheck) {
