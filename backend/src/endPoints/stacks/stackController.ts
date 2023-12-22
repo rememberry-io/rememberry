@@ -1,5 +1,5 @@
 import * as schema from "../../db/schema";
-import * as cacheModel from "../cache/cacheModel";
+//import * as cacheModel from "../cache/cacheModel";
 
 import * as stackModel from "./stackModels";
 import * as types from "./types";
@@ -22,33 +22,33 @@ export async function controlGetStackById(stackId: string) {
 }
 
 export async function controlGetAllStacksFromMap(mapId: string) {
-  const cacheResult = await cacheModel.readCache(mapId);
-  if (cacheResult) {
-    return [null, cacheResult] as const;
-  }
+ //const cacheResult = await cacheModel.readCache(mapId);
+ //if (cacheResult) {
+ //  return [null, cacheResult] as const;
+ //}
   let [errorCheck, stacks] = await stackModel.getStacksFromMap(mapId);
   if (errorCheck) {
     return [errorCheck, null] as const;
   }
   if (isObject(stacks)) {
     stacks = transformToHierarchy(stacks);
-    cacheModel.cacheValue(mapId, stacks);
+  //  cacheModel.cacheValue(mapId, stacks);
   }
   return [null, stacks] as const;
 }
 
 export async function controlGetAllChildsFromParent(parentStackId: string) {
-  const cacheResult = await cacheModel.readCache(parentStackId);
-  if (cacheResult) {
-    return [null, cacheResult] as const;
-  }
+  //const cacheResult = await cacheModel.readCache(parentStackId);
+ // if (cacheResult) {
+ //   return [null, cacheResult] as const;
+ // }
   const [errorCheck, res] =
     await stackModel.getAllChildsFromParent(parentStackId);
   if (errorCheck) {
     return [errorCheck, null] as const;
   }
   if (isObject(res)) {
-    cacheModel.cacheValue(parentStackId, res);
+    //cacheModel.cacheValue(parentStackId, res);
   }
   return [null, res] as const;
 }
