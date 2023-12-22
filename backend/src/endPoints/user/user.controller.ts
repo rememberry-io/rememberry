@@ -72,6 +72,7 @@ class LuciaUserController implements UserController {
       null,
     ] as const;
   }
+  //TODO: unvalidate all session (and send a new session so user stays logged in)
   async updatePassword(input: UpdatePasswordInput) {
     const { email, newPassword } = input;
     try {

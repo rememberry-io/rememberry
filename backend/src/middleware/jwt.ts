@@ -1,19 +1,17 @@
 import { TRPCError } from "@trpc/server";
-import jwt from "jsonwebtoken";
-import env from "../env";
+import { auth } from "../auth/lucia";
 import { middleware, publicProcedure } from "../trpc";
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
-  const { req } = ctx;
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  jwt.verify(token, env.ACCESS_TOKEN_SECRET);
-  return next();
-});
+  const { req, res } = ctx;
+  const authRequest = auth.handleRequest(req, res);
 
-const refreshAccessToken = middleware(async ({ next, ctx }) => {
+  const session = await authRequest.validateBearerToken();
+  if (!session) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+    });
+  }
   return next();
 });
 
