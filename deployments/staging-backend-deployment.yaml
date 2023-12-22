@@ -61,6 +61,16 @@ spec:
                 configMapKeyRef:
                   name: staging-backend-cfg
                   key: PORT
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: REDIS_PORT
             - name: PG_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -71,13 +81,8 @@ spec:
                 secretKeyRef:
                   name: staging-backend-secrets
                   key: POSTGRES_PASSWORD
-            - name: ACCESS_TOKEN_SECRET
+            - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: staging-backend-secrets
-                  key: ACCESS_TOKEN_SECRET
-            - name: REFRESH_TOKEN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: staging-backend-secrets
-                  key: REFRESH_TOKEN_SECRET
+                  key: REDIS_PASSWORD

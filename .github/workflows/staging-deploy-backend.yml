@@ -5,12 +5,11 @@ on:
     paths:
       - "backend/**"
       - ".github/workflows/staging-deploy-backend.yml"
+      - "deployments/staging-backend-deployment.yaml"
     branches:
       - master
 
-
 jobs:
-
   test:
     runs-on: ubuntu-22.04
     steps:
@@ -119,4 +118,3 @@ jobs:
             deployments/staging-backend-deployment.yaml
           images: |
             notemann27/rememberry-backend:${{ github.sha }}
-
