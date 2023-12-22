@@ -1,18 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { client } from "../../db/db";
+import { db } from "../../db/db";
 import * as schema from "../../db/schema";
 import * as types from "./types";
-const database = drizzle(client, { schema });
 
 const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
 export async function createBasicFlashcard(flashcard: types.Flashcards) {
-  const prep = database
+  const prep = db
     .insert(schema.flashcards)
     .values({
-      stack_id: sql.placeholder("stack_id"),
+      id: sql.placeholder("stack_id"),
       frontside_text: sql.placeholder("frontside_text"),
       backside_text: sql.placeholder("backside_text"),
     })
@@ -30,10 +28,10 @@ export async function createBasicFlashcard(flashcard: types.Flashcards) {
 }
 
 export async function createMedia(media: schema.NewMedia) {
-  const res = await database
+  const res = await db
     .insert(schema.Media)
     .values({
-      flashcard_id: media.flashcard_id,
+      id: media.id,
       frontside_media_link: media.frontside_media_link,
       frontside_media_positioning: media.frontside_media_positioning,
       backside_media_link: media.backside_media_link,
@@ -47,15 +45,15 @@ export async function createMedia(media: schema.NewMedia) {
 }
 
 export async function updateFlashcard(flashcard: types.Flashcards) {
-  const res = await database.transaction(async (tx) => {
+  const res = await db.transaction(async (tx) => {
     const Basicflashcard = await tx
       .update(schema.flashcards)
       .set({
         frontside_text: flashcard.frontside_text,
         backside_text: flashcard.backside_text,
-        stack_id: flashcard.stack_id,
+        stackId: flashcard.stack_id,
       })
-      .where(eq(schema.flashcards.flashcard_id, flashcard.id))
+      .where(eq(schema.flashcards.id, flashcard.id))
       .returning();
 
     await tx
@@ -66,7 +64,7 @@ export async function updateFlashcard(flashcard: types.Flashcards) {
         frontside_media_link: flashcard.frontside_media_link,
         frontside_media_positioning: flashcard.frontside_media_positioning,
       })
-      .where(eq(schema.flashcards.flashcard_id, flashcard.id));
+      .where(eq(schema.flashcards.id, flashcard.id));
 
     return Basicflashcard;
   });
@@ -77,9 +75,9 @@ export async function updateFlashcard(flashcard: types.Flashcards) {
 }
 
 export async function deleteFlashcard(flashcardId: string) {
-  const res = await database
+  const res = await db
     .delete(schema.flashcards)
-    .where(eq(schema.flashcards.flashcard_id, flashcardId))
+    .where(eq(schema.flashcards.id, flashcardId))
     .returning();
   if (res.length < 1) {
     return [internalServerError, null];
@@ -89,9 +87,9 @@ export async function deleteFlashcard(flashcardId: string) {
 
 export async function getAllFlashcardsFromStack(stackId: string) {
   try {
-    const prep = database
+    const prep = db
       .select({
-        flashcard_id: schema.flashcards.flashcard_id,
+        id: schema.flashcards.id,
         frontside: schema.flashcards.frontside_text,
         frontside_media: schema.Media.frontside_media_link,
         frontside_media_positioning: schema.Media.frontside_media_positioning,
@@ -102,9 +100,9 @@ export async function getAllFlashcardsFromStack(stackId: string) {
       .from(schema.flashcards)
       .leftJoin(
         schema.Media,
-        eq(schema.flashcards.flashcard_id, schema.Media.flashcard_id),
+        eq(schema.flashcards.id, schema.Media.flashcardId),
       )
-      .where(eq(schema.flashcards.stack_id, sql.placeholder("stackId")))
+      .where(eq(schema.flashcards.stackId, sql.placeholder("stackId")))
       .prepare("getAllFlashcardsFromStack");
 
     const res = await prep.execute({ stackId: stackId });
@@ -116,9 +114,9 @@ export async function getAllFlashcardsFromStack(stackId: string) {
 
 export async function getLearnableFlashcardsFromStack(stackId: string) {
   try {
-    const prep = database
+    const prep = db
       .select({
-        flashcard_id: schema.flashcards.flashcard_id,
+        flashcard_id: schema.flashcards.id,
         frontside: schema.flashcards.frontside_text,
         frontside_media: schema.Media.frontside_media_link,
         frontside_media_positioning: schema.Media.frontside_media_positioning,
@@ -130,15 +128,15 @@ export async function getLearnableFlashcardsFromStack(stackId: string) {
       .from(schema.flashcards)
       .leftJoin(
         schema.Media,
-        eq(schema.flashcards.flashcard_id, schema.Media.flashcard_id),
+        eq(schema.flashcards.id, schema.Media.flashcardId),
       )
       .innerJoin(
         schema.session_data,
-        eq(schema.flashcards.flashcard_id, schema.session_data.flashcard_id),
+        eq(schema.flashcards.id, schema.session_data.flashcardId),
       )
       .where(
         and(
-          eq(schema.flashcards.stack_id, sql.placeholder("stack_id")),
+          eq(schema.flashcards.stackId, sql.placeholder("stack_id")),
           eq(
             schema.session_data.learning_status,
             types.LearningStatus.learnable,
@@ -155,7 +153,7 @@ export async function getLearnableFlashcardsFromStack(stackId: string) {
 
 export async function getAllFlashcardsFromStackAndChildStacks(stackId: string) {
   try {
-    const res = await database.execute(sql`
+    const res = await db.execute(sql`
       WITH RECURSIVE cte_stacks AS (
           SELECT stack_iD
           FROM stacks
@@ -190,7 +188,7 @@ export async function getLearnableFlashcardsFromStackAndChilds(
   stackId: string,
 ) {
   try {
-    const res = await database.execute(sql`
+    const res = await db.execute(sql`
     WITH RECURSIVE cte_stacks AS(
           SELECT stack_id 
           FROM stacks

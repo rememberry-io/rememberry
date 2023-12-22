@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { privateProcedure } from "../../middleware/jwt";
+import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
 import * as mapController from "./mapController";
 
@@ -50,4 +50,4 @@ export const mapRouter = router({
     }),
 });
 
-export type MapRouter = typeof mapRouter;
+export type mapRouter = typeof mapRouter;

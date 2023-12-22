@@ -13,9 +13,10 @@ const EnvZod = z.object({
   PG_DATABASE_NAME: z.string(),
   PG_USERNAME: z.string(),
   PG_PASSWORD: z.string(),
-  ACCESS_TOKEN_SECRET: z.string(),
-  REFRESH_TOKEN_SECRET: z.string(),
   PORT: z.number(),
+  REDIS_PORT: z.number(),
+  REDIS_HOST: z.string(),
+  REDIS_PASSWORD: z.string(),
 });
 
 function getEnvSrc() {
@@ -29,6 +30,7 @@ function getEnvSrc() {
 function parseEnv(env: { [key: string]: string }) {
   return {
     ...env,
+    REDIS_PORT: parseInt(env.REDIS_PORT),
     PG_PORT: parseInt(env.PG_PORT),
     PORT: parseInt(env.PORT),
     NODE_ENV: env.NODE_ENV,

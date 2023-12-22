@@ -17,9 +17,14 @@ echo "Finished migration"
 
 sleep 1
 
+echo "Start $REDIS_HOST docker container:"
+docker compose up -d $REDIS_HOST
+
+sleep 1
+
 echo "Start backend service"
 
-docker compose up -d rembackend --build
+# docker compose up -d rembackend --build
 
 # echo "Start frontend service"
 # docker compose up -d frontend --build 

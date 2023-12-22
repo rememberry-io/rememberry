@@ -10,16 +10,18 @@ services:
       PG_DATABASE_NAME: ${PG_DATABASE_NAME}
       PG_PASSWORD: ${PG_PASSWORD}
       PG_HOST: ${PG_HOST}
-      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET}
-      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET}
       NODE_ENV: ${NODE_ENV}
       PORT: ${PORT}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
     networks:
       - rem-net
     ports:
       - "127.0.0.1:3050:3050"
     depends_on:
       - postgres_database
+      - redis-cache
 
   postgres_database:
     container_name: postgres_database
@@ -37,6 +39,16 @@ services:
     networks:
       - rem-net
     restart: unless-stopped
+
+  redis-cache:
+    container_name: redis-cache
+    image: redis:7.2.3-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass devpw
+    volumes:
+      - cache:/data
 
       # Running the frontend here doesn't work yet
       #   frontend:
@@ -63,4 +75,5 @@ networks:
 
 volumes:
   postgres:
+  cache:
 

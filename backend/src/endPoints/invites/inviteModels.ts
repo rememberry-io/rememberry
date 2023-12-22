@@ -1,11 +1,9 @@
 import { eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { client } from "../../db/db";
+import { db } from "../../db/db";
 import * as schema from "../../db/schema";
-const database = drizzle(client, { schema });
 
 export async function createInvite(invite: schema.NewInvite) {
-  const res = database
+  const res = db
     .insert(schema.invites)
     .values({
       text: invite.text,
@@ -17,7 +15,7 @@ export async function createInvite(invite: schema.NewInvite) {
 }
 
 export async function getById(inviteId: string): Promise<schema.Invite> {
-  const invite = await database
+  const invite = await db
     .select()
     .from(schema.invites)
     .where(eq(schema.invites.invite_id, inviteId));
@@ -25,10 +23,10 @@ export async function getById(inviteId: string): Promise<schema.Invite> {
 }
 
 export async function acceptInvite(invite: schema.Invite) {
-  const res = await database.transaction(async (tx) => {
+  const res = await db.transaction(async (tx) => {
     await tx.insert(schema.Users_Peers).values({
-      user_id: invite.receiver_id,
-      peer_id: invite.peer_id,
+      userId: invite.receiver_id,
+      peerId: invite.peer_id,
     });
     await tx
       .delete(schema.invites)

@@ -1,23 +1,20 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNull, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { client } from "../../db/db";
+import { db } from "../../db/db";
 import * as schema from "../../db/schema";
 import * as types from "./types";
-
-const database = drizzle(client, { schema });
 
 const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
 export async function createStack(stack: schema.NewStack, date: Date) {
-  const res = await database
+  const res = await db
     .insert(schema.stacks)
     .values({
       stack_name: stack.stack_name,
       number_of_learned_cards: stack.number_of_learned_cards,
       number_of_unlearned_cards: stack.number_of_unlearned_cards,
       created_at: date,
-      map_id: stack.map_id,
+      mapId: stack.mapId,
       stack_description: stack.stack_description,
       positioning: stack.positioning,
       parent_stack_id: stack.parent_stack_id,
@@ -31,10 +28,10 @@ export async function createStack(stack: schema.NewStack, date: Date) {
 
 export async function getStacksFromMap(mapId: string) {
   try {
-    const prep = database
+    const prep = db
       .select()
       .from(schema.stacks)
-      .where(eq(schema.stacks.map_id, sql.placeholder("id")))
+      .where(eq(schema.stacks.mapId, sql.placeholder("id")))
       .prepare("stacks");
     const res = await prep.execute({ id: mapId });
     return [null, res] as const;
@@ -45,12 +42,12 @@ export async function getStacksFromMap(mapId: string) {
 
 export async function getHighestOrderParentStacks(mapId: string) {
   try {
-    const prep = database
+    const prep = db
       .select()
       .from(schema.stacks)
       .where(
         and(
-          eq(schema.stacks.map_id, sql.placeholder("id")),
+          eq(schema.stacks.mapId, sql.placeholder("id")),
           isNull(schema.stacks.parent_stack_id),
         ),
       )
@@ -64,7 +61,7 @@ export async function getHighestOrderParentStacks(mapId: string) {
 
 export async function getDirectChildsFromParent(parentStackId: string) {
   try {
-    const prep = database
+    const prep = db
       .select()
       .from(schema.stacks)
       .where(eq(schema.stacks.parent_stack_id, sql.placeholder("id")))
@@ -78,7 +75,7 @@ export async function getDirectChildsFromParent(parentStackId: string) {
 
 export async function getAllChildsFromParent(stackId: string) {
   try {
-    const res = await database.execute(sql`
+    const res = await db.execute(sql`
     WITH RECURSIVE cte_substacks AS (
         
         SELECT * FROM stacks WHERE stack_id=${stackId}
@@ -100,10 +97,10 @@ export async function getAllChildsFromParent(stackId: string) {
 
 export async function getStackById(stackId: string) {
   try {
-    const prep = database
+    const prep = db
       .select()
       .from(schema.stacks)
-      .where(eq(schema.stacks.stack_id, sql.placeholder("id")))
+      .where(eq(schema.stacks.id, sql.placeholder("id")))
       .prepare("stack");
     const res = await prep.execute({ id: stackId });
     return [null, res] as const;
@@ -115,10 +112,10 @@ export async function getStackById(stackId: string) {
 export async function changeParentStack(
   parentAndChild: types.ParentAndChildId,
 ) {
-  const res = await database
+  const res = await db
     .update(schema.stacks)
     .set({ parent_stack_id: parentAndChild.new_parent_id })
-    .where(eq(schema.stacks.stack_id, parentAndChild.child_id))
+    .where(eq(schema.stacks.id, parentAndChild.child_id))
     .returning();
   if (res.length < 1) {
     return [internalServerError, null] as const;
@@ -127,10 +124,10 @@ export async function changeParentStack(
 }
 
 export async function deleteParentStackRelation(childStackId: string) {
-  const res = await database
+  const res = await db
     .update(schema.stacks)
     .set({ parent_stack_id: null })
-    .where(eq(schema.stacks.stack_id, childStackId))
+    .where(eq(schema.stacks.id, childStackId))
     .returning();
   if (res.length < 1) {
     return [internalServerError, null] as const;
@@ -139,11 +136,11 @@ export async function deleteParentStackRelation(childStackId: string) {
 }
 
 export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
-  const res = await database.transaction(async (tx) => {
+  const res = await db.transaction(async (tx) => {
     const stackToDelete = await tx
       .select({ parentId: schema.stacks.parent_stack_id })
       .from(schema.stacks)
-      .where(eq(schema.stacks.stack_id, stackId));
+      .where(eq(schema.stacks.id, stackId));
     const newParentId = stackToDelete[0].parentId;
 
     const updatedStacks = await tx
@@ -156,7 +153,7 @@ export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
 
     const stackDeletion = await tx
       .delete(schema.stacks)
-      .where(eq(schema.stacks.stack_id, stackId));
+      .where(eq(schema.stacks.id, stackId));
     return updatedStacks;
   });
   if (res.length < 1) {
@@ -166,19 +163,19 @@ export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
 }
 export async function deleteStackAndChildren(stackId: string) {
   try {
-    const res = await database.execute(sql`
+    const res = await db.execute(sql`
       WITH RECURSIVE stacks_to_delete AS(
-        SELECT stack_id FROM stacks
-        WHERE stack_id=${stackId}
+        SELECT id FROM stacks
+        WHERE id =${stackId}
   
         UNION
   
-        SELECT stacks.stack_id
+        SELECT stacks.id
         FROM stacks
-        JOIN stacks_to_delete ON stacks.parent_stack_id = stacks_to_delete.stack_id
+        JOIN stacks_to_delete ON stacks.parent_stack_id = stacks_to_delete.id
       )
       DELETE FROM stacks
-      WHERE stack_id IN(SELECT stack_id FROM stacks_to_delete)
+      WHERE id IN(SELECT id FROM stacks_to_delete)
     `);
     return [null, res.rows];
   } catch (error) {

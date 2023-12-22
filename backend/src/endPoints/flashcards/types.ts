@@ -1,5 +1,4 @@
 import z from "zod";
-import { database } from "../user/user.model";
 
 export type Flashcards = {
   id: string;
@@ -27,5 +26,3 @@ export const FlashcardsSchema = z.object({
   frontside_media_positioning: z.string(),
   backside_media_positioning: z.string(),
 });
-
-export type dbConnection = typeof database;
