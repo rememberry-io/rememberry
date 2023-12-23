@@ -44,6 +44,10 @@ class LuciaAuthentication implements AuthenticationController {
       });
       const sessionCookie = this.auth.createSessionCookie(session);
 
+      sessionCookie.attributes.httpOnly = true;
+      sessionCookie.attributes.sameSite = "none";
+      sessionCookie.attributes.secure = true;
+
       const payload: AuthOutput = {
         user,
         sessionCookie: sessionCookie.serialize(),
@@ -100,7 +104,7 @@ class LuciaAuthentication implements AuthenticationController {
       input.opts.ctx.req,
       input.opts.ctx.res,
     );
-    const session = await authRequest.validateBearerToken();
+    const session = await authRequest.validate();
     if (!session) {
       return [new TRPCError({ code: "UNAUTHORIZED" }), null] as const;
     }

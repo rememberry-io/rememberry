@@ -22,6 +22,12 @@ export default function Providers({ children, ...props }: ThemeProviderProps) {
       links: [
         httpBatchLink({
           url: getBackendUrl(),
+          fetch(url, options) {
+            return fetch(url, {
+              ...options,
+              credentials: "include",
+            });
+          },
         }),
       ],
     }),
