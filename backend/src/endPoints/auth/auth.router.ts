@@ -20,7 +20,7 @@ export const authRouter = router({
   login: publicProcedure
     .input(LoginRouteInput)
     .output(UserRouterOutput)
-    .query(async (opts) => {
+    .mutation(async (opts) => {
       const [errorCheck, res] = await luciaAuthentication.login(opts.input);
       if (errorCheck) {
         throw errorCheck;
@@ -28,7 +28,7 @@ export const authRouter = router({
       opts.ctx.res.setHeader("Set-Cookie", res.sessionCookie);
       return res.user;
     }),
-  logout: publicProcedure.output(UserRouterOutput).query(async (opts) => {
+  logout: publicProcedure.output(UserRouterOutput).mutation(async (opts) => {
     const [errorCheck, res] = await luciaAuthentication.logout({ opts });
     if (errorCheck) {
       throw errorCheck;

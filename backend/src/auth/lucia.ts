@@ -6,6 +6,10 @@ import { pool } from "../db/db";
 export const auth = lucia({
   env: "DEV",
   middleware: node(),
+  csrfProtection: {
+    allowedSubDomains: "*",
+    host: "localhost:3000"
+  },
   adapter: pg(pool, {
     user: "users",
     key: "user_key",

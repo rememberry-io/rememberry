@@ -8,6 +8,7 @@ import {
   RegisterInput,
   TRPCStatus,
 } from "./types";
+import { DatabaseError } from "pg";
 
 export interface AuthenticationController {
   register(input: RegisterInput): Promise<TRPCStatus<AuthOutput>>;
@@ -54,7 +55,18 @@ class LuciaAuthentication implements AuthenticationController {
       };
       return [null, payload] as const;
     } catch (e) {
+      if (e instanceof DatabaseError) {
+        if (e.code === "23505") {
+
+          return [
+            new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
+            null,
+          ] as const;
+        }
+      }
+      console.log(JSON.stringify(e));
       console.log(e);
+      //if (e instanceof )
       return [
         new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
         null,
@@ -70,6 +82,10 @@ class LuciaAuthentication implements AuthenticationController {
         attributes: {},
       });
       const sessionCookie = auth.createSessionCookie(session);
+
+      sessionCookie.attributes.httpOnly = true;
+      sessionCookie.attributes.sameSite = "none";
+      sessionCookie.attributes.secure = true;
 
       const user = await auth.getUser(key.userId);
 
@@ -104,13 +120,22 @@ class LuciaAuthentication implements AuthenticationController {
       input.opts.ctx.req,
       input.opts.ctx.res,
     );
+    console.log(JSON.stringify(authRequest))
+
     const session = await authRequest.validate();
+
+    console.log(session)
+
     if (!session) {
       return [new TRPCError({ code: "UNAUTHORIZED" }), null] as const;
     }
     await this.auth.invalidateSession(session.sessionId);
 
     const sessionCookie = auth.createSessionCookie(null);
+
+    sessionCookie.attributes.httpOnly = true;
+    sessionCookie.attributes.sameSite = "none";
+    sessionCookie.attributes.secure = true;
 
     const payload: AuthOutput = {
       user: session.user,
