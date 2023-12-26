@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { LuciaError } from "lucia";
+import { DatabaseError } from "pg";
 import { Auth, auth } from "../../auth/lucia";
 import {
   AuthOutput,
@@ -8,7 +9,6 @@ import {
   RegisterInput,
   TRPCStatus,
 } from "./types";
-import { DatabaseError } from "pg";
 
 export interface AuthenticationController {
   register(input: RegisterInput): Promise<TRPCStatus<AuthOutput>>;
@@ -57,18 +57,38 @@ class LuciaAuthentication implements AuthenticationController {
     } catch (e) {
       if (e instanceof DatabaseError) {
         if (e.code === "23505") {
-
-          return [
-            new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
-            null,
-          ] as const;
+          if (e.detail?.includes("username")) {
+            return [
+              new TRPCError({
+                code: "CONFLICT",
+                message: "Username already used",
+              }),
+              null,
+            ] as const;
+          } else if (e.detail?.includes("email")) {
+            return [
+              new TRPCError({
+                code: "CONFLICT",
+                message: "Email already used",
+              }),
+              null,
+            ] as const;
+          } else {
+            return [
+              new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: "Somethings wrong with the db: " + JSON.stringify(e),
+              }),
+              null,
+            ] as const;
+          }
         }
       }
-      console.log(JSON.stringify(e));
-      console.log(e);
-      //if (e instanceof )
       return [
-        new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
+        new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Could not register new user: " + JSON.stringify(e),
+        }),
         null,
       ] as const;
     }
@@ -110,7 +130,10 @@ class LuciaAuthentication implements AuthenticationController {
         ] as const;
       }
       return [
-        new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
+        new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Could not login user: " + JSON.stringify(e),
+        }),
         null,
       ] as const;
     }
@@ -120,11 +143,11 @@ class LuciaAuthentication implements AuthenticationController {
       input.opts.ctx.req,
       input.opts.ctx.res,
     );
-    console.log(JSON.stringify(authRequest))
+    console.log(JSON.stringify(authRequest));
 
     const session = await authRequest.validate();
 
-    console.log(session)
+    console.log(session);
 
     if (!session) {
       return [new TRPCError({ code: "UNAUTHORIZED" }), null] as const;
