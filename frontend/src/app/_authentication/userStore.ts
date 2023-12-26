@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { RegisterUserOutput } from "../_hooks/useRegisterUser";
+import { RegisterUserOutput } from "./useRegisterUser";
 
 export type User = {
   userId: string;

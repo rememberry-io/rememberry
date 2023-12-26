@@ -1,7 +1,7 @@
 "use client";
 import { FormEvent } from "react";
-import useLoginUser, { LoginUserInput } from "../_hooks/useLoginUser";
-import { useUserStore } from "../_stores/userStore";
+import useLoginUser, { LoginUserInput } from "../_authentication/useLoginUser";
+import { useUserStore } from "../_authentication/userStore";
 
 export default function TestLogin({}) {
   const userStore = useUserStore();
@@ -10,7 +10,7 @@ export default function TestLogin({}) {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    console.log(event.target)
+    console.log(event.target);
     //@ts-expect-error
     const formdata = new FormData(event.currentTarget);
 

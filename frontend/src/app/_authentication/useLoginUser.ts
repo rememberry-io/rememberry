@@ -1,6 +1,6 @@
 import { TRPCClientError } from "@trpc/client";
-import { useUserStore } from "../_stores/userStore";
 import { RouterInput, RouterOutput, rqTrpc } from "../_trpc/client";
+import { useUserStore } from "./userStore";
 
 export type LoginUserInput = RouterInput["auth"]["login"];
 export type LoginUserOutput = RouterOutput["auth"]["login"];

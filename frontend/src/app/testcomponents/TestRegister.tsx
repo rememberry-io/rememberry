@@ -1,7 +1,9 @@
 "use client";
 import { FormEvent } from "react";
-import useRegisterUser, { RegisterUserInput } from "../_hooks/useRegisterUser";
-import { useUserStore } from "../_stores/userStore";
+import useRegisterUser, {
+  RegisterUserInput,
+} from "../_authentication/useRegisterUser";
+import { useUserStore } from "../_authentication/userStore";
 
 export default function TestRegister({}) {
   const userStore = useUserStore();
@@ -10,7 +12,7 @@ export default function TestRegister({}) {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    console.log(event.target)
+    console.log(event.target);
     //@ts-expect-error
     const formdata = new FormData(event.currentTarget);
 

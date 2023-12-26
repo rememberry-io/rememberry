@@ -1,5 +1,5 @@
-"use client"
-import useLogoutUser from "../_hooks/useLogoutUser";
+"use client";
+import useLogoutUser from "../_authentication/useLogoutUser";
 
 export default function TestLogout() {
   const logout = useLogoutUser();

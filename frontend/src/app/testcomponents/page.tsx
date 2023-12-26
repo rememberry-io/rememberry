@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useUserStore } from "../_stores/userStore";
 import TestLogin from "./TestLogin";
 import TestLogout from "./TestLogout";

@@ -1,6 +1,6 @@
 import { TRPCClientError } from "@trpc/client";
-import { useUserStore } from "../_stores/userStore";
 import { rqTrpc } from "../_trpc/client";
+import { useUserStore } from "./userStore";
 
 export default function useLogoutUser() {
   const userCreator = rqTrpc.auth.logout.useMutation();
