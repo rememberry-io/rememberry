@@ -1,22 +1,6 @@
 "use client";
-import { Flashcard } from "@/components/Flow/FlashcardComponents/Flashcard";
-import { MainStack } from "@/components/Flow/StackComponents/MainStack";
-import { Stack } from "@/components/Flow/StackComponents/Stack";
 import ReactFlow, { Background, Panel, ReactFlowProvider } from "reactflow";
 import "reactflow/dist/style.css";
-
-// as reactflow is written in TS -> types don't have to be included separately
-
-type NodeTypesType = {
-  // any to bypass type checking
-  [key: string]: React.ComponentType<any>;
-};
-
-const nodeTypes: NodeTypesType = {
-  flashcard: Flashcard,
-  stack: Stack,
-  mainStack: MainStack,
-};
 
 const LoginBackground: React.FC = () => {
   return (
@@ -26,7 +10,11 @@ const LoginBackground: React.FC = () => {
     >
       <ReactFlow zoomOnPinch={false}>
         <Background />
-        <Panel position="bottom-center" className="space-x-4" children={undefined}></Panel>
+        <Panel
+          position="bottom-center"
+          className="space-x-4"
+          children={undefined}
+        ></Panel>
       </ReactFlow>
     </div>
   );
