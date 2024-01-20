@@ -1,29 +1,15 @@
-"use client";
-import ReactFlow, { Background, Panel, ReactFlowProvider } from "reactflow";
-import "reactflow/dist/style.css";
+import React from 'react';
+import FlowBackground from "@/components/Flow/FlowBackground/flowBackground"; // Adjust the import based on the actual path
 
-const LoginBackground: React.FC = () => {
+export default function Login() {
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
       className="flex flex-col justify-items-center"
     >
-      <ReactFlow zoomOnPinch={false}>
-        <Background />
-        <Panel
-          position="bottom-center"
-          className="space-x-4"
-          children={undefined}
-        ></Panel>
-      </ReactFlow>
+      <FlowBackground />
+
+      
     </div>
   );
 };
-
-export default function LoginFlow() {
-  return (
-    <ReactFlowProvider>
-      <LoginBackground />
-    </ReactFlowProvider>
-  );
-}
