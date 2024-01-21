@@ -51,8 +51,7 @@ const edgeTypes = {
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-const connectionLineStyle = { stroke: "#1370DD", strokeWidth: 2, ConnectionLineType: ConnectionLineType.SimpleBezier };
-const defaultEdgeOptions = { style: connectionLineStyle, type: 'flashcard' };
+
 
 function Map() {
   const store = useStoreApi();
@@ -133,8 +132,8 @@ function Map() {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       nodeOrigin={nodeOrigin}
-      defaultEdgeOptions={defaultEdgeOptions}
-      connectionLineStyle={connectionLineStyle}
+
+
       connectionLineType={ConnectionLineType.Straight}
       fitView
     >
