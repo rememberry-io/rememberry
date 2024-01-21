@@ -8,26 +8,30 @@ import ReactFlow, {
   NodeOrigin,
   OnConnectEnd,
   OnConnectStart,
+
   Panel,
   ReactFlowProvider,
   useReactFlow,
   useStoreApi,
+
 } from "reactflow";
 import { shallow } from "zustand/shallow";
+
 
 // we have to import the React Flow styles for it to work
 import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
-import useStore, { RFState } from "@/components/Flow/FlowElements/store";
+import useStore, { RFState } from "@/components/Flow/FlowElements/nodeStore";
 import { Stack } from "@/components/Flow/StackComponents/Stack";
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef, useState } from "react";
+
 import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
-import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
+import { useAddStack } from "@/components/Flow/addStacks";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -35,6 +39,7 @@ const selector = (state: RFState) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   addChildNode: state.addChildNode,
+
 });
 
 const nodeTypes = {
@@ -46,6 +51,7 @@ const edgeTypes = {
   flashcard: FlashcardEdge,
   stack: FlashcardEdge,
 };
+
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
@@ -114,10 +120,7 @@ function Map() {
         node.querySelector("input")?.focus({ preventScroll: true });
       } else if (targetIsPane && connectingNodeId.current) {
         const parentNode = nodeInternals.get(connectingNodeId.current);
-        const childNodePosition = getChildNodePosition(
-          event as MouseEvent,
-          parentNode,
-        );
+        const childNodePosition = getChildNodePosition(event as MouseEvent, parentNode);
 
         if (parentNode && childNodePosition) {
           addChildNode(parentNode, childNodePosition);
@@ -148,6 +151,7 @@ function Map() {
         connectionLineType={ConnectionLineType.Straight}
         fitView
       >
+
         <Background />
         <MiniMap />
         <Controls showInteractive={false} />
@@ -155,9 +159,11 @@ function Map() {
           <Button onClick={addStack}>Add Stack</Button>
         </Panel>
       </ReactFlow>
+
     </div>
   );
 }
+
 export default function MapFlow() {
   return (
     <ReactFlowProvider>
