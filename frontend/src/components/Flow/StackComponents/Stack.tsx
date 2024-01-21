@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { useState } from "react";
 import { StackDialog } from "./StackDialog";
+import { Handle, Position } from "reactflow";
 
 interface StackProps {
   data: {
@@ -20,7 +21,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
   return (
     <div>
       <div className="flex flex-row items-center">
-        <div className="flex text-center flex-col p-5 rounded-md bg-blue-700 text-white justify-center w-56">
+        <div className="flex text-center flex-col p-5 rounded-md bg-primary text-white justify-center ">
           {/* <Handle type="source" position={Position.Top} /> */}
           <div className="line-clamp-3">
             {isFront ? data.frontText : data.backText}
@@ -40,6 +41,8 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
           stackBackText={data.backText}
         />
       </div>
+      <Handle type="source" position={Position.Bottom} />
+      <Handle type="target" position={Position.Top} />
     </div>
   );
 };

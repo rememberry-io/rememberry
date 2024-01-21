@@ -90,7 +90,7 @@ const Map: React.FC = () => {
         <Panel position="bottom-center" className="space-x-4">
           <Button onClick={addStack}>Add stack</Button>
           <Button onClick={addFlashcard}>Add Flashcard</Button>
-          {/* <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
+           {/*<Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
             <Button onClick={() => onLayout("TB")}>Vertical Layout</Button> */}
         </Panel>
         <Controls />

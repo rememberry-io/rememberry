@@ -3,6 +3,17 @@ import { Node } from "reactflow";
 const initialNodes: Node[] = [
   {
     id: "1",
+    type: "stack",
+    position: { x: 300, y: 100 },
+    data: {
+      frontText: "Cellular structure",
+      backText:
+        "biology branch that studies the structure, function, and behaviour of cells -> all living organisms are made of cells",
+    },
+  },
+  
+  {
+    id: "2",
     type: "flashcard",
     position: { x: 600, y: 200 },
     data: {
@@ -10,16 +21,6 @@ const initialNodes: Node[] = [
       backText: "Slim shady",
       category: "#1 - Cellular Structure",
       borderColor: "red"
-    },
-  },
-  {
-    id: "2",
-    type: "stack",
-    position: { x: 300, y: 100 },
-    data: {
-      frontText: "Cellular structure",
-      backText:
-        "biology branch that studies the structure, function, and behaviour of cells -> all living organisms are made of cells",
     },
   },
   {
