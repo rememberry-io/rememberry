@@ -25,6 +25,9 @@ interface FlashcardProps extends NodeProps {
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
+  const [frontText, setFront] = useState(data.frontText);
+  const [backText, setBack] = useState(data.backText);
+
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
   >(data.borderColor);
@@ -49,12 +52,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   }
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
+  const [showInputEle, setShowInputEle] = useState(false);
+
   return (
     <div
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
-      className={`dragHandle relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
+      className={`dragHandle min-w-48 relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
@@ -84,21 +89,60 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       )}
-      <div className="p-4 rounded-lg">
+      <div className="p-4 rounded-lg ">
         <div className="inputWrapper">
           <div>
             <div className="flex items-center justify-between">
-              <input
-                placeholder="Enter a text"
-                className="text-sm break-words px-4 py-3 focus:outline-none w-full hover:bg-gray-50 focus:bg-gray-50 rounded"
-                defaultValue={isFront ? data.frontText : data.backText}
-              />
+              <span>
+                {showInputEle ? (
+                  <textarea
+                    className="text-wrap break-words block p-2.5 w-full text-sm  focus:outline-none hover:bg-gray-50 focus:rounded-lg focus:h-auto focus:w-auto focus:bg-gray-50"
+                    value={isFront ? frontText : backText}
+                    onChange={(e) =>
+                      isFront
+                        ? setFront(e.target.value)
+                        : setBack(e.target.value)
+                    }
+                    onDoubleClick={() => setShowInputEle(true)}
+                    onBlur={() => setShowInputEle(false)}
+                    autoFocus
+                  />
+                ) : (
+                  <p
+                    onDoubleClick={() => setShowInputEle(true)}
+                    className="text-wrap break-words "
+                  >
+                    {isFront ? frontText : backText}
+                  </p>
+                )}
+              </span>
+              {/*  */}
             </div>
           </div>
         </div>
       </div>
-      <Handle type="target" position={Position.Top} style={{ placeSelf: "center", height: "0.75rem", width: "0.75rem", background: "#E6E9EF", borderRadius: "0.25rem" }} />
-      <Handle type="source" position={Position.Bottom} style={{ placeSelf: "center", height: "0.75rem", width: "0.75rem", background: "#E6E9EF", borderRadius: "0.25rem" }} />
+      <Handle
+        type="target"
+        position={Position.Top}
+        style={{
+          placeSelf: "center",
+          height: "0.75rem",
+          width: "0.75rem",
+          background: "#E6E9EF",
+          borderRadius: "0.25rem",
+        }}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{
+          placeSelf: "center",
+          height: "0.75rem",
+          width: "0.75rem",
+          background: "#E6E9EF",
+          borderRadius: "0.25rem",
+        }}
+      />
     </div>
   );
 };
