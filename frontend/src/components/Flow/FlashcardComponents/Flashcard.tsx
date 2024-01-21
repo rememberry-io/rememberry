@@ -34,6 +34,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
 
   const toggleCard = () => {
     setIsFront(!isFront);
+    console.log("changed")
   };
 
   const handleColorChange = (color: ColorType) => {
