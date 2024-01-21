@@ -63,6 +63,7 @@ const config: Config = {
     lighter: "#5A97F1",
     secondary: "#ffffff",
     ashberry: "#E6E9EF",
+    mulberry: "#C4C9D6",
   },
 
   plugins: [],

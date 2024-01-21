@@ -128,7 +128,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           placeSelf: "center",
           height: "0.75rem",
           width: "0.75rem",
-          background: "#E6E9EF",
+          background: "#C4C9D6",
           borderRadius: "0.25rem",
         }}
       />
@@ -139,7 +139,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           placeSelf: "center",
           height: "0.75rem",
           width: "0.75rem",
-          background: "#E6E9EF",
+          background: "#C4C9D6",
           borderRadius: "0.25rem",
         }}
       />
