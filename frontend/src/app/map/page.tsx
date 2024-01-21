@@ -15,12 +15,12 @@ import ReactFlow, {
 } from "reactflow";
 import { shallow } from "zustand/shallow";
 
+
 // we have to import the React Flow styles for it to work
 import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/FlowElements/store";
 import { Stack } from "@/components/Flow/StackComponents/Stack";
-import { useAddStack } from "@/components/Flow/addFlashcardsAndStacks";
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
@@ -28,6 +28,7 @@ import "reactflow/dist/style.css";
 // we need to import the React Flow styles to make it work
 import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
 import "reactflow/dist/style.css";
+import { useAddStack } from "@/components/Flow/addStacks";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -55,7 +56,7 @@ function Map() {
     selector,
     shallow,
   );
-  const { project } = useReactFlow();
+  const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
   const [isFront, setIsFront] = useState(true);
 
@@ -85,7 +86,7 @@ function Map() {
     const { top, left } = domNode.getBoundingClientRect();
 
     // we need to remove the wrapper bounds, in order to get the correct mouse position
-    const panePosition = project({
+    const panePosition = screenToFlowPosition({
       x: event.clientX - left,
       y: event.clientY - top,
     });
@@ -114,7 +115,7 @@ function Map() {
         node.querySelector("input")?.focus({ preventScroll: true });
       } else if (targetIsPane && connectingNodeId.current) {
         const parentNode = nodeInternals.get(connectingNodeId.current);
-        const childNodePosition = getChildNodePosition(event, parentNode);
+        const childNodePosition = getChildNodePosition(event as MouseEvent, parentNode);
 
         if (parentNode && childNodePosition) {
           addChildNode(parentNode, childNodePosition);
@@ -123,6 +124,8 @@ function Map() {
     },
     [getChildNodePosition],
   );
+
+  const addStack = useAddStack();
 
   return (
     <div
@@ -147,7 +150,7 @@ function Map() {
         <MiniMap />
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
-          <Button onClick={useAddStack}>Add Stack</Button>
+          <Button onClick={addStack}>Add Stack</Button>
         </Panel>
       </ReactFlow>
     </div>

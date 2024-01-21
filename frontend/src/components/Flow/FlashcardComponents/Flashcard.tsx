@@ -89,38 +89,40 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       )}
-      <div className="p-4 rounded-lg ">
-        <div className="inputWrapper">
-          <div>
-            <div className="flex items-center justify-between">
-              <span>
-                {showInputEle ? (
-                  <textarea
-                    className="text-wrap break-words block p-2.5 w-full text-sm  focus:outline-none hover:bg-gray-50 focus:rounded-lg focus:h-auto focus:w-auto focus:bg-gray-50"
-                    value={isFront ? frontText : backText}
-                    onChange={(e) =>
-                      isFront
-                        ? setFront(e.target.value)
-                        : setBack(e.target.value)
-                    }
-                    onDoubleClick={() => setShowInputEle(true)}
-                    onBlur={() => setShowInputEle(false)}
-                    autoFocus
-                  />
-                ) : (
-                  <p
-                    onDoubleClick={() => setShowInputEle(true)}
-                    className="text-wrap break-words "
-                  >
-                    {isFront ? frontText : backText}
-                  </p>
-                )}
-              </span>
-              {/*  */}
+      <button tabIndex={0} onClick={toggleCard}>
+        <div className="p-4 rounded-lg ">
+          <div className="inputWrapper">
+            <div>
+              <div className="flex items-center justify-between">
+                <span>
+                  {showInputEle ? (
+                    <textarea
+                      className="text-wrap break-words block p-2.5 w-full text-sm  focus:outline-none hover:bg-gray-50 focus:rounded-lg focus:h-auto focus:w-auto focus:bg-gray-50"
+                      value={isFront ? frontText : backText}
+                      onChange={(e) =>
+                        isFront
+                          ? setFront(e.target.value)
+                          : setBack(e.target.value)
+                      }
+                      onDoubleClick={() => setShowInputEle(true)}
+                      onBlur={() => setShowInputEle(false)}
+                      autoFocus
+                    />
+                  ) : (
+                    <p
+                      onDoubleClick={() => setShowInputEle(true)}
+                      className="text-wrap break-words "
+                    >
+                      {isFront ? frontText : backText}
+                    </p>
+                  )}
+                </span>
+                {/*  */}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </button>
       <Handle
         type="target"
         position={Position.Top}
