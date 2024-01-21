@@ -1,5 +1,4 @@
 import { Node } from "reactflow";
-
 const initialNodes: Node[] = [
   {
     id: "1",

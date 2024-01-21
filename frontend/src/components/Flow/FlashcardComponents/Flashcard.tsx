@@ -1,8 +1,9 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { Plus, RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
 import { Handle, NodeToolbar, Position } from "reactflow";
+import { useAddFlashcard } from "../addFlashcardsAndStacks";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { TrafficLights } from "./TrafficLights";
 
@@ -29,6 +30,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
     setSelectedColor(color);
   };
 
+  const addFlashcard = useAddFlashcard();
+
   return (
     <div
       className={` box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}
@@ -42,7 +45,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
           </div>
         </button>
         <NodeToolbar position={Position.Right}>
-          <div className="flex flex-row align-middle ml-4">
+          <div className="flex flex-row align-middle ml-2">
             <div className="pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
@@ -58,9 +61,22 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
             </div>
           </div>
         </NodeToolbar>
+
+        <NodeToolbar position={Position.Bottom} offset={0}>
+          <Button 
+            onClick={addFlashcard}
+            variant="secondary"
+            size="icon"
+          >
+            <Plus />
+          </Button>
+        </NodeToolbar>
+
       </div>
-      <Handle type="source" position={Position.Bottom} />
-      <Handle type="target" position={Position.Top} />
+
+      <Handle type="source" position={Position.Bottom} className="w-16 !bg-ashberry"/>
+      <Handle type="target" position={Position.Top} className="w-16 !bg-ashberry" />
+
     </div>
   );
 };
