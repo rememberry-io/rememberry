@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid/non-secure";
 import {
   Edge,
   EdgeChange,
@@ -10,7 +11,6 @@ import {
   applyNodeChanges,
 } from "reactflow";
 import { create } from "zustand";
-import { nanoid } from 'nanoid/non-secure';
 
 export type RFState = {
   addChildNode: any;
@@ -28,10 +28,8 @@ const useStore = create<RFState>((set, get) => ({
       position: { x: 300, y: 100 },
       data: {
         frontText: "Cellular structure",
-       
       },
     },
-    
   ],
   edges: [],
   onNodesChange: (changes: NodeChange[]) => {
@@ -47,7 +45,7 @@ const useStore = create<RFState>((set, get) => ({
   addChildNode: (parentNode: Node, position: XYPosition) => {
     const newNode = {
       id: nanoid(),
-      type: 'flashcard',
+      type: "flashcard",
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
@@ -55,7 +53,7 @@ const useStore = create<RFState>((set, get) => ({
         borderColor: "red",
       },
       position,
-      dragHandle: '.dragHandle',
+      dragHandle: ".dragHandle",
       parentNode: parentNode.id,
     };
 
@@ -70,14 +68,26 @@ const useStore = create<RFState>((set, get) => ({
       edges: [...get().edges, newEdge],
     });
   },
-  updateNode: (nodeId: string, frontText: string, backText: string, category: string, borderColor: string) => {
+  updateNode: (
+    nodeId: string,
+    frontText: string,
+    backText: string,
+    category: string,
+    borderColor: string,
+  ) => {
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId) {
           // it's important to create a new object here, to inform React Flow about the changes
-          node.data = { ...node.data, frontText, backText, category, borderColor };
+          node.data = {
+            ...node.data,
+            frontText,
+            backText,
+            category,
+            borderColor,
+          };
         }
-   
+
         return node;
       }),
     });
