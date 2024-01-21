@@ -16,6 +16,7 @@ import { Stack } from "@/components/Flow/StackComponents/Stack";
 import { MainStack } from "@/components/Flow/StackComponents/MainStack";
 import { useAddStack } from "@/components/Flow/addFlashcardsAndStacks";
 import { Button } from "@/components/ui/button";
+import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -36,6 +37,11 @@ const nodeTypes: NodeTypesType = {
   flashcard: Flashcard,
   stack: Stack,
   mainStack: MainStack,
+};
+
+const edgeTypes = {
+  flashcard: FlashcardEdge,
+  stack: FlashcardEdge,
 };
 
 function Map() {
