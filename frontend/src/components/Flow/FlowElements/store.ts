@@ -80,6 +80,18 @@ const useStore = create<RFState>((set, get) => ({
       edges: [...get().edges, newEdge],
     });
   },
+  updateNode: (nodeId: string, frontText: string, backText: string, category: string, borderColor: string) => {
+    set({
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId) {
+          // it's important to create a new object here, to inform React Flow about the changes
+          node.data = { ...node.data, frontText, backText, category, borderColor };
+        }
+   
+        return node;
+      }),
+    });
+  },
 }));
 
 export default useStore;

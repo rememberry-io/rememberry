@@ -27,6 +27,7 @@ import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import 'reactflow/dist/style.css';
+import classNames from "classnames";
 
 
 
@@ -50,7 +51,7 @@ const edgeTypes = {
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-const connectionLineStyle = { stroke: '#F6AD55', strokeWidth: 3 };
+const connectionLineStyle = { stroke: "#1370DD", strokeWidth: 2, ConnectionLineType: ConnectionLineType.SimpleBezier };
 const defaultEdgeOptions = { style: connectionLineStyle, type: 'flashcard' };
 
 function Map() {
