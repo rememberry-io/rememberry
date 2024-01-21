@@ -20,7 +20,7 @@ export const TrafficLights = ({ onColorChange }: TrafficLightsProps) => {
         <button
           key={index}
           onClick={() => changeBorder(colorClass)}
-          className={`w-3 h-3 rounded-full bg-${colorClass}`}
+          className={`w-4 h-4 rounded-full bg-${colorClass}`}
         ></button>
       ))}
     </div>
