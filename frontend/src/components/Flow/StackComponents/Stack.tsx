@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "reactflow";
+import { StackDialog } from "./StackDialog";
 
 interface StackProps {
   data: {
