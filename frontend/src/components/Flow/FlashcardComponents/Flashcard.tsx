@@ -24,6 +24,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
 
   const toggleCard = () => {
     setIsFront(!isFront);
+    console.log("changed")
   };
 
   const handleColorChange = (color: string) => {
@@ -37,13 +38,15 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
       className={` box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}
     >
       <div className="p-4 rounded-lg">
-        <button onClick={toggleCard}>
-          <div className="flex items-center justify-between">
-            <p className="text-sm break-words">
-              {isFront ? data.frontText : data.backText}
-            </p>
-          </div>
-        </button>
+        {/** <button onClick={toggleCard}> */}
+        <div className="flex items-center justify-between">
+          <input
+            className="text-sm break-words"
+            defaultValue={isFront ? data.frontText : data.backText}
+          //TODO: Store new data 
+          ></input>
+        </div>
+        {/* </button>  */}
         <NodeToolbar position={Position.Right}>
           <div className="flex flex-row align-middle ml-2">
             <div className="pr-2 mt-1">
