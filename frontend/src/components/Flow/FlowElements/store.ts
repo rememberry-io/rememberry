@@ -31,17 +31,7 @@ const useStore = create<RFState>((set, get) => ({
        
       },
     },
-    {
-      id: "2",
-      type: "flashcard",
-      position: { x: 600, y: 200 },
-      data: {
-        frontText: "What is your name?",
-        backText: "Slim shady",
-        category: "#1 - Cellular Structure",
-        borderColor: "red",
-      },
-    },
+    
   ],
   edges: [],
   onNodesChange: (changes: NodeChange[]) => {

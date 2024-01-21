@@ -1,7 +1,10 @@
 "use client";
 import ReactFlow, {
   Background,
+  ConnectionLineType,
   Controls,
+  MiniMap,
+  Node,
   NodeOrigin,
   OnConnectEnd,
   OnConnectStart,
@@ -9,8 +12,6 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
   useStoreApi,
-  Node,
-  ConnectionLineType,
 } from "reactflow";
 import { shallow } from "zustand/shallow";
 
@@ -18,18 +19,15 @@ import { shallow } from "zustand/shallow";
 import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/FlowElements/store";
-import { MainStack } from "@/components/Flow/StackComponents/MainStack";
 import { Stack } from "@/components/Flow/StackComponents/Stack";
 import { useAddStack } from "@/components/Flow/addFlashcardsAndStacks";
 import { Button } from "@/components/ui/button";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
-import 'reactflow/dist/style.css';
-import classNames from "classnames";
-
-
+import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
+import "reactflow/dist/style.css";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -51,16 +49,24 @@ const edgeTypes = {
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-
-
 function Map() {
   const store = useStoreApi();
   const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
     selector,
-    shallow
+    shallow,
   );
   const { project } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
+  const [isFront, setIsFront] = useState(true);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const toggleMainStack = useCallback(() => {
+    setIsFront((prevIsFront) => !prevIsFront);
+  }, []);
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = store.getState();
@@ -100,12 +106,12 @@ function Map() {
     (event) => {
       const { nodeInternals } = store.getState();
       const targetIsPane = (event.target as Element).classList.contains(
-        'react-flow__pane'
+        "react-flow__pane",
       );
-      const node = (event.target as Element).closest('.react-flow__node');
+      const node = (event.target as Element).closest(".react-flow__node");
 
       if (node) {
-        node.querySelector('input')?.focus({ preventScroll: true });
+        node.querySelector("input")?.focus({ preventScroll: true });
       } else if (targetIsPane && connectingNodeId.current) {
         const parentNode = nodeInternals.get(connectingNodeId.current);
         const childNodePosition = getChildNodePosition(event, parentNode);
@@ -115,31 +121,35 @@ function Map() {
         }
       }
     },
-    [getChildNodePosition]
+    [getChildNodePosition],
   );
 
   return (
     <div
-    style={{ height: "100vh", width: "100vw" }}
-    className="flex flex-col justify-items-center">
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onConnectStart={onConnectStart}
-      onConnectEnd={onConnectEnd}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      nodeOrigin={nodeOrigin}
-
-
-      connectionLineType={ConnectionLineType.Straight}
-      fitView
+      style={{ height: "100vh", width: "100vw" }}
+      className="flex flex-col justify-items-center"
     >
-      <Controls showInteractive={false} />
-
-    </ReactFlow>
+      <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnectStart={onConnectStart}
+        onConnectEnd={onConnectEnd}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        nodeOrigin={nodeOrigin}
+        connectionLineType={ConnectionLineType.Straight}
+        fitView
+      >
+        <Background />
+        <MiniMap />
+        <Controls showInteractive={false} />
+        <Panel position="bottom-center" className="space-x-4">
+          <Button onClick={useAddStack}>Add Stack</Button>
+        </Panel>
+      </ReactFlow>
     </div>
   );
 }
