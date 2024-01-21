@@ -11,6 +11,7 @@ interface FlashcardProps {
     category: string;
     frontText: string;
     backText: string;
+    level: number;
   };
 }
 
@@ -21,25 +22,22 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
     setIsFront(!isFront);
   };
 
+
+
   return (
-    <div>
-      <div className="flex flex-row justify-center">
-        <div className="flex text-center flex-col p-2 rounded-md w-56 h-auto max-h-32 border-2 border-black bg-white mb-4">
-          <div className="p-2">
-            <div className="text-sm text-blue-500 ">{data.category}</div>
-            <div className="line-clamp-3 text-black">
-              {isFront ? data.frontText : data.backText}
-            </div>
+    <div className="flex flex-col items-center justify-center h-auto max-w-xs">
+      <div className="bg-white p-4 rounded-lg border-2 default:border-ashberry/10">
+        <div className="flex items-center justify-between">
+          <p className="text-sm break-words">
+            {isFront ? data.frontText : data.backText}
+          </p>
+          <div className="pl-6">
+          <TrafficLights />
           </div>
         </div>
         <NodeToolbar position={Position.Right}>
-          <div className="flex flex-col space-y-4">
-            <Button
-              onClick={toggleCard}
-              variant="secondary"
-              size="icon"
-              className="ml-4"
-            >
+          <div className="flex flex-col space-y-4 mt-4">
+            <Button onClick={toggleCard} variant="secondary" size="icon">
               <RotateCcw />
             </Button>
             <FlashcardDialog
@@ -50,7 +48,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
           </div>
         </NodeToolbar>
       </div>
-      <TrafficLights />
     </div>
   );
 };

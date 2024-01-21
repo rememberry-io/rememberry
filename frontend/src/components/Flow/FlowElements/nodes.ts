@@ -9,6 +9,7 @@ const initialNodes: Node[] = [
       frontText: "What is your name?",
       backText: "Slim shady",
       category: "#1 - Cellular Structure",
+      level: 1
     },
   },
   {
