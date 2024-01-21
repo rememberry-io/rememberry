@@ -1,15 +1,14 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
-import { Handle, NodeToolbar, Position, useViewport } from "reactflow";
-import { useAddFlashcard } from "../addFlashcardsAndStacks";
+import { Handle, Position, useViewport } from "reactflow";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { TrafficLights } from "./TrafficLights";
 
 const normalizeZoom = (zoom: number): number => {
   return 1 / zoom;
-}
+};
 
 interface NodeProps {
   id: string;
@@ -40,6 +39,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   };
 
   const { zoom } = useViewport();
+  const { zoom } = useViewport();
 
   return (
     <div
@@ -48,7 +48,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
         borderWidth: normalizeZoom(zoom) * 3,
       }}
     >
-      <NodeToolbar position={Position.Right} nodeId={id} align="center">
+      {/* <NodeToolbar position={Position.Right} nodeId={id} align="center"> */}
+      <div
+        className="absolute"
+        style={{
+          right: "-5rem",
+          transform: `scale(${normalizeZoom(zoom)})`,
+        }}
+      >
         <div className="flex flex-row align-middle ml-2">
           <div className="pr-2 mt-1">
             <TrafficLights onColorChange={handleColorChange} />
@@ -64,7 +71,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
             />
           </div>
         </div>
-      </NodeToolbar>
+      </div>
+      {/* </NodeToolbar> */}
       <div className="p-4 rounded-lg">
         {/** <button onClick={toggleCard}> */}
         <div className="inputWrapper">
