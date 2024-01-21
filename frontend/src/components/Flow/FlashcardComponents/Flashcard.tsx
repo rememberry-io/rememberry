@@ -11,28 +11,34 @@ interface FlashcardProps {
     category: string;
     frontText: string;
     backText: string;
-    level: number;
+    borderColor?: string;
   };
 }
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   const [isFront, setIsFront] = useState(true);
+  const [selectedColor, setSelectedColor] = useState(data.borderColor || "ashberry/10");
 
   const toggleCard = () => {
     setIsFront(!isFront);
   };
 
 
+  const handleColorChange = (color:string) => {
+    setSelectedColor(color);
+  };
+
+
 
   return (
-    <div className="flex flex-col items-center justify-center h-auto max-w-xs">
-      <div className="bg-white p-4 rounded-lg border-2 default:border-ashberry/10">
+    <div className={`flex flex-col rounded-md items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} `}>
+      <div className="bg-white p-4 rounded-lg">
         <div className="flex items-center justify-between">
           <p className="text-sm break-words">
             {isFront ? data.frontText : data.backText}
           </p>
           <div className="pl-6">
-          <TrafficLights />
+          <TrafficLights onColorChange={handleColorChange} />
           </div>
         </div>
         <NodeToolbar position={Position.Right}>

@@ -1,32 +1,38 @@
 import { useState } from "react";
 
-export const TrafficLights = () => {
+interface TrafficLightsProps {
+  onColorChange?: (color: string) => void;
+}
+
+export const TrafficLights = ({ onColorChange }: TrafficLightsProps) => {
   const colorCollection = [
-    "bg-red-500",
-    "bg-orange-500",
-    "bg-yellow-500",
-    "bg-green-500",
+    "red-500",
+    "orange-500",
+    "yellow-500",
+    "green-500",
   ];
 
-  const borderColors = {
-    default: "border border-opacity-10",
-    red: "border red-500",
-    orange: "border orange-500",
-    yellow: "border yellow-500",
-    green: "border green-500",
-  };
+
 
   const [isActive, setIsActive] = useState("default");
 
-  const changeBorder = () => {};
+  
+
+  const changeBorder = (color: string) => {
+    setIsActive(color);
+    onColorChange && onColorChange(color); 
+  };
+
+    
+
 
   return (
-    <div className="  rounded-lg flex flex-col justify-center gap-2 ">
+    <div className="rounded-lg flex flex-col justify-center gap-2 ">
       {colorCollection.map((colorClass, index) => (
         <button
           key={index}
-          onClick={changeBorder}
-          className={`w-3 h-3 rounded-full ${colorClass}`}
+          onClick={() => changeBorder(colorClass)}
+          className={`w-3 h-3 rounded-full bg-${colorClass}`}
         ></button>
       ))}
     </div>
