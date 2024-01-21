@@ -17,7 +17,7 @@ interface FlashcardProps {
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   const [isFront, setIsFront] = useState(true);
-  const [selectedColor, setSelectedColor] = useState(data.borderColor || "ashberry/10");
+  const [selectedColor, setSelectedColor] = useState(data.borderColor || "ashberry");
 
   const toggleCard = () => {
     setIsFront(!isFront);
@@ -31,7 +31,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
 
 
   return (
-    <div className={`flex flex-col rounded-md items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} `}>
+    <div className={`flex flex-col rounded-md items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 `}>
       <div className="bg-white p-4 rounded-lg">
         <div className="flex items-center justify-between">
           <p className="text-sm break-words">
