@@ -97,17 +97,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       </div>
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-16 !bg-ashberry"
-      />
-      <Handle
-        type="target"
-        position={Position.Top}
-        className="w-16 !bg-ashberry"
-      />
+      <Handle type="target" position={Position.Top} style={{ placeSelf: "center", height: "0.75rem", width: "0.75rem", background: "#E6E9EF", borderRadius: "0.25rem" }} />
+      <Handle type="source" position={Position.Bottom} style={{ placeSelf: "center", height: "0.75rem", width: "0.75rem", background: "#E6E9EF", borderRadius: "0.25rem" }} />
     </div>
   );
 };
