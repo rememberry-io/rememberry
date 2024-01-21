@@ -17,32 +17,35 @@ interface FlashcardProps {
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   const [isFront, setIsFront] = useState(true);
-  const [selectedColor, setSelectedColor] = useState(data.borderColor || "ashberry");
+  const [selectedColor, setSelectedColor] = useState(
+    data.borderColor || "ashberry",
+  );
 
   const toggleCard = () => {
     setIsFront(!isFront);
   };
 
-
-  const handleColorChange = (color:string) => {
+  const handleColorChange = (color: string) => {
     setSelectedColor(color);
   };
 
-
-
   return (
-    <div className={`flex flex-col rounded-md items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}>
+    <div
+      className={`flex flex-col rounded-md items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}
+    >
       <div className="bg-white p-4 rounded-lg">
+        <button onClick={toggleCard}>
         <div className="flex items-center justify-between">
           <p className="text-sm break-words">
             {isFront ? data.frontText : data.backText}
           </p>
           <div className="pl-6">
-          <TrafficLights onColorChange={handleColorChange} />
+            <TrafficLights onColorChange={handleColorChange} />
           </div>
         </div>
+        </button>
         <NodeToolbar position={Position.Right}>
-          <div className="flex flex-col space-y-4 mt-4">
+          <div className="flex flex-col items-center space-y-4 mt-4">
             <Button onClick={toggleCard} variant="secondary" size="icon">
               <RotateCcw />
             </Button>
