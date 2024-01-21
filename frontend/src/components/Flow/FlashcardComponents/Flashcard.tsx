@@ -4,7 +4,7 @@ import { RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
 import { Handle, Position, useViewport } from "reactflow";
 import { FlashcardDialog } from "./FlashcardDialog";
-import { TrafficLights } from "./TrafficLights";
+import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 const normalizeZoom = (zoom: number): number => {
   return 1 / zoom;
@@ -19,67 +19,78 @@ interface FlashcardProps extends NodeProps {
     category: string;
     frontText: string;
     backText: string;
-    borderColor?: string;
+    borderColor?: ColorType;
   };
 }
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
-  const [selectedColor, setSelectedColor] = useState(
-    data.borderColor || "ashberry",
-  );
+  const [selectedColor, setSelectedColor] = useState<
+    ColorType | null | undefined
+  >(data.borderColor);
 
   const toggleCard = () => {
     setIsFront(!isFront);
-    console.log("changed");
   };
 
-  const handleColorChange = (color: string) => {
+  const handleColorChange = (color: ColorType) => {
     setSelectedColor(color);
   };
 
   const { zoom } = useViewport();
-  const { zoom } = useViewport();
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  function onFocus() {
+    setTimeout(setIsFocused, 0, true);
+  }
+  function onBlur() {
+    setTimeout(setIsFocused, 0, false);
+  }
+  const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
   return (
     <div
-      className={`relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}
+      tabIndex={0}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      className={`dragHandle relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
     >
-      {/* <NodeToolbar position={Position.Right} nodeId={id} align="center"> */}
-      <div
-        className="absolute"
-        style={{
-          right: "-5rem",
-          transform: `scale(${normalizeZoom(zoom)})`,
-        }}
-      >
-        <div className="flex flex-row align-middle ml-2">
-          <div className="pr-2 mt-1">
-            <TrafficLights onColorChange={handleColorChange} />
-          </div>
-          <div className="flex flex-col items-center space-y-4">
-            <Button onClick={toggleCard} variant="secondary" size="icon">
-              <RotateCcw />
-            </Button>
-            <FlashcardDialog
-              flashcardCategory={data.category}
-              flashcardFrontText={data.frontText}
-              flashcardBackText={data.backText}
-            />
+      {isFocused && (
+        <div
+          className="absolute"
+          style={{
+            right: "-5rem",
+            transform: `scale(${normalizeZoom(zoom)})`,
+          }}
+        >
+          <div className="flex flex-row align-middle ml-2">
+            <div className="pr-2 mt-1">
+              <TrafficLights onColorChange={handleColorChange} />
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <Button onClick={toggleCard} variant="secondary" size="icon">
+                <RotateCcw />
+              </Button>
+              <FlashcardDialog
+                flashcardCategory={data.category}
+                flashcardFrontText={data.frontText}
+                flashcardBackText={data.backText}
+              />
+            </div>
           </div>
         </div>
-      </div>
-      {/* </NodeToolbar> */}
+      )}
       <div className="p-4 rounded-lg">
-        {/** <button onClick={toggleCard}> */}
         <div className="inputWrapper">
-          <div className="dragHandle">
+          <div>
             <div className="flex items-center justify-between">
               <input
-                className="text-sm break-words"
+                placeholder="Enter a text"
+                className="text-sm break-words px-4 py-3 focus:outline-none w-full hover:bg-gray-50 focus:bg-gray-50 rounded"
                 defaultValue={isFront ? data.frontText : data.backText}
               />
             </div>

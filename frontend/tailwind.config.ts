@@ -6,6 +6,25 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  /**
+   * todo: this doesn't actually work.
+   * as of now, we preload the classnames using the `<TailwindClassPreloader />` component.
+   */
+  safelist: [
+    "bg-red-500",
+    "bg-yellow-500",
+    "bg-green-500",
+    "bg-orange-500",
+
+    "border-red-500",
+    "border-yellow-500",
+    "border-green-500",
+    "border-orange-500",
+    {
+      pattern: /bg-(red|green|blue|orange)-(100|500|700)/, // You can display all the colors that you need
+      variants: ["lg", "hover", "focus", "lg:hover"], // Optional
+    },
+  ],
   important: true,
   theme: {
     extend: {
