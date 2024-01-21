@@ -20,6 +20,8 @@ export type RFState = {
   onEdgesChange: OnEdgesChange;
 };
 
+
+
 const useStore = create<RFState>((set, get) => ({
   nodes: [
     {
@@ -50,7 +52,7 @@ const useStore = create<RFState>((set, get) => ({
         frontText: "New Front Text",
         backText: "New Back Text",
         category: "New Category",
-        borderColor: "red",
+        borderColor: "",
       },
       position,
       dragHandle: ".dragHandle",
