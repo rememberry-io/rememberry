@@ -1,28 +1,31 @@
 "use client";
-import { Flashcard } from "@/components/Flow/FlashcardComponents/Flashcard";
-import initialEdges from "@/components/Flow/FlowElements/edges";
-import initialNodes from "@/components/Flow/FlowElements/nodes";
-import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
-import { MainStack } from "@/components/Flow/StackComponents/MainStack";
-import { Stack } from "@/components/Flow/StackComponents/Stack";
-import {
-  useAddFlashcard,
-  useAddStack,
-} from "@/components/Flow/addFlashcardsAndStacks";
-import { Button } from "@/components/ui/button";
-import { useCallback, useState } from "react";
 import ReactFlow, {
   Background,
   Controls,
+  NodeOrigin,
   Panel,
   ReactFlowProvider,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
 } from "reactflow";
-import "reactflow/dist/style.css";
+import { shallow } from "zustand/shallow";
 
-// as reactflow is written in TS -> types don't have to be included separately
+// we have to import the React Flow styles for it to work
+import useStore, { RFState } from "@/components/Flow/FlowElements/store";
+import "reactflow/dist/style.css";
+import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
+import { Stack } from "@/components/Flow/StackComponents/Stack";
+import { MainStack } from "@/components/Flow/StackComponents/MainStack";
+import { useAddStack } from "@/components/Flow/addFlashcardsAndStacks";
+import { Button } from "@/components/ui/button";
+
+const selector = (state: RFState) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+});
+
+// this places the node origin in the center of a node
+const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
 type NodeTypesType = {
   // any to bypass type checking
@@ -35,71 +38,36 @@ const nodeTypes: NodeTypesType = {
   mainStack: MainStack,
 };
 
-const frontText = "1st year medicine @Charite";
-const backText = "Jehfbsjhdbf";
-
-const Map: React.FC = () => {
-  const addFlashcard = useAddFlashcard();
-  const addStack = useAddStack();
-  const [nodes, setNodes] = useState(initialNodes);
-  const [isFront, setIsFront] = useState(true);
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const toggleMainStack = useCallback(() => {
-    setIsFront((prevIsFront) => !prevIsFront);
-  }, []);
-
-  const [edges, setEdges] = useState(initialEdges);
-
-  // applyChanges functions apply changes to current state of the element (either edge or node)
-  const onNodesChange = useCallback(
-    (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [],
-  );
-
-  const onEdgesChange = useCallback(
-    (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  );
-
-  const onConnectHandler = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
-    [],
+function Map() {
+  // whenever you use multiple values, you should use shallow to make sure the component only re-renders when one of the values changes
+  const { nodes, edges, onNodesChange, onEdgesChange } = useStore(
+    selector,
+    shallow,
   );
 
   return (
     <div
-      style={{ height: "100vh", width: "100vw" }}
-      className="flex flex-col justify-items-center"
+    style={{ height: "100vh", width: "100vw" }}
+    className="flex flex-col justify-items-center">
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      nodeOrigin={nodeOrigin}
+      nodeTypes={nodeTypes}
+      fitView
     >
-      <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
-      <ReactFlow
-        nodes={nodes}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
-        edges={edges}
-        onEdgesChange={onEdgesChange}
-        zoomOnPinch={true}
-      >
-        <Background />
-        <Panel position="bottom-center" className="space-x-4">
-          <Button onClick={addFlashcard}>Add Flashcard</Button>
-          {/*
-          <Button onClick={addStack}>Add stack</Button>
-          <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
-           <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
-            <Button onClick={() => onLayout("TB")}>Vertical Layout</Button> */}
+       <Background />
+       <Panel position="bottom-center" className="space-x-4">
+          <Button onClick={useAddStack}>Add Stack</Button>
+          
         </Panel>
-        <Controls />
-      </ReactFlow>
+      <Controls />
+    </ReactFlow>
     </div>
   );
-};
+}
 
 export default function MapFlow() {
   return (

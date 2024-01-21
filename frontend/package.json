@@ -29,6 +29,7 @@
     "@types/node": "20.5.9",
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
+    "classcat": "^5.0.4",
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
     "dagre": "^0.8.5",
@@ -37,6 +38,7 @@
     "eslint-config-next": "^14.0.4",
     "framer-motion": "^10.16.4",
     "lucide-react": "^0.284.0",
+    "nanoid": "^5.0.4",
     "next": "^14.0.4",
     "next-themes": "^0.2.1",
     "postcss": "^8.4.31",
@@ -50,7 +52,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "zod": "^3.22.4",
-    "zustand": "^4.4.3"
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@tanstack/eslint-plugin-query": "^4.36.1",

@@ -28,7 +28,7 @@ export function useAddFlashcard() {
 }
 
 export function useAddStack() {
-  const reactFlowInstance = useReactFlow();
+  //const reactFlowInstance = useReactFlow();
   const addStack = useCallback(() => {
     const id = `${++stackId}`;
     const newStack = {
@@ -43,7 +43,7 @@ export function useAddStack() {
         backText: "Back text",
       },
     };
-    reactFlowInstance.addNodes(newStack);
+    
   }, [reactFlowInstance]);
 
   return addStack;
