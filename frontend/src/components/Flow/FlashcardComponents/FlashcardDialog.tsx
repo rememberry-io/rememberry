@@ -28,7 +28,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
       {/* <Dialog isOpen={openDialog} onDismiss={closeDialog}> */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="secondary" size="icon" className="ml-4">
+          <Button variant="secondary" size="icon" className="">
             <Maximize2 />
           </Button>
         </DialogTrigger>

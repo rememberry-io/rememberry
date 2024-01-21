@@ -1,56 +1,82 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
-import { TrafficLights } from "@/components/Flow/TrafficLights";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { Plus, RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
-import { NodeToolbar, Position } from "reactflow";
+import { Handle, NodeToolbar, Position } from "reactflow";
+import { useAddFlashcard } from "../addFlashcardsAndStacks";
 import { FlashcardDialog } from "./FlashcardDialog";
+import { TrafficLights } from "./TrafficLights";
 
 interface FlashcardProps {
   data: {
     category: string;
     frontText: string;
     backText: string;
+    borderColor?: string;
   };
 }
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
   const [isFront, setIsFront] = useState(true);
+  const [selectedColor, setSelectedColor] = useState(
+    data.borderColor || "ashberry",
+  );
 
   const toggleCard = () => {
     setIsFront(!isFront);
   };
 
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+  };
+
+  const addFlashcard = useAddFlashcard();
+
   return (
-    <div>
-      <div className="flex flex-row justify-center">
-        <div className="flex text-center flex-col p-2 rounded-md w-56 h-auto max-h-32 border-2 border-black bg-white mb-4">
-          <div className="p-2">
-            <div className="text-sm text-blue-500 ">{data.category}</div>
-            <div className="line-clamp-3 text-black">
+    <div
+      className={` box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}
+    >
+      <div className="p-4 rounded-lg">
+        <button onClick={toggleCard}>
+          <div className="flex items-center justify-between">
+            <p className="text-sm break-words">
               {isFront ? data.frontText : data.backText}
+            </p>
+          </div>
+        </button>
+        <NodeToolbar position={Position.Right}>
+          <div className="flex flex-row align-middle ml-2">
+            <div className="pr-2 mt-1">
+              <TrafficLights onColorChange={handleColorChange} />
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <Button onClick={toggleCard} variant="secondary" size="icon">
+                <RotateCcw />
+              </Button>
+              <FlashcardDialog
+                flashcardCategory={data.category}
+                flashcardFrontText={data.frontText}
+                flashcardBackText={data.backText}
+              />
             </div>
           </div>
-        </div>
-        <NodeToolbar position={Position.Right}>
-          <div className="flex flex-col space-y-4">
-            <Button
-              onClick={toggleCard}
-              variant="secondary"
-              size="icon"
-              className="ml-4"
-            >
-              <RotateCcw />
-            </Button>
-            <FlashcardDialog
-              flashcardCategory={data.category}
-              flashcardFrontText={data.frontText}
-              flashcardBackText={data.backText}
-            />
-          </div>
         </NodeToolbar>
+
+        <NodeToolbar position={Position.Bottom} offset={0}>
+          <Button 
+            onClick={addFlashcard}
+            variant="secondary"
+            size="icon"
+          >
+            <Plus />
+          </Button>
+        </NodeToolbar>
+
       </div>
-      <TrafficLights />
+
+      <Handle type="source" position={Position.Bottom} className="w-16 !bg-ashberry"/>
+      <Handle type="target" position={Position.Top} className="w-16 !bg-ashberry" />
+
     </div>
   );
 };
