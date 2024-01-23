@@ -16,6 +16,10 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const [category, setCategory] = useState(flashcardCategory);
+  const [frontText, setFront] = useState(flashcardFrontText);
+  const [backText, setBack] = useState(flashcardBackText);
+
   const openDialog = () => {
     setIsOpen(true);
   };
@@ -35,13 +39,25 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
         <DialogContent>
           <div>
             <div>
-              <div className="text-sm text-blue-500 leading-10">
+              <div className="font-medium text-primary leading-10">
                 {flashcardCategory}
               </div>
               <div className="font-semibold leading-10">
-                {flashcardFrontText}
+                <input
+                  className="w-full text-justify rounded-md focus:bg-gray-100 focus:outline-none"
+                  type="text"
+                  defaultValue={frontText}
+                  onChange={(e) => frontText}
+                ></input>
               </div>
-              <div className="leading-6 text-justify">{flashcardBackText}</div>
+              <div className="leading-6 text-justify">
+                <input
+                  className="w-full text-justify rounded-md focus:bg-gray-100 focus:outline-none"
+                  type="text"
+                  defaultValue={backText}
+                  onChange={(e) => setBack}
+                ></input>
+              </div>
             </div>
           </div>
         </DialogContent>
