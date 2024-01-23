@@ -44,7 +44,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               </div>
               <div className="font-semibold leading-10">
                 <input
-                  className="w-full text-justify rounded-md focus:bg-gray-100 focus:outline-none"
+                  className="w-full text-justify p-2 rounded-md focus:bg-gray-100 focus:outline-none"
                   type="text"
                   defaultValue={frontText}
                   onChange={(e) => frontText}
@@ -52,7 +52,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               </div>
               <div className="leading-6 text-justify">
                 <input
-                  className="w-full text-justify rounded-md focus:bg-gray-100 focus:outline-none"
+                  className="w-full text-justify p-2 rounded-md focus:bg-gray-100 focus:outline-none"
                   type="text"
                   defaultValue={backText}
                   onChange={(e) => setBack}
