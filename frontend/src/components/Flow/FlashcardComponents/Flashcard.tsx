@@ -25,6 +25,7 @@ interface FlashcardProps extends NodeProps {
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
+  const [category, setCategory] = useState(data.category);
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
 
@@ -51,8 +52,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     setTimeout(setIsFocused, 0, false);
   }
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
-
-  const [showInputEle, setShowInputEle] = useState(false);
 
   return (
     <div
@@ -81,9 +80,9 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
                 <RotateCcw />
               </Button>
               <FlashcardDialog
-                flashcardCategory={data.category}
-                flashcardFrontText={data.frontText}
-                flashcardBackText={data.backText}
+                flashcardCategory={category}
+                flashcardFrontText={frontText}
+                flashcardBackText={backText}
               />
             </div>
           </div>
@@ -95,29 +94,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
             <div>
               <div className="flex items-center justify-between">
                 <span>
-                  {showInputEle ? (
-                    <textarea
-                      className="text-wrap break-words block p-2.5 w-full text-sm  focus:outline-none hover:bg-gray-50 focus:rounded-lg focus:h-auto focus:w-auto focus:bg-gray-50"
-                      value={isFront ? frontText : backText}
-                      onChange={(e) =>
-                        isFront
-                          ? setFront(e.target.value)
-                          : setBack(e.target.value)
-                      }
-                      onDoubleClick={() => setShowInputEle(true)}
-                      onBlur={() => setShowInputEle(false)}
-                      autoFocus
-                    />
-                  ) : (
-                    <p
-                      onDoubleClick={() => setShowInputEle(true)}
-                      className="text-wrap break-words "
-                    >
-                      {isFront ? frontText : backText}
-                    </p>
-                  )}
+                  <p className="text-wrap break-words ">
+                    {isFront ? frontText : backText}
+                  </p>
                 </span>
-                {/*  */}
               </div>
             </div>
           </div>
