@@ -111,7 +111,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
                 onSubmit={handleDialogSubmit}
                 flashcardCategory={category}
                 flashcardFrontText={frontText}
-                flashcardBackText={data.backText}
+                flashcardBackText={backText}
               />
             </div>
           </div>

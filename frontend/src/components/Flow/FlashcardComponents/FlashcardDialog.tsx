@@ -26,7 +26,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   const [backText, setBackText] = useState(flashcardBackText);
 
   const handleSubmit = () => {
-    onSubmit(frontText, backText, category); // Pass the updated values back
+    onSubmit(frontText, backText, category); 
     closeDialog();
   };
 

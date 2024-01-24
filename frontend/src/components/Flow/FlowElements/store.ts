@@ -34,7 +34,7 @@ const useStore = create<RFState>((set, get) => ({
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        frontText: "Cellular structure",
+        category: "Cellular structure",
       },
     },
   ],
@@ -56,7 +56,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        category: "New Category",
+        category: parentNode.data.category,
         borderColor: "",
       },
       position,

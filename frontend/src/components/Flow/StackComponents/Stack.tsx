@@ -4,13 +4,13 @@ import { StackDialog } from "./StackDialog";
 
 interface StackProps {
   data: {
-    frontText: string;
+    category: string;
   };
 }
 
 export const Stack: React.FC<StackProps> = ({ data }) => {
   const [inputOpen, setInputOpen] = useState(false);
-  const [category, setCategory] = useState(data.frontText);
+  const [category, setCategory] = useState(data.category);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useAutosizeTextArea(textAreaRef.current, category);
