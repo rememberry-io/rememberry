@@ -60,10 +60,11 @@ const config: Config = {
   },
   colors: {
     primary: "#1370DD",
-    lighter: "#5A97F1",
+    primarylight: "#5A97F1",
     secondary: "#ffffff",
     ashberry: "#E6E9EF",
     mulberry: "#C4C9D6",
+    blackberry: "#2E2E2E",
   },
 
   plugins: [],

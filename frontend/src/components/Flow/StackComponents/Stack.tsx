@@ -9,6 +9,18 @@ interface StackProps {
 }
 
 export const Stack: React.FC<StackProps> = ({ data }) => {
+  const [inputOpen, setInputOpen] = useState(false);
+  const [category, setCategory] = useState(data.frontText);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutosizeTextArea(textAreaRef.current, category);
+
+  const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = evt.target?.value;
+
+    setCategory(val);
+  };
+
   return (
     <div>
       <div className="flex flex-row items-center">
