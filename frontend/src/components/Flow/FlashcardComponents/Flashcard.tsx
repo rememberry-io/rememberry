@@ -1,13 +1,14 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
-import React, { memo, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../FlowElements/store";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
+import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
 const selector = (state: RFState) => ({
@@ -80,6 +81,12 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     updateNode(id, front, back, category, selectedColor || "");
   };
 
+  const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
+
+  useAutosizeTextArea(frontTextAreaRef.current, frontText);
+  useAutosizeTextArea(backTextAreaRef.current, backText);
+
   return (
     <div
       tabIndex={0}
@@ -120,7 +127,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
       <button
         tabIndex={0}
         onClick={toggleCard}
-        onDoubleClick={() => null
+        onDoubleClick={
+          () => null
           //todo: open dialog
         }
       >
@@ -128,11 +136,23 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           <div className="inputWrapper">
             <div>
               <div className="flex items-center justify-between">
-                <span>
-                  <p className="text-wrap break-words ">
-                    {isFront ? frontText : data.backText}
-                  </p>
-                </span>
+                {isFront ? (
+                  <textarea
+                    className="h-fit outline-none resize-none break-words"
+                    value={frontText}
+                    ref={frontTextAreaRef}
+                    rows={1}
+                    readOnly
+                  />
+                ) : (
+                  <textarea
+                    className="h-fit outline-none resize-none break-words"
+                    value={backText}
+                    ref={backTextAreaRef}
+                    rows={1}
+                    readOnly
+                  />
+                )}
               </div>
             </div>
           </div>

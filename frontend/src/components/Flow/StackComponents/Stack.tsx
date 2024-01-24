@@ -21,6 +21,8 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
     setCategory(val);
   };
 
+  // todo: update category of all the child nodes
+
   return (
     <div>
       <div className="flex flex-row items-center">
