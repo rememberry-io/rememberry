@@ -60,6 +60,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                   onChange={(e) => setFront(e.target.value)}
                 ></input>
               </div>
+              <hr className="m-2"/> 
               <div className="leading-6 text-justify">
                 <input
                   className="w-full text-justify p-2 rounded-md focus:bg-gray-100 focus:outline-none"
@@ -68,7 +69,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                   onChange={(e) => setBackText(e.target.value)}
                 ></input>
               </div>
-              <Button onClick={handleSubmit}>Submit</Button>
+              <Button className="ml-2  mt-4" onClick={handleSubmit}>Save</Button>
             </div>
           </div>
         </DialogContent>
