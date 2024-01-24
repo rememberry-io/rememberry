@@ -40,9 +40,9 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   return (
     <div>
-      <Dialog >
+      <Dialog open={isOpen}>
         <DialogTrigger asChild>
-          <Button variant="secondary" size="icon" className="">
+          <Button variant="secondary" size="icon" className="" onClick={openDialog}>
             <Maximize2 />
           </Button>
         </DialogTrigger>
