@@ -89,7 +89,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                 onChange={handleChangeBack}
               />
             </div>
-            <Button className="ml-2  mt-4" onClick={handleSubmit}>
+            <Button className="  mt-4" onClick={handleSubmit}>
               Save
             </Button>
           </div>

@@ -1,15 +1,16 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
 import { Maximize2, RotateCcw } from "lucide-react";
-import React, { memo, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
-import useStore, { RFState } from "../FlowElements/store";
+import useStore, { RFState } from "../FlowElements/nodeStore";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
+import { set } from "zod";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -46,14 +47,11 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     ColorType | null | undefined
   >(data.borderColor);
 
-  const toggleCard = () => {
-    setIsFront(!isFront);
-  };
-
   const handleColorChange = (color: ColorType) => {
     setSelectedColor(color);
   };
 
+  // zoom so that the tools and trafficlights are still visible when zoomed out
   const { zoom } = useViewport();
 
   const [isFocused, setIsFocused] = useState(false);
@@ -88,10 +86,21 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
-  //dialog trigger
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [clickCount, setClickCount] = useState(0);
+  const clickTimeout = useRef<number | undefined>(undefined);
 
-  const openDialog = () => setIsDialogOpen(true);
+  const toggleCard = () =>{
+    setIsFront(!isFront);
+  }
+
+  const openDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleClick = () => {
+    setClickCount(prevCount => prevCount + 1);
+  };
 
   const closeDialog = () => setIsDialogOpen(false);
 
@@ -100,6 +109,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
+      onClick={toggleCard}
       className={`dragHandle min-w-48 relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -136,39 +146,38 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}
-                closeDialog={closeDialog}
+                closeDialog={() => setIsDialogOpen(false)}
               />
             </div>
           </div>
         </div>
       )}
-      <button tabIndex={0} onClick={toggleCard} onDoubleClick={openDialog}>
-        <div className="p-4 rounded-lg ">
-          <div className="inputWrapper">
-            <div>
-              <div className="flex items-center justify-between">
-                {isFront ? (
-                  <textarea
-                    className="h-fit outline-none resize-none break-words"
-                    value={frontText}
-                    ref={frontTextAreaRef}
-                    rows={1}
-                    readOnly
-                  />
-                ) : (
-                  <textarea
-                    className="h-fit outline-none resize-none break-words"
-                    value={backText}
-                    ref={backTextAreaRef}
-                    rows={1}
-                    readOnly
-                  />
-                )}
-              </div>
+      <div className="p-4 rounded-lg ">
+        <div className="inputWrapper">
+          <div>
+            <div className="flex items-center justify-between">
+              {isFront ? (
+                <textarea
+                  className="h-fit outline-none resize-none break-words"
+                  value={frontText}
+                  ref={frontTextAreaRef}
+                  rows={1}
+                  readOnly
+                />
+              ) : (
+                <textarea
+                  className="h-fit outline-none resize-none break-words"
+                  value={backText}
+                  ref={backTextAreaRef}
+                  rows={1}
+                  readOnly
+                />
+              )}
             </div>
           </div>
         </div>
-      </button>
+      </div>
+
       <CustomHandle position={Position.Top} />
       <CustomHandle position={Position.Bottom} />
     </div>

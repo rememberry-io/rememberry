@@ -35,6 +35,7 @@ const useStore = create<RFState>((set, get) => ({
       position: { x: 300, y: 100 },
       data: {
         category: "Cellular structure",
+        mainstackID: ""
       },
     },
   ],
