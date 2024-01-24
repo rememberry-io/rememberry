@@ -9,6 +9,8 @@ interface FlashcardDialogProps {
   flashcardFrontText: string;
   flashcardBackText: string;
   backText: string;
+  onSubmit: (frontText: string, backText: string, category: string) => void; 
+
 }
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
@@ -16,6 +18,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   flashcardCategory,
   flashcardFrontText,
   flashcardBackText,
+  onSubmit,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,7 +26,10 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   const [frontText, setFront] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
 
-
+  const handleSubmit = () => {
+    onSubmit(frontText, backText, category); // Pass the updated values back
+    closeDialog();
+  };
 
   const openDialog = () => {
     setIsOpen(true);
@@ -34,8 +40,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   return (
     <div>
-      {/* <Dialog isOpen={openDialog} onDismiss={closeDialog}> */}
-      <Dialog>
+      <Dialog >
         <DialogTrigger asChild>
           <Button variant="secondary" size="icon" className="">
             <Maximize2 />
@@ -63,6 +68,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                   onChange={(e) => setBackText(e.target.value)}
                 ></input>
               </div>
+              <Button onClick={handleSubmit}>Submit</Button>
             </div>
           </div>
         </DialogContent>

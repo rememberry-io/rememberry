@@ -38,6 +38,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
   const [category, setCategory] = useState(data.category);
   const [frontText, setFront] = useState(data.frontText);
+  const [backText, setBack] = useState(data.backText);
 
 
 
@@ -67,6 +68,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   }
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
+  const { updateNode } = useStore(state => ({ updateNode: state.updateNode }), shallow);
+  const handleDialogSubmit = (front: string, back: string, category: string) => {
+    setFront(front);
+    setBack(back);
+    setCategory(category);
+    updateNode(id, front, back, category, selectedColor || ""); 
+  };
+
   return (
     <div
       tabIndex={0}
@@ -95,6 +104,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
               </Button>
               <FlashcardDialog
                 nodeId={id}
+                onSubmit={handleDialogSubmit}
                 backText={data.backText}
                 flashcardCategory={category}
                 flashcardFrontText={frontText}
