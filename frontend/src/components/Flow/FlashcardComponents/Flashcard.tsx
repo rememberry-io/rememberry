@@ -8,6 +8,7 @@ import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
+import { CustomHandle } from "./CustomHandle";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -40,8 +41,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
 
-
-
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
   >(data.borderColor);
@@ -56,8 +55,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
 
   const { zoom } = useViewport();
 
-
-
   const [isFocused, setIsFocused] = useState(false);
 
   function onFocus() {
@@ -68,13 +65,22 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   }
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
-  const { updateNode } = useStore(state => ({ updateNode: state.updateNode }), shallow);
-  const handleDialogSubmit = (front: string, back: string, category: string) => {
+  const { updateNode } = useStore(
+    (state) => ({ updateNode: state.updateNode }),
+    shallow,
+  );
+  const handleDialogSubmit = (
+    front: string,
+    back: string,
+    category: string,
+  ) => {
     setFront(front);
     setBack(back);
     setCategory(category);
-    updateNode(id, front, back, category, selectedColor || ""); 
+    updateNode(id, front, back, category, selectedColor || "");
   };
+
+  
 
   return (
     <div
@@ -129,28 +135,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       </button>
-      <Handle
-        type="target"
-        position={Position.Top}
-        style={{
-          placeSelf: "center",
-          height: "0.75rem",
-          width: "0.75rem",
-          background: "#C4C9D6",
-          borderRadius: "0.25rem",
-        }}
-      />
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        style={{
-          placeSelf: "center",
-          height: "0.75rem",
-          width: "0.75rem",
-          background: "#C4C9D6",
-          borderRadius: "0.25rem",
-        }}
-      />
+      <CustomHandle position={Position.Top} />
+      <CustomHandle position={Position.Bottom} />
     </div>
   );
 };
