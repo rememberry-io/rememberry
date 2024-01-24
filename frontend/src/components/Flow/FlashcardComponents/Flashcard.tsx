@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
-import { Handle, Position, useViewport } from "reactflow";
+import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../FlowElements/store";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
@@ -80,8 +80,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     updateNode(id, front, back, category, selectedColor || "");
   };
 
-  
-
   return (
     <div
       tabIndex={0}
@@ -111,7 +109,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
               <FlashcardDialog
                 nodeId={id}
                 onSubmit={handleDialogSubmit}
-                backText={data.backText}
                 flashcardCategory={category}
                 flashcardFrontText={frontText}
                 flashcardBackText={data.backText}
@@ -120,7 +117,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       )}
-      <button tabIndex={0} onClick={toggleCard}>
+      <button
+        tabIndex={0}
+        onClick={toggleCard}
+        onDoubleClick={() => null
+          //todo: open dialog
+        }
+      >
         <div className="p-4 rounded-lg ">
           <div className="inputWrapper">
             <div>
