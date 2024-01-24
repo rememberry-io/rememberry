@@ -3,8 +3,19 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
 import { Handle, Position, useViewport } from "reactflow";
+import useStore, { RFState } from "../FlowElements/store";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
+
+import { shallow } from "zustand/shallow";
+
+const selector = (state: RFState) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  addChildNode: state.addChildNode,
+});
 
 const normalizeZoom = (zoom: number): number => {
   return 1 / zoom;
@@ -27,7 +38,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
   const [category, setCategory] = useState(data.category);
   const [frontText, setFront] = useState(data.frontText);
-  const [backText, setBack] = useState(data.backText);
+
+
 
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
@@ -42,6 +54,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   };
 
   const { zoom } = useViewport();
+
+
 
   const [isFocused, setIsFocused] = useState(false);
 
@@ -80,9 +94,11 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
                 <RotateCcw />
               </Button>
               <FlashcardDialog
+                nodeId={id}
+                backText={data.backText}
                 flashcardCategory={category}
                 flashcardFrontText={frontText}
-                flashcardBackText={backText}
+                flashcardBackText={data.backText}
               />
             </div>
           </div>
@@ -95,7 +111,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
               <div className="flex items-center justify-between">
                 <span>
                   <p className="text-wrap break-words ">
-                    {isFront ? frontText : backText}
+                    {isFront ? frontText : data.backText}
                   </p>
                 </span>
               </div>

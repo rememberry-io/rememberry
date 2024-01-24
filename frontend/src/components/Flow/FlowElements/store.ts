@@ -18,6 +18,13 @@ export type RFState = {
   edges: Edge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
+  updateNode: (
+    nodeId: string,
+    frontText: string,
+    backText: string,
+    category: string,
+    borderColor: string,
+  ) => void;
 };
 
 const useStore = create<RFState>((set, get) => ({
@@ -78,16 +85,17 @@ const useStore = create<RFState>((set, get) => ({
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId) {
-          // it's important to create a new object here, to inform React Flow about the changes
-          node.data = {
-            ...node.data,
-            frontText,
-            backText,
-            category,
-            borderColor,
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              frontText,
+              backText,
+              category,
+              borderColor,
+            },
           };
         }
-
         return node;
       }),
     });

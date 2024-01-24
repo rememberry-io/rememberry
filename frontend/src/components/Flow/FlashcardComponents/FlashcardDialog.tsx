@@ -4,12 +4,15 @@ import { Maximize2 } from "lucide-react";
 import React, { useState } from "react";
 
 interface FlashcardDialogProps {
+  nodeId: string;
   flashcardCategory: string;
   flashcardFrontText: string;
   flashcardBackText: string;
+  backText: string;
 }
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
+  nodeId,
   flashcardCategory,
   flashcardFrontText,
   flashcardBackText,
@@ -18,7 +21,9 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   const [category, setCategory] = useState(flashcardCategory);
   const [frontText, setFront] = useState(flashcardFrontText);
-  const [backText, setBack] = useState(flashcardBackText);
+  const [backText, setBackText] = useState(flashcardBackText);
+
+
 
   const openDialog = () => {
     setIsOpen(true);
@@ -47,7 +52,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                   className="w-full text-justify p-2 rounded-md focus:bg-gray-100 focus:outline-none"
                   type="text"
                   defaultValue={frontText}
-                  onChange={(e) => frontText}
+                  onChange={(e) => setFront(e.target.value)}
                 ></input>
               </div>
               <div className="leading-6 text-justify">
@@ -55,7 +60,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                   className="w-full text-justify p-2 rounded-md focus:bg-gray-100 focus:outline-none"
                   type="text"
                   defaultValue={backText}
-                  onChange={(e) => setBack}
+                  onChange={(e) => setBackText(e.target.value)}
                 ></input>
               </div>
             </div>
