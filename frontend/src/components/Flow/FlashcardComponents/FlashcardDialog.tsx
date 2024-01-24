@@ -10,7 +10,10 @@ interface FlashcardDialogProps {
   flashcardFrontText: string;
   flashcardBackText: string;
   onSubmit: (frontText: string, backText: string, category: string) => void;
+  isDialogOpen: boolean;
+  closeDialog: () => void;
 }
+
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   nodeId,
@@ -18,24 +21,24 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   flashcardFrontText,
   flashcardBackText,
   onSubmit,
+  isDialogOpen,
+  closeDialog,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+
 
   const [category, setCategory] = useState(flashcardCategory);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
+
+  
+
 
   const handleSubmit = () => {
     onSubmit(frontText, backText, category); 
     closeDialog();
   };
 
-  const openDialog = () => {
-    setIsOpen(true);
-  };
-  const closeDialog = () => {
-    setIsOpen(false);
-  };
+  
 
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -55,19 +58,11 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
     setBackText(valBack);
   };
 
+ 
+
   return (
     <div>
-      <Dialog open={isOpen}  >
-        <DialogTrigger asChild>
-          <Button
-            variant="secondary"
-            size="icon"
-            className=""
-            onClick={openDialog}
-          >
-            <Maximize2 />
-          </Button>
-        </DialogTrigger>
+      <Dialog open={isDialogOpen} >
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>

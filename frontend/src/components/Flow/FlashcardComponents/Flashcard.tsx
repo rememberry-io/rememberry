@@ -1,6 +1,6 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { Maximize2, RotateCcw } from "lucide-react";
 import React, { memo, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../FlowElements/store";
@@ -81,11 +81,19 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     updateNode(id, front, back, category, selectedColor || "");
   };
 
+  // for multiline textarea
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
+
+  //dialog trigger
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const openDialog = () => setIsDialogOpen(true);
+
+  const closeDialog = () => setIsDialogOpen(false);
 
   return (
     <div
@@ -109,9 +117,17 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
             <div className="pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
-            <div className="flex flex-col items-center space-y-4">
+            <div className="flex flex-col items-center space-y-2">
               <Button onClick={toggleCard} variant="secondary" size="icon">
                 <RotateCcw />
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className=""
+                onClick={openDialog}
+              >
+                <Maximize2 />
               </Button>
               <FlashcardDialog
                 nodeId={id}
@@ -119,19 +135,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
                 flashcardCategory={category}
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
+                isDialogOpen={isDialogOpen}
+                closeDialog={closeDialog}
               />
             </div>
           </div>
         </div>
       )}
-      <button
-        tabIndex={0}
-        onClick={toggleCard}
-        onDoubleClick={
-          () => null
-          //todo: open dialog
-        }
-      >
+      <button tabIndex={0} onClick={toggleCard} onDoubleClick={openDialog}>
         <div className="p-4 rounded-lg ">
           <div className="inputWrapper">
             <div>
