@@ -61,13 +61,15 @@ function Map() {
   const [isFront, setIsFront] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [openDialogForNode, setOpenDialogForNode] = useState(null);
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
-  // const toggleMainStack = useCallback(() => {
-  //   setIsFront((prevIsFront) => !prevIsFront);
-  // }, []);
+  const toggleMainStack = useCallback(() => {
+    setIsFront((prevIsFront) => !prevIsFront);
+  }, []);
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = store.getState();

@@ -22,7 +22,7 @@ export type RFState = {
     nodeId: string,
     frontText: string,
     backText: string,
-    category: string,
+    stackName: string,
     borderColor: string,
   ) => void;
 };
@@ -34,7 +34,7 @@ const useStore = create<RFState>((set, get) => ({
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        category: "Cellular structure",
+        stackName: "Cellular structure",
         mainstackID: "",
       },
     },
@@ -57,7 +57,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        category: parentNode.data.category,
+        stackName: parentNode.data.stackName,
         borderColor: "",
       },
       position,
@@ -80,7 +80,7 @@ const useStore = create<RFState>((set, get) => ({
     nodeId: string,
     frontText: string,
     backText: string,
-    category: string,
+    stackName: string,
     borderColor: string,
   ) => {
     set({
@@ -92,7 +92,7 @@ const useStore = create<RFState>((set, get) => ({
               ...node.data,
               frontText,
               backText,
-              category,
+              stackName,
               borderColor,
             },
           };
