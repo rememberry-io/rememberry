@@ -14,7 +14,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
         <div className="flex text-center flex-col p-5 rounded-md bg-primary text-white justify-center ">
           <div className="line-clamp-3">{data.frontText}</div>
         </div>
-        
+
         <Handle
           type="source"
           position={Position.Bottom}

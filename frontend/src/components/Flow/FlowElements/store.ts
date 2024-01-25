@@ -20,8 +20,6 @@ export type RFState = {
   onEdgesChange: OnEdgesChange;
 };
 
-
-
 const useStore = create<RFState>((set, get) => ({
   nodes: [
     {

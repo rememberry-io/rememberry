@@ -6,7 +6,6 @@ let flashcardId = 5;
 let stackId = 5;
 
 export function useAddStack() {
-  
   const reactFlowInstance = useReactFlow();
   const addStack = useCallback(() => {
     const newStack = {
