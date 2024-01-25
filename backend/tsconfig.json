@@ -17,7 +17,7 @@
     "allowJs": true,
     "typeRoots": ["bun-types"],
     "types": [
-      "bun-types" // add Bun global
-    ]
-  }
+      "bun-types", // add Bun global
+    ],
+  },
 }
