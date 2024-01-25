@@ -5,29 +5,29 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface FlashcardDialogProps {
   nodeId: string;
-  flashcardCategory: string;
+  flashcardStackName: string;
   flashcardFrontText: string;
   flashcardBackText: string;
-  onSubmit: (frontText: string, backText: string, category: string) => void;
+  onSubmit: (frontText: string, backText: string, stackName: string) => void;
   isDialogOpen: boolean;
   closeDialog: () => void;
 }
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   nodeId,
-  flashcardCategory,
+  flashcardStackName,
   flashcardFrontText,
   flashcardBackText,
   onSubmit,
   isDialogOpen,
   closeDialog,
 }) => {
-  const [category, setCategory] = useState(flashcardCategory);
+  const [stackName, setstackName] = useState(flashcardStackName);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
 
   const handleSubmit = () => {
-    onSubmit(frontText, backText, category);
+    onSubmit(frontText, backText, stackName);
     closeDialog();
   };
 
@@ -56,7 +56,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
           <div>
             <div>
               <div className="font-medium text-primary leading-10">
-                {category}
+                {stackName}
               </div>
               <textarea
                 className=" rounded-md h-fit outline-none resize-none w-full break-words"

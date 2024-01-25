@@ -24,6 +24,7 @@ export type RFState = {
     backText: string,
     stackName: string,
     borderColor: string,
+    isNew: boolean,
   ) => void;
 };
 
@@ -59,6 +60,7 @@ const useStore = create<RFState>((set, get) => ({
         backText: "New Back Text",
         stackName: parentNode.data.stackName,
         borderColor: "",
+        isNew: true, 
       },
       position,
       dragHandle: ".dragHandle",
@@ -82,6 +84,7 @@ const useStore = create<RFState>((set, get) => ({
     backText: string,
     stackName: string,
     borderColor: string,
+    isNew: boolean,
   ) => {
     set({
       nodes: get().nodes.map((node) => {
@@ -94,6 +97,7 @@ const useStore = create<RFState>((set, get) => ({
               backText,
               stackName,
               borderColor,
+              isNew,
             },
           };
         }
