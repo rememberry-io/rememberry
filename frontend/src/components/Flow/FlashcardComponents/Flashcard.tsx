@@ -1,50 +1,77 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
-import { Plus, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import React, { memo, useState } from "react";
-import { Handle, NodeToolbar, Position } from "reactflow";
-import { useAddFlashcard } from "../addFlashcardsAndStacks";
+import { Handle, Position, useViewport } from "reactflow";
 import { FlashcardDialog } from "./FlashcardDialog";
-import { TrafficLights } from "./TrafficLights";
+import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
-interface FlashcardProps {
+const normalizeZoom = (zoom: number): number => {
+  return 1 / zoom;
+};
+
+interface NodeProps {
+  id: string;
+}
+
+interface FlashcardProps extends NodeProps {
   data: {
     category: string;
     frontText: string;
     backText: string;
-    borderColor?: string;
+    borderColor?: ColorType;
   };
 }
 
-export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
+export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
-  const [selectedColor, setSelectedColor] = useState(
-    data.borderColor || "ashberry",
-  );
+  const [frontText, setFront] = useState(data.frontText);
+  const [backText, setBack] = useState(data.backText);
+
+  const [selectedColor, setSelectedColor] = useState<
+    ColorType | null | undefined
+  >(data.borderColor);
 
   const toggleCard = () => {
     setIsFront(!isFront);
   };
 
-  const handleColorChange = (color: string) => {
+  const handleColorChange = (color: ColorType) => {
     setSelectedColor(color);
   };
 
-  const addFlashcard = useAddFlashcard();
+  const { zoom } = useViewport();
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  function onFocus() {
+    setTimeout(setIsFocused, 0, true);
+  }
+  function onBlur() {
+    setTimeout(setIsFocused, 0, false);
+  }
+  const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
+
+  const [showInputEle, setShowInputEle] = useState(false);
 
   return (
     <div
-      className={` box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 border-${selectedColor} border-opacity-25 hover:border-opacity-50 `}
+      tabIndex={0}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      className={`dragHandle min-w-48 relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
+      style={{
+        borderWidth: normalizeZoom(zoom) * 3,
+      }}
     >
-      <div className="p-4 rounded-lg">
-        <button onClick={toggleCard}>
-          <div className="flex items-center justify-between">
-            <p className="text-sm break-words">
-              {isFront ? data.frontText : data.backText}
-            </p>
-          </div>
-        </button>
-        <NodeToolbar position={Position.Right}>
+      {isFocused && (
+        <div
+          className="absolute"
+          style={{
+            right: "-5rem",
+            transform: `scale(${normalizeZoom(zoom)})`,
+          }}
+        >
           <div className="flex flex-row align-middle ml-2">
             <div className="pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
@@ -60,24 +87,63 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
               />
             </div>
           </div>
-        </NodeToolbar>
-
-        <NodeToolbar position={Position.Bottom} offset={0}>
-          <Button onClick={addFlashcard} variant="secondary" size="icon">
-            <Plus />
-          </Button>
-        </NodeToolbar>
-      </div>
-
-      <Handle
-        type="source"
-        position={Position.Bottom}
-        className="w-16 !bg-ashberry"
-      />
+        </div>
+      )}
+      <button tabIndex={0} onClick={toggleCard}>
+        <div className="p-4 rounded-lg ">
+          <div className="inputWrapper">
+            <div>
+              <div className="flex items-center justify-between">
+                <span>
+                  {showInputEle ? (
+                    <textarea
+                      className="text-wrap break-words block p-2.5 w-full text-sm  focus:outline-none hover:bg-gray-50 focus:rounded-lg focus:h-auto focus:w-auto focus:bg-gray-50"
+                      value={isFront ? frontText : backText}
+                      onChange={(e) =>
+                        isFront
+                          ? setFront(e.target.value)
+                          : setBack(e.target.value)
+                      }
+                      onDoubleClick={() => setShowInputEle(true)}
+                      onBlur={() => setShowInputEle(false)}
+                      autoFocus
+                    />
+                  ) : (
+                    <p
+                      onDoubleClick={() => setShowInputEle(true)}
+                      className="text-wrap break-words "
+                    >
+                      {isFront ? frontText : backText}
+                    </p>
+                  )}
+                </span>
+                {/*  */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
       <Handle
         type="target"
         position={Position.Top}
-        className="w-16 !bg-ashberry"
+        style={{
+          placeSelf: "center",
+          height: "0.75rem",
+          width: "0.75rem",
+          background: "#C4C9D6",
+          borderRadius: "0.25rem",
+        }}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{
+          placeSelf: "center",
+          height: "0.75rem",
+          width: "0.75rem",
+          background: "#C4C9D6",
+          borderRadius: "0.25rem",
+        }}
       />
     </div>
   );

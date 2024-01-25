@@ -1,51 +1,65 @@
 "use client";
-import { Flashcard } from "@/components/Flow/FlashcardComponents/Flashcard";
-import initialEdges from "@/components/Flow/FlowElements/edges";
-import initialNodes from "@/components/Flow/FlowElements/nodes";
-import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
-import { MainStack } from "@/components/Flow/StackComponents/MainStack";
-import { Stack } from "@/components/Flow/StackComponents/Stack";
-import {
-  useAddFlashcard,
-  useAddStack,
-} from "@/components/Flow/addFlashcardsAndStacks";
-import { Button } from "@/components/ui/button";
-import { useCallback, useState } from "react";
 import ReactFlow, {
   Background,
+  ConnectionLineType,
   Controls,
+  MiniMap,
+  Node,
+  NodeOrigin,
+  OnConnectEnd,
+  OnConnectStart,
   Panel,
   ReactFlowProvider,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
+  useReactFlow,
+  useStoreApi,
 } from "reactflow";
+import { shallow } from "zustand/shallow";
+
+// we have to import the React Flow styles for it to work
+import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
+import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
+import useStore, { RFState } from "@/components/Flow/FlowElements/store";
+import { Stack } from "@/components/Flow/StackComponents/Stack";
+import { Button } from "@/components/ui/button";
+import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
 
-// as reactflow is written in TS -> types don't have to be included separately
+// we need to import the React Flow styles to make it work
+import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
+import { useAddStack } from "@/components/Flow/addStacks";
+import "reactflow/dist/style.css";
 
-type NodeTypesType = {
-  // any to bypass type checking
-  [key: string]: React.ComponentType<any>;
-};
+const selector = (state: RFState) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  addChildNode: state.addChildNode,
+});
 
-const nodeTypes: NodeTypesType = {
+const nodeTypes = {
   flashcard: Flashcard,
   stack: Stack,
-  mainStack: MainStack,
 };
 
-const frontText = "1st year medicine @Charite";
-const backText = "Jehfbsjhdbf";
+const edgeTypes = {
+  flashcard: FlashcardEdge,
+  stack: FlashcardEdge,
+};
 
-const Map: React.FC = () => {
-  const addFlashcard = useAddFlashcard();
-  const addStack = useAddStack();
-  const [nodes, setNodes] = useState(initialNodes);
+const nodeOrigin: NodeOrigin = [0.5, 0.5];
+
+function Map() {
+  const store = useStoreApi();
+  const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
+    selector,
+    shallow,
+  );
+  const { screenToFlowPosition } = useReactFlow();
+  const connectingNodeId = useRef<string | null>(null);
   const [isFront, setIsFront] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
-
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
@@ -54,23 +68,66 @@ const Map: React.FC = () => {
     setIsFront((prevIsFront) => !prevIsFront);
   }, []);
 
-  const [edges, setEdges] = useState(initialEdges);
+  const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
+    const { domNode } = store.getState();
 
-  // applyChanges functions apply changes to current state of the element (either edge or node)
-  const onNodesChange = useCallback(
-    (changes: any) => setNodes((nds) => applyNodeChanges(changes, nds)),
-    [],
+    if (
+      !domNode ||
+      // we need to check if these properites exist, because when a node is not initialized yet,
+      // it doesn't have a positionAbsolute nor a width or height
+      !parentNode?.positionAbsolute ||
+      !parentNode?.width ||
+      !parentNode?.height
+    ) {
+      return;
+    }
+
+    const { top, left } = domNode.getBoundingClientRect();
+
+    // we need to remove the wrapper bounds, in order to get the correct mouse position
+    const panePosition = screenToFlowPosition({
+      x: event.clientX - left,
+      y: event.clientY - top,
+    });
+
+    // we are calculating with positionAbsolute here because child nodes are positioned relative to their parent
+    return {
+      x: panePosition.x - parentNode.positionAbsolute.x + parentNode.width / 2,
+      y: panePosition.y - parentNode.positionAbsolute.y + parentNode.height / 2,
+    };
+  };
+
+  const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
+    // we need to remember where the connection started so we can add the new node to the correct parent on connect end
+    connectingNodeId.current = nodeId;
+  }, []);
+
+  const onConnectEnd: OnConnectEnd = useCallback(
+    (event) => {
+      const { nodeInternals } = store.getState();
+      const targetIsPane = (event.target as Element).classList.contains(
+        "react-flow__pane",
+      );
+      const node = (event.target as Element).closest(".react-flow__node");
+
+      if (node) {
+        node.querySelector("input")?.focus({ preventScroll: true });
+      } else if (targetIsPane && connectingNodeId.current) {
+        const parentNode = nodeInternals.get(connectingNodeId.current);
+        const childNodePosition = getChildNodePosition(
+          event as MouseEvent,
+          parentNode,
+        );
+
+        if (parentNode && childNodePosition) {
+          addChildNode(parentNode, childNodePosition);
+        }
+      }
+    },
+    [getChildNodePosition],
   );
 
-  const onEdgesChange = useCallback(
-    (changes: any) => setEdges((eds) => applyEdgeChanges(changes, eds)),
-    [],
-  );
-
-  const onConnectHandler = useCallback(
-    (params: any) => setEdges((eds) => addEdge(params, eds)),
-    [],
-  );
+  const addStack = useAddStack();
 
   return (
     <div
@@ -80,27 +137,27 @@ const Map: React.FC = () => {
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
       <ReactFlow
         nodes={nodes}
-        nodeTypes={nodeTypes}
-        onNodesChange={onNodesChange}
         edges={edges}
+        onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        zoomOnPinch={true}
+        onConnectStart={onConnectStart}
+        onConnectEnd={onConnectEnd}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        nodeOrigin={nodeOrigin}
+        connectionLineType={ConnectionLineType.Straight}
+        fitView
       >
         <Background />
+        <MiniMap />
+        <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
-          <Button onClick={addFlashcard}>Add Flashcard</Button>
-          {/*
-          <Button onClick={addStack}>Add stack</Button>
-          <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
-           <Button onClick={() => onLayout("LR")}>Horizontal Layout</Button>
-            <Button onClick={() => onLayout("TB")}>Vertical Layout</Button> */}
+          <Button onClick={addStack}>Add Stack</Button>
         </Panel>
-        <Controls />
       </ReactFlow>
     </div>
   );
-};
-
+}
 export default function MapFlow() {
   return (
     <ReactFlowProvider>
