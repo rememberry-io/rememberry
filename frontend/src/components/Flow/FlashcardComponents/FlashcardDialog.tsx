@@ -60,7 +60,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               </div>
               <textarea
                 className=" rounded-md h-fit outline-none resize-none w-full break-words"
-                defaultValue={frontText}
+                defaultValue={frontText==="New Front Text"? "":frontText}
                 placeholder="Front Text"
                 ref={frontTextAreaRef}
                 rows={1}
@@ -71,7 +71,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
             <div className="leading-6 text-justify">
               <textarea
                 className="rounded-md h-fit outline-none resize-none w-full break-words"
-                defaultValue={backText}
+                defaultValue={frontText==="New Back Text"? "":frontText}
                 placeholder="Back Text"
                 ref={backTextAreaRef}
                 rows={1}
