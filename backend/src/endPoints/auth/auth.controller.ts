@@ -143,11 +143,8 @@ class LuciaAuthentication implements AuthenticationController {
       input.opts.ctx.req,
       input.opts.ctx.res,
     );
-    console.log(JSON.stringify(authRequest));
 
     const session = await authRequest.validate();
-
-    console.log(session);
 
     if (!session) {
       return [new TRPCError({ code: "UNAUTHORIZED" }), null] as const;

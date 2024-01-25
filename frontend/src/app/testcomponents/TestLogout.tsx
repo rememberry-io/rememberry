@@ -1,12 +1,19 @@
 "use client";
+import { useRouter } from "next/navigation";
 import useLogoutUser from "../_authentication/useLogoutUser";
 
 export default function TestLogout() {
+  const router = useRouter();
   const logout = useLogoutUser();
-  function onClickLogout(event: any) {
+  async function onClickLogout(event: any) {
     event.preventDefault();
 
-    logout();
+    const [error, success] = await logout();
+
+    if (error)
+      return;
+
+    router.push("/testcomponents")
   }
   return (
     <div>

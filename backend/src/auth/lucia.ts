@@ -8,7 +8,7 @@ export const auth = lucia({
   middleware: node(),
   csrfProtection: {
     allowedSubDomains: "*",
-    host: "localhost:3000",
+    host: "127.0.0.1:3000",
   },
   adapter: pg(pool, {
     user: "users",

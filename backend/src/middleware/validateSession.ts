@@ -7,11 +7,13 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   const authRequest = auth.handleRequest(req, res);
 
   const session = await authRequest.validate();
+
   if (!session) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
     });
   }
+
   return next();
 });
 

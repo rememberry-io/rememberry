@@ -3,6 +3,7 @@ import { publicProcedure, router } from "../../trpc";
 import { UserRouterOutput } from "../user/types";
 import { luciaAuthentication } from "./auth.controller";
 import { LoginRouteInput, RegisterRouteInput } from "./types";
+import { privateProcedure } from "../../middleware/validateSession";
 
 export const authRouter = router({
   register: publicProcedure

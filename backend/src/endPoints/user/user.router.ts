@@ -16,6 +16,7 @@ export const userRouter = router({
       if (errorCheck) {
         throw errorCheck;
       }
+
       return res.user;
     }),
   updateUsernameAndEmail: privateProcedure

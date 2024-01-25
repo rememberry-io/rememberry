@@ -36,7 +36,7 @@ export default function Providers({ children, ...props }: ThemeProviderProps) {
   return (
     <rqTrpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+        <NextThemesProvider {...props}>{children}</NextThemesProvider>
       </QueryClientProvider>
     </rqTrpc.Provider>
   );

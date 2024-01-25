@@ -10,9 +10,11 @@ export default function useLogoutUser() {
       await userCreator.mutateAsync();
 
       userStore.actions.deleteUser();
+
+      return [null, true] as const;
     } catch (error) {
-      if (error instanceof TRPCClientError) console.error(error);
-      else console.error(error);
+      if (error instanceof TRPCClientError) return [error, null] as const;
+      else return [error, null] as const;
     }
   };
   return logoutUser;
