@@ -25,7 +25,9 @@ export type RFState = {
     stackName: string,
     borderColor: string,
     isNew: boolean,
+    newNodeType: string,
   ) => void;
+  updateNodeType: (nodeId: string, newNodeType: string) => void;
 };
 
 const useStore = create<RFState>((set, get) => ({
@@ -60,7 +62,7 @@ const useStore = create<RFState>((set, get) => ({
         backText: "New Back Text",
         stackName: parentNode.data.stackName,
         borderColor: "red",
-        isNew: true, 
+        isNew: true,
       },
       position,
       dragHandle: ".dragHandle",
@@ -73,10 +75,19 @@ const useStore = create<RFState>((set, get) => ({
       target: newNode.id,
     };
 
-    set({
-      nodes: [...get().nodes, newNode],
-      edges: [...get().edges, newEdge],
-    });
+    let updatedNodes = [...get().nodes, newNode];
+    let updatedEdges = [...get().edges, newEdge];
+
+    const childEdges = updatedEdges.filter(
+      (edge) => edge.source === parentNode.id,
+    );
+    if (childEdges.length >= 1 && parentNode.type !== "stack") {
+      updatedNodes = updatedNodes.map((node) =>
+        node.id === parentNode.id ? { ...node, type: "stack" } : node,
+      );
+    }
+
+    set({ nodes: updatedNodes, edges: updatedEdges });
   },
   updateNode: (
     nodeId: string,
@@ -103,6 +114,13 @@ const useStore = create<RFState>((set, get) => ({
         }
         return node;
       }),
+    });
+  },
+  updateNodeType: (nodeId: string, newNodeType: string) => {
+    set({
+      nodes: get().nodes.map((node) =>
+        node.id === nodeId ? { ...node, type: newNodeType } : node,
+      ),
     });
   },
 }));

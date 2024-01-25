@@ -35,6 +35,7 @@ interface FlashcardProps extends NodeProps {
     backText: string;
     borderColor?: ColorType;
     isNew?: boolean;
+    newNodeType: string
   };
 }
 
@@ -86,7 +87,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     setBack(back);
     setStackName(stackName);
     setIsDialogOpen(false);
-    updateNode(id, front, back, stackName, selectedColor || "", isNew || false);
+    updateNode(id, front, back, stackName, selectedColor || "", isNew || false, data.newNodeType);
   };
 
   // for multiline textarea
@@ -133,8 +134,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
         >
-          <div className="flex flex-row align-middle ml-2">
-            <div className="pr-2 mt-1">
+          <div className="flex relative flex-row align-middle ml-2">
+            <div className="z-10 pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
             <div className="flex flex-col items-center space-y-2">

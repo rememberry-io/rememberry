@@ -58,7 +58,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
             )}
           </div>
         </button>
-
+        <CustomHandle position={Position.Top} />
         <CustomHandle position={Position.Bottom} />
       </div>
     </div>
