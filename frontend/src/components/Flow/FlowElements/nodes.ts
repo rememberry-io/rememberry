@@ -10,7 +10,7 @@ const initialNodes: Node[] = [
         "biology branch that studies the structure, function, and behaviour of cells -> all living organisms are made of cells",
     },
   },
-  
+
   {
     id: "2",
     type: "flashcard",
@@ -19,7 +19,7 @@ const initialNodes: Node[] = [
       frontText: "What is your name?",
       backText: "Slim shady",
       category: "#1 - Cellular Structure",
-      borderColor: "red"
+      borderColor: "red",
     },
   },
   {
