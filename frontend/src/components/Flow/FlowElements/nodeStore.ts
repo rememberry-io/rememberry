@@ -59,7 +59,7 @@ const useStore = create<RFState>((set, get) => ({
         frontText: "New Front Text",
         backText: "New Back Text",
         stackName: parentNode.data.stackName,
-        borderColor: "",
+        borderColor: "red",
         isNew: true, 
       },
       position,
