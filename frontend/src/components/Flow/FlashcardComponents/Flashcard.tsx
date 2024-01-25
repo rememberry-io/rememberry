@@ -63,20 +63,22 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data }) => {
         </NodeToolbar>
 
         <NodeToolbar position={Position.Bottom} offset={0}>
-          <Button 
-            onClick={addFlashcard}
-            variant="secondary"
-            size="icon"
-          >
+          <Button onClick={addFlashcard} variant="secondary" size="icon">
             <Plus />
           </Button>
         </NodeToolbar>
-
       </div>
 
-      <Handle type="source" position={Position.Bottom} className="w-16 !bg-ashberry"/>
-      <Handle type="target" position={Position.Top} className="w-16 !bg-ashberry" />
-
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        className="w-16 !bg-ashberry"
+      />
+      <Handle
+        type="target"
+        position={Position.Top}
+        className="w-16 !bg-ashberry"
+      />
     </div>
   );
 };

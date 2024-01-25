@@ -43,7 +43,7 @@ const config: Config = {
     primary: "#1370DD",
     lighter: "#5A97F1",
     secondary: "#ffffff",
-    ashberry: "#E6E9EF"
+    ashberry: "#E6E9EF",
   },
 
   plugins: [],
