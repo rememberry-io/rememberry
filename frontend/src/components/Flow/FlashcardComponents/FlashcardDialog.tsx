@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Maximize2 } from "lucide-react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
@@ -14,7 +13,6 @@ interface FlashcardDialogProps {
   closeDialog: () => void;
 }
 
-
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   nodeId,
   flashcardCategory,
@@ -24,21 +22,14 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   isDialogOpen,
   closeDialog,
 }) => {
-
-
   const [category, setCategory] = useState(flashcardCategory);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
 
-  
-
-
   const handleSubmit = () => {
-    onSubmit(frontText, backText, category); 
+    onSubmit(frontText, backText, category);
     closeDialog();
   };
-
-  
 
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -58,11 +49,9 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
     setBackText(valBack);
   };
 
- 
-
   return (
     <div>
-      <Dialog open={isDialogOpen} >
+      <Dialog open={isDialogOpen}>
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>

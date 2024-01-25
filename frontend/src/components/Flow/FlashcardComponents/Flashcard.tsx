@@ -1,7 +1,7 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
 import { Maximize2, RotateCcw } from "lucide-react";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../FlowElements/nodeStore";
 import { FlashcardDialog } from "./FlashcardDialog";
@@ -10,7 +10,6 @@ import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 import { shallow } from "zustand/shallow";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
-import { set } from "zod";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -90,16 +89,16 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
   const [clickCount, setClickCount] = useState(0);
   const clickTimeout = useRef<number | undefined>(undefined);
 
-  const toggleCard = () =>{
+  const toggleCard = () => {
     setIsFront(!isFront);
-  }
+  };
 
   const openDialog = () => {
     setIsDialogOpen(true);
   };
 
   const handleClick = () => {
-    setClickCount(prevCount => prevCount + 1);
+    setClickCount((prevCount) => prevCount + 1);
   };
 
   const closeDialog = () => setIsDialogOpen(false);
