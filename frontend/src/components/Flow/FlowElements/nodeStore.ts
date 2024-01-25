@@ -18,6 +18,13 @@ export type RFState = {
   edges: Edge[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
+  updateNode: (
+    nodeId: string,
+    frontText: string,
+    backText: string,
+    category: string,
+    borderColor: string,
+  ) => void;
 };
 
 const useStore = create<RFState>((set, get) => ({
@@ -27,7 +34,8 @@ const useStore = create<RFState>((set, get) => ({
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        frontText: "Cellular structure",
+        category: "Cellular structure",
+        mainstackID: "",
       },
     },
   ],
@@ -49,7 +57,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        category: "New Category",
+        category: parentNode.data.category,
         borderColor: "",
       },
       position,
@@ -78,16 +86,17 @@ const useStore = create<RFState>((set, get) => ({
     set({
       nodes: get().nodes.map((node) => {
         if (node.id === nodeId) {
-          // it's important to create a new object here, to inform React Flow about the changes
-          node.data = {
-            ...node.data,
-            frontText,
-            backText,
-            category,
-            borderColor,
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              frontText,
+              backText,
+              category,
+              borderColor,
+            },
           };
         }
-
         return node;
       }),
     });

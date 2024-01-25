@@ -18,7 +18,7 @@ import { shallow } from "zustand/shallow";
 // we have to import the React Flow styles for it to work
 import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
-import useStore, { RFState } from "@/components/Flow/FlowElements/store";
+import useStore, { RFState } from "@/components/Flow/FlowElements/nodeStore";
 import { Stack } from "@/components/Flow/StackComponents/Stack";
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef, useState } from "react";
