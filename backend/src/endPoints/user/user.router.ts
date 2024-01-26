@@ -4,19 +4,24 @@ import { router } from "../../trpc";
 import {
   UpdatePasswordRouteInput,
   UpdateUsernameAndEmailRouteInput,
+  UserRouterOutput,
 } from "./types";
 import { userController } from "./user.controller";
 
 export const userRouter = router({
-  getUserBySession: privateProcedure.query(async (opts) => {
-    const [errorCheck, res] = await userController.getUserBySession(opts.ctx);
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
-  }),
+  getUserBySession: privateProcedure
+    .output(UserRouterOutput)
+    .query(async (opts) => {
+      const [errorCheck, res] = await userController.getUserBySession(opts.ctx);
+      if (errorCheck) {
+        throw errorCheck;
+      }
+
+      return res.user;
+    }),
   updateUsernameAndEmail: privateProcedure
     .input(UpdateUsernameAndEmailRouteInput)
+    .output(UserRouterOutput)
     .mutation(async (opts) => {
       const [errorCheck, res] = await userController.updateUsernameAndEmail(
         opts.input,
@@ -28,6 +33,7 @@ export const userRouter = router({
     }),
   updatePassword: privateProcedure
     .input(UpdatePasswordRouteInput)
+    .output(UserRouterOutput)
     .mutation(async (opts) => {
       const [errorCheck, res] = await userController.updatePassword(opts.input);
       if (errorCheck) {

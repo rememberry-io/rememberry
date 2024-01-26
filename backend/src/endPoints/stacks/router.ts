@@ -24,7 +24,7 @@ const changeParentStackInput = z.object({
 });
 
 export const stackRouter = router({
-  create: privateProcedure.input(stackInput).query(async (opts) => {
+  create: privateProcedure.input(stackInput).mutation(async (opts) => {
     const [errorCheck, res] = await stackController.controlCreateStack(
       opts.input,
     );

@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { LuciaError } from "lucia";
+import { DatabaseError } from "pg";
 import { Auth, auth } from "../../auth/lucia";
 import {
   AuthOutput,
@@ -44,15 +45,50 @@ class LuciaAuthentication implements AuthenticationController {
       });
       const sessionCookie = this.auth.createSessionCookie(session);
 
+      sessionCookie.attributes.httpOnly = true;
+      sessionCookie.attributes.sameSite = "none";
+      sessionCookie.attributes.secure = true;
+
       const payload: AuthOutput = {
         user,
         sessionCookie: sessionCookie.serialize(),
       };
       return [null, payload] as const;
     } catch (e) {
-      console.log(e);
+      if (e instanceof DatabaseError) {
+        if (e.code === "23505") {
+          if (e.detail?.includes("username")) {
+            return [
+              new TRPCError({
+                code: "CONFLICT",
+                message: "Username already used",
+              }),
+              null,
+            ] as const;
+          } else if (e.detail?.includes("email")) {
+            return [
+              new TRPCError({
+                code: "CONFLICT",
+                message: "Email already used",
+              }),
+              null,
+            ] as const;
+          } else {
+            return [
+              new TRPCError({
+                code: "INTERNAL_SERVER_ERROR",
+                message: "Somethings wrong with the db: " + JSON.stringify(e),
+              }),
+              null,
+            ] as const;
+          }
+        }
+      }
       return [
-        new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
+        new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Could not register new user: " + JSON.stringify(e),
+        }),
         null,
       ] as const;
     }
@@ -66,6 +102,10 @@ class LuciaAuthentication implements AuthenticationController {
         attributes: {},
       });
       const sessionCookie = auth.createSessionCookie(session);
+
+      sessionCookie.attributes.httpOnly = true;
+      sessionCookie.attributes.sameSite = "none";
+      sessionCookie.attributes.secure = true;
 
       const user = await auth.getUser(key.userId);
 
@@ -90,7 +130,10 @@ class LuciaAuthentication implements AuthenticationController {
         ] as const;
       }
       return [
-        new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "TBD" }),
+        new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Could not login user: " + JSON.stringify(e),
+        }),
         null,
       ] as const;
     }
@@ -100,13 +143,19 @@ class LuciaAuthentication implements AuthenticationController {
       input.opts.ctx.req,
       input.opts.ctx.res,
     );
-    const session = await authRequest.validateBearerToken();
+
+    const session = await authRequest.validate();
+
     if (!session) {
       return [new TRPCError({ code: "UNAUTHORIZED" }), null] as const;
     }
     await this.auth.invalidateSession(session.sessionId);
 
     const sessionCookie = auth.createSessionCookie(null);
+
+    sessionCookie.attributes.httpOnly = true;
+    sessionCookie.attributes.sameSite = "none";
+    sessionCookie.attributes.secure = true;
 
     const payload: AuthOutput = {
       user: session.user,

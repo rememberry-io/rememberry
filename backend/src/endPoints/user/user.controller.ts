@@ -30,7 +30,7 @@ class LuciaUserController implements UserController {
   async getUserBySession(input: GetUserBySessionInput) {
     const authRequest = this.auth.handleRequest(input.req, input.res);
 
-    const session = await authRequest.validateBearerToken();
+    const session = await authRequest.validate();
 
     if (!session) {
       return [
@@ -43,6 +43,7 @@ class LuciaUserController implements UserController {
     const payload = {
       user: session.user,
     };
+
     return [null, payload] as const;
   }
   async updateUsernameAndEmail(input: UpdateUsernameAndEmailInput) {

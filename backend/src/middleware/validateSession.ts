@@ -6,12 +6,16 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   const { req, res } = ctx;
   const authRequest = auth.handleRequest(req, res);
 
-  const session = await authRequest.validateBearerToken();
+  console.log(JSON.stringify(authRequest));
+
+  const session = await authRequest.validate();
+
   if (!session) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
     });
   }
+
   return next();
 });
 
