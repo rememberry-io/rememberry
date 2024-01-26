@@ -45,7 +45,7 @@ const useStore = create<RFState>((set, get) => ({
     },
   ],
   edges: [],
-   addNode: (node) => {
+  addNode: (node) => {
     set((state) => ({ nodes: [...state.nodes, node] }));
   },
   onNodesChange: (changes: NodeChange[]) => {
@@ -94,7 +94,7 @@ const useStore = create<RFState>((set, get) => ({
 
     set({ nodes: updatedNodes, edges: updatedEdges });
   },
-  
+
   updateNode: (
     nodeId: string,
     frontText: string,
@@ -137,7 +137,7 @@ const useStore = create<RFState>((set, get) => ({
               },
             };
           } else {
-            return { ...node, type: newNodeType, data: { ...node.data }};
+            return { ...node, type: newNodeType, data: { ...node.data } };
           }
         }
         return node;

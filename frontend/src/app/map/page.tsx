@@ -19,7 +19,6 @@ import { shallow } from "zustand/shallow";
 import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/FlowElements/nodeStore";
-import { Stack } from "@/components/Flow/StackComponents/Stack";
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
@@ -65,10 +64,6 @@ function Map() {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
-
-  const toggleMainStack = useCallback(() => {
-    setIsFront((prevIsFront) => !prevIsFront);
-  }, []);
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = store.getState();
@@ -155,7 +150,7 @@ function Map() {
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
           <Button onClick={addStack}>Add Stack</Button>
-        </Panel> 
+        </Panel>
       </ReactFlow>
     </div>
   );

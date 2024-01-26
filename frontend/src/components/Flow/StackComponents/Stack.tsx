@@ -7,7 +7,7 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 interface StackProps {
   data: {
     frontText: string;
-    backText:  string;
+    backText: string;
   };
 }
 
