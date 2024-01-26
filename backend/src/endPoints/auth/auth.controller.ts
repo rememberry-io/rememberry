@@ -54,7 +54,7 @@ class LuciaAuthentication implements AuthenticationController {
       sessionCookie.attributes.sameSite = "none";
       sessionCookie.attributes.secure = true;
 
-      console.log(sessionCookie)
+      console.log(sessionCookie);
 
       const payload: AuthOutput = {
         user,
@@ -119,7 +119,7 @@ class LuciaAuthentication implements AuthenticationController {
       sessionCookie.attributes.sameSite = "none";
       sessionCookie.attributes.secure = true;
 
-      console.log(sessionCookie)
+      console.log(sessionCookie);
 
       const user = await auth.getUser(key.userId);
 
