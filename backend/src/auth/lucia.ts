@@ -2,13 +2,14 @@ import { pg } from "@lucia-auth/adapter-postgresql";
 import { lucia } from "lucia";
 import { node } from "lucia/middleware";
 import { pool } from "../db/db";
+import env from "../env";
 
 export const auth = lucia({
   env: "DEV",
   middleware: node(),
   csrfProtection: {
     allowedSubDomains: "*",
-    host: "127.0.0.1:3000",
+    host: env.WEB_PAGE_DOMAIN,
   },
   adapter: pg(pool, {
     user: "users",

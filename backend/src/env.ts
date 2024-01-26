@@ -17,6 +17,7 @@ const EnvZod = z.object({
   REDIS_PORT: z.number(),
   REDIS_HOST: z.string(),
   REDIS_PASSWORD: z.string(),
+  WEB_PAGE_DOMAIN: z.string(),
 });
 
 function getEnvSrc() {
