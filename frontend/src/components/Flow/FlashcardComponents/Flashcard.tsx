@@ -139,7 +139,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             <FlashcardDialog
               nodeId={id}
               onSubmit={handleDialogSubmit}
-              parentName={parentName}
+              flashcardParentName={parentName}
               flashcardFrontText={frontText}
               flashcardBackText={backText}
               isDialogOpen={isDialogOpen}
@@ -232,7 +232,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                 nodeId={id}
                 cardType={cardType}
                 onSubmit={handleDialogSubmit}
-                parentName={parentName}
+                flashcardParentName={parentName}
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}
@@ -271,7 +271,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                 cardType={cardType}
                 nodeId={id}
                 onSubmit={handleDialogSubmit}
-                parentName={parentName}
+                flashcardParentName={parentName}
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}

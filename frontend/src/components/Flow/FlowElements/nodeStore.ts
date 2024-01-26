@@ -22,7 +22,7 @@ export type RFState = {
     nodeId: string,
     frontText: string,
     backText: string,
-    stackName: string,
+    parentName: string,
     borderColor: string,
     isNew: boolean,
   ) => void;
@@ -38,7 +38,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        parentName:"",
+        parentName:"New Front Text",
         mainStackID: "",
       },
     },
@@ -61,7 +61,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        stackName: parentNode.data.stackName,
+        parentName: parentNode.data.parentName,
         borderColor: "red",
         isNew: true,
       },
@@ -94,7 +94,7 @@ const useStore = create<RFState>((set, get) => ({
     nodeId: string,
     frontText: string,
     backText: string,
-    stackName: string,
+    parentName: string,
     borderColor: string,
     isNew: boolean,
   ) => {
@@ -107,7 +107,7 @@ const useStore = create<RFState>((set, get) => ({
               ...node.data,
               frontText,
               backText,
-              stackName,
+              parentName,
               borderColor,
               isNew,
             },
@@ -128,7 +128,7 @@ const useStore = create<RFState>((set, get) => ({
               type: newNodeType,
               data: {
                 ...node.data, // Keeps existing data
-                stackName: node.data.frontText, // Use frontText as stackName
+                parentName: node.data.frontText, // Use frontText as parentName
               },
             };
           } else {

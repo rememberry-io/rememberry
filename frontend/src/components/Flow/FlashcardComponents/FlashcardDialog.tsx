@@ -5,10 +5,10 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface FlashcardDialogProps {
   nodeId: string;
-  parentName: string;
+  flashcardParentName: string;
   flashcardFrontText: string;
   flashcardBackText: string;
-  onSubmit: (frontText: string, backText: string, stackName: string) => void;
+  onSubmit: (frontText: string, backText: string, parentText: string) => void;
   isDialogOpen: boolean;
   closeDialog: () => void;
   cardType: string;
@@ -16,7 +16,7 @@ interface FlashcardDialogProps {
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   nodeId,
-  parentName,
+  flashcardParentName,
   flashcardFrontText,
   flashcardBackText,
   onSubmit,
@@ -24,13 +24,13 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   closeDialog,
   cardType,
 }) => {
-  const [stackName, setstackName] = useState(parentName);
+  const [parentName, setParentName] = useState(flashcardParentName);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
   const [passedCardType, setPassedCardType] = useState(cardType);
 
   const handleSubmit = () => {
-    onSubmit(frontText, backText, stackName);
+    onSubmit(frontText, backText, parentName);
     closeDialog();
   };
 
@@ -58,10 +58,10 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>
-              {passedCardType === "stack" && (
+              {passedCardType === "flashcard" && (
                 <>
                   <div className="font-medium text-primary leading-10">
-                    {stackName}
+                    {parentName}
                   </div>
                 </>
               )}
