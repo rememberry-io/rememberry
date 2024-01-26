@@ -1,5 +1,5 @@
 import { TRPCClientError } from "@trpc/client";
-import { rqTrpc } from "../_trpc/client";
+import { rqTrpc } from "../trpc/client";
 import { useUserStore } from "./userStore";
 
 export default function useLogoutUser() {

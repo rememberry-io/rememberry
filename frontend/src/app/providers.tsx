@@ -4,7 +4,7 @@ import { httpBatchLink } from "@trpc/client";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import { useState } from "react";
-import { getBackendUrl, rqTrpc } from "./_trpc/client";
+import { getBackendUrl, rqTrpc } from "../lib/services/trpc/client";
 
 export default function Providers({ children, ...props }: ThemeProviderProps) {
   const [queryClient] = useState(

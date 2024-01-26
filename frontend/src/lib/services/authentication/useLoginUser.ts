@@ -1,5 +1,5 @@
 import { TRPCClientError } from "@trpc/client";
-import { RouterInput, RouterOutput, rqTrpc } from "../_trpc/client";
+import { RouterInput, RouterOutput, rqTrpc } from "../trpc/client";
 import { useUserStore } from "./userStore";
 
 export type LoginUserInput = RouterInput["auth"]["login"];
@@ -13,9 +13,12 @@ export default function useLoginUser() {
       const user = await userCreator.mutateAsync(params.user);
 
       userStore.actions.setUser(user);
+
+      return [null, user] as const;
     } catch (error) {
-      if (error instanceof TRPCClientError) console.error(error);
-      else console.error(error);
+      if (error instanceof TRPCClientError)
+        return [error.message, null] as const;
+      else return ["An Error has occured. Please try again.", null] as const;
     }
   };
   return loginUser;

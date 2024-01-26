@@ -34,4 +34,3 @@ class AuthenticationError extends RememberryError {
 }
 
 const test = new RememberryError("Hello");
-

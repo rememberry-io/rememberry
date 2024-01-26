@@ -1,7 +1,7 @@
 import type { AppRouter } from "@backend/routers/_app";
 import { createTRPCReact } from "@trpc/react-query";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { env } from "../../lib/env";
+import { env } from "../../env";
 
 export const getBackendUrl = () => {
   if (env.NEXT_PUBLIC_IS_DEV) {

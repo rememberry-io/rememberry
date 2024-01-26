@@ -6,6 +6,8 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   const { req, res } = ctx;
   const authRequest = auth.handleRequest(req, res);
 
+  console.log(JSON.stringify(authRequest))
+
   const session = await authRequest.validate();
 
   if (!session) {

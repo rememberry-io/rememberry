@@ -1,96 +1,177 @@
+"use client";
 import FlowBackground from "@/components/Flow/FlowBackground/flowBackground"; // Adjust the import based on the actual path
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import FormElement from "@/components/ui/formElement";
+import * as Tabs from "@radix-ui/react-tabs";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/navigation";
+import useLoginUser, {
+  LoginUserInput,
+} from "../../lib/services/authentication/useLoginUser";
+import useRegisterUser, {
+  RegisterUserInput,
+} from "../../lib/services/authentication/useRegisterUser";
 
 export default function Login() {
+  const register = useRegisterUser();
+  const login = useLoginUser();
+  const router = useRouter();
+
   return (
     <div className="relative">
       <FlowBackground />
+
       <div className="z-10 absolute top-0 left-0 w-full h-full flex items-center justify-center">
         <div className="z-10 relative flex flex-col items-center justify-center min-h-screen">
-          <h1 className="my-8 text-2xl font-medium">
-            Let&apos;s get you started 🫐
-          </h1>
-          <Tabs defaultValue="account" className="w-[400px]">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="account">Log in</TabsTrigger>
-              <TabsTrigger value="password">Create Account</TabsTrigger>
-            </TabsList>
-            <TabsContent value="account">
-              <Card>
-                <CardHeader className="text-center">
-                  <CardTitle className="font-medium text-lg leading-8 px-4">
-                    Hope you rememberry your credentials 👀
-                  </CardTitle>
-                  <CardDescription>Welcome back.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="mail">Email</Label>
-                    <Input id="mail" type="email" placeholder="Your email" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" />
-                  </div>
-                  <div>
-                    <Link href="/" className="underline text-sm">
-                      Forgot password?
-                    </Link>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Link href={"/map"} className="w-full">
-                    <Button className="w-full">Log in</Button>
-                  </Link>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-            <TabsContent value="password">
-              <Card>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-lg font-medium">
-                    Glad to have you here 👋🏼
-                  </CardTitle>
-                  <CardDescription>
-                    Create your account at rememberry.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="name">Email</Label>
-                    <Input
-                      id="name"
-                      type="email"
-                      placeholder="leonardo.dicaprio@code.berlin"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="new">Password</Label>
-                    <Input id="new" type="password" />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="confirm">Confirm password</Label>
-                    <Input id="confirm" type="password" />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full">Create Account</Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          <Tabs.Root defaultValue="login" className="w-[400px] h-[480px]">
+            <Tabs.List className="h-10 rounded-md bg-muted p-1 text-muted-foreground grid w-fit grid-cols-2">
+              <Tabs.Trigger
+                className="rounded-sm px-0.75 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                value="login"
+              >
+                Login
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                className="rounded-sm px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                value="register"
+              >
+                Register
+              </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content className="mt-2" value="login">
+              <Formik
+                initialValues={{
+                  email: "",
+                  password: "",
+                }}
+                onSubmit={async (values, { setFieldError }) => {
+                  const user: LoginUserInput = {
+                    email: values.email,
+                    password: values.password,
+                  };
+
+                  const [error, res] = await login({ user });
+                  if (error) {
+                    setFieldError("email", error);
+                  } else {
+                    router.push("/map");
+                  }
+                }}
+              >
+                {({ errors }) => (
+                  <Form>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Welcome back to rememberry :)</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        
+                        {errors.email! && (
+                          <p className="text-sm text-error">{errors.email}</p>
+                        )}
+
+                        <div className="flex flex-col gap-1.5">
+                          <FormElement
+                            id="email"
+                            type="email"
+                            placeholder="Your Email"
+                          />
+                          <FormElement
+                            id="password"
+                            type="password"
+                            placeholder="Password"
+                          />
+                        </div>
+                        <Button className="w-fit" type="submit">
+                          Login
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Form>
+                )}
+              </Formik>
+            </Tabs.Content>
+            <Tabs.Content className="mt-2" value="register">
+              <Formik
+                initialValues={{
+                  username: "",
+                  email: "",
+                  password: "",
+                  confirmPassword: "",
+                }}
+                onSubmit={async (values, { setFieldError }) => {
+                  if (values.password !== values.confirmPassword) {
+                    setFieldError("password", "confirmed password is wrong");
+                    return;
+                  }
+
+                  const user: RegisterUserInput = {
+                    username: values.username,
+                    email: values.email,
+                    password: values.password,
+                  };
+
+                  const [error, res] = await register({ user });
+                  if (error) {
+                    setFieldError("email", error);
+                  } else {
+                    router.push("/map");
+                  }
+                }}
+              >
+                {({ errors }) => (
+                  <Form>
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>
+                          Ready to start a new learning journey?
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-col gap-1.5">
+                          {errors.email && (
+                            <p className="text-sm text-error">
+                              {errors.email}
+                            </p>
+                          )}
+
+                          <FormElement
+                            id="username"
+                            type="username"
+                            placeholder="Username"
+                          />
+                          <FormElement
+                            id="email"
+                            type="email"
+                            placeholder="Email"
+                          />
+                          <FormElement
+                            id="password"
+                            type="password"
+                            placeholder="Password"
+                          />
+                          <FormElement
+                            id="confirmPassword"
+                            type="password"
+                            placeholder="Confirm Password"
+                          />
+                          {errors.password && (
+                            <p className="text-sm text-error">
+                              {errors.password}
+                            </p>
+                          )}
+                        </div>
+                        <Button className="w-fit" type="submit">
+                          Register
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </Form>
+                )}
+              </Formik>
+            </Tabs.Content>
+          </Tabs.Root>
         </div>
       </div>
     </div>

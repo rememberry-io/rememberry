@@ -22,7 +22,7 @@ interface UserStore {
   };
 }
 
-export const useUserStore = create < UserStore > ((set) => ({
+export const useUserStore = create<UserStore>((set) => ({
   user: null,
   isLoading: false,
   isLoggedIn: false,
@@ -41,12 +41,12 @@ export const useUserStore = create < UserStore > ((set) => ({
     setLoading(loading) {
       set(() => ({
         isLoading: loading,
-      }))
+      }));
     },
     setLoggedIn(loggedIn) {
       set(() => ({
         isLoggedIn: loggedIn,
-      }))
+      }));
     },
   },
 }));
