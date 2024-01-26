@@ -45,11 +45,11 @@ class LuciaAuthentication implements AuthenticationController {
         attributes: {},
       });
       const sessionCookie = this.auth.createSessionCookie(session);
-
       const a = env.WEB_PAGE_DOMAIN.split("//")[1];
       const b = a.split(":")[0];
       console.log(b)
       sessionCookie.attributes.domain = b
+
       sessionCookie.attributes.httpOnly = true;
       sessionCookie.attributes.sameSite = "none";
       sessionCookie.attributes.secure = true;
@@ -112,6 +112,7 @@ class LuciaAuthentication implements AuthenticationController {
       const b = a.split(":")[0];
       console.log(b)
       sessionCookie.attributes.domain = b
+      
       sessionCookie.attributes.httpOnly = true;
       sessionCookie.attributes.sameSite = "none";
       sessionCookie.attributes.secure = true;
