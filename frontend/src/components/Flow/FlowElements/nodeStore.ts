@@ -16,6 +16,7 @@ export type RFState = {
   addChildNode: any;
   nodes: Node[];
   edges: Edge[];
+  addNode: (node: any) => void;
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   updateNode: (
@@ -36,14 +37,17 @@ const useStore = create<RFState>((set, get) => ({
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        frontText: "New Front Text",
-        backText: "New Back Text",
+        frontText: "Stack Name",
+        backText: "Description",
         parentName: "",
         mainStackID: "",
       },
     },
   ],
   edges: [],
+   addNode: (node) => {
+    set((state) => ({ nodes: [...state.nodes, node] }));
+  },
   onNodesChange: (changes: NodeChange[]) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
@@ -90,6 +94,7 @@ const useStore = create<RFState>((set, get) => ({
 
     set({ nodes: updatedNodes, edges: updatedEdges });
   },
+  
   updateNode: (
     nodeId: string,
     frontText: string,

@@ -155,7 +155,7 @@ function Map() {
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
           <Button onClick={addStack}>Add Stack</Button>
-        </Panel>
+        </Panel> 
       </ReactFlow>
     </div>
   );
