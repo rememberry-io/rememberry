@@ -117,13 +117,18 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const closeDialog = () => setIsDialogOpen(false);
 
+  const borderClasses = cardType === "flashcard" 
+    ? `border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50` 
+    : "border-2 border-ashberry border-opacity-25 hover:border-opacity-50";
+
+
   return (
     <div
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
       onClick={toggleCard}
-      className={`dragHandle min-w-48 relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
+      className={`dragHandle min-w-48 relative border-none bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
@@ -142,34 +147,66 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               closeDialog={() => setIsDialogOpen(false)}
             />
           </div>
-        </>
-      )}
-      <div className="p-4 rounded-lg ">
-        <div className="inputWrapper">
-          <div>
-            <div className="flex items-center justify-between">
-              {isFront ? (
-                <textarea
-                  className="h-fit outline-none resize-none break-words"
-                  value={frontText}
-                  ref={frontTextAreaRef}
-                  rows={1}
-                  readOnly
-                />
-              ) : (
-                <textarea
-                  className="h-fit outline-none resize-none break-words"
-                  value={backText}
-                  ref={backTextAreaRef}
-                  rows={1}
-                  readOnly
-                />
-              )}
+          <div
+            className={`p-4 bg-primary rounded-lg  border-2 border-ashberry border-opacity-25 hover:border-opacity-50 `}
+          >
+            <div className="inputWrapper">
+              <div>
+                <div className="flex bg-primary items-center justify-between">
+                  {isFront ? (
+                    <textarea
+                      className="h-fit bg-primary font-semibold text-white outline-none resize-none break-words"
+                      value={frontText}
+                      ref={frontTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  ) : (
+                    <textarea
+                      className="h-fit outline-none bg-primary font-semibold text-white resize-none break-words"
+                      value={backText}
+                      ref={backTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-
+        </>
+      )}
+      {cardType === "flashcard" && (
+        <>
+         <div
+            className={`p-4 rounded-lg  border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
+          >
+            <div className="inputWrapper">
+              <div>
+                <div className="flex items-center justify-between">
+                  {isFront ? (
+                    <textarea
+                      className="h-fit outline-none resize-none break-words"
+                      value={frontText}
+                      ref={frontTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  ) : (
+                    <textarea
+                      className="h-fit outline-none resize-none break-words"
+                      value={backText}
+                      ref={backTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {isFocused && cardType === "stack" && (
         <div
           className="absolute"
