@@ -71,6 +71,11 @@ spec:
                 configMapKeyRef:
                   name: staging-backend-cfg
                   key: REDIS_PORT
+            - name: WEB_PAGE_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-backend-cfg
+                  key: WEB_PAGE_DOMAIN 
             - name: PG_USERNAME
               valueFrom:
                 secretKeyRef:
