@@ -19,7 +19,6 @@ import { shallow } from "zustand/shallow";
 import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/FlowElements/nodeStore";
-import { Stack } from "@/components/Flow/StackComponents/Stack";
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
@@ -39,7 +38,7 @@ const selector = (state: RFState) => ({
 
 const nodeTypes = {
   flashcard: Flashcard,
-  stack: Stack,
+  stack: Flashcard,
 };
 
 const edgeTypes = {
@@ -60,13 +59,11 @@ function Map() {
   const [isFront, setIsFront] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [openDialogForNode, setOpenDialogForNode] = useState(null);
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
-
-  const toggleMainStack = useCallback(() => {
-    setIsFront((prevIsFront) => !prevIsFront);
-  }, []);
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = store.getState();
@@ -84,13 +81,13 @@ function Map() {
 
     const { top, left } = domNode.getBoundingClientRect();
 
-    // we need to remove the wrapper bounds, in order to get the correct mouse position
+    // remove the wrapper bounds, in order to get the correct mouse position
     const panePosition = screenToFlowPosition({
       x: event.clientX - left,
       y: event.clientY - top,
     });
 
-    // we are calculating with positionAbsolute here because child nodes are positioned relative to their parent
+    // calculating with positionAbsolute here because child nodes are positioned relative to their parent
     return {
       x: panePosition.x - parentNode.positionAbsolute.x + parentNode.width / 2,
       y: panePosition.y - parentNode.positionAbsolute.y + parentNode.height / 2,
@@ -98,7 +95,7 @@ function Map() {
   };
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
-    // we need to remember where the connection started so we can add the new node to the correct parent on connect end
+    // remember where the connection started so we can add the new node to the correct parent on connect end
     connectingNodeId.current = nodeId;
   }, []);
 
@@ -109,7 +106,6 @@ function Map() {
         "react-flow__pane",
       );
       const node = (event.target as Element).closest(".react-flow__node");
-
       if (node) {
         node.querySelector("input")?.focus({ preventScroll: true });
       } else if (targetIsPane && connectingNodeId.current) {
@@ -135,6 +131,7 @@ function Map() {
       className="flex flex-col justify-items-center"
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
+
       <ReactFlow
         nodes={nodes}
         edges={edges}

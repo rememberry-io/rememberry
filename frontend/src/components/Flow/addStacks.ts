@@ -1,12 +1,10 @@
+import useStore from "@/components/Flow/FlowElements/nodeStore"; // Adjust the import path as needed
 import { nanoid } from "nanoid/non-secure";
 import { useCallback } from "react";
-import { useReactFlow } from "reactflow";
-
-let flashcardId = 5;
-let stackId = 5;
 
 export function useAddStack() {
-  const reactFlowInstance = useReactFlow();
+  const { addNode } = useStore();
+
   const addStack = useCallback(() => {
     const newStack = {
       id: nanoid(),
@@ -15,11 +13,11 @@ export function useAddStack() {
         x: Math.random() * 1000,
         y: Math.random() * 1000,
       },
-      data: {
-        frontText: "New Stack",
-      },
+      data: { frontText: "New Stack", backText: "Description" },
     };
-  }, [reactFlowInstance]);
+
+    addNode(newStack);
+  }, [addNode]);
 
   return addStack;
 }

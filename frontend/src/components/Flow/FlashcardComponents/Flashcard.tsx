@@ -1,7 +1,7 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
 import { Maximize2, RotateCcw } from "lucide-react";
-import React, { memo, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../FlowElements/nodeStore";
 import { FlashcardDialog } from "./FlashcardDialog";
@@ -28,19 +28,25 @@ interface NodeProps {
 }
 
 interface FlashcardProps extends NodeProps {
+  type: string;
   data: {
-    category: string;
+    id: string;
+    parentName: string;
     frontText: string;
     backText: string;
     borderColor?: ColorType;
+    isNew?: boolean;
+    newNodeType: string;
   };
 }
 
-export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
+export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   const [isFront, setIsFront] = useState(true);
-  const [category, setCategory] = useState(data.category);
+  const [parentName, setParentName] = useState(data.parentName);
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
+  const [isNew, setIsNew] = useState(data.isNew);
+  const [cardType, setCardType] = useState(type);
 
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
@@ -67,15 +73,30 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     (state) => ({ updateNode: state.updateNode }),
     shallow,
   );
+  useEffect(() => {
+    if (isNew) {
+      setIsDialogOpen(true);
+      // Update isNew to false so that the dialog doesn't open automatically again
+      setIsNew(false);
+    }
+  }, [isNew]);
   const handleDialogSubmit = (
     front: string,
     back: string,
-    category: string,
+    parentName: string,
   ) => {
     setFront(front);
     setBack(back);
-    setCategory(category);
-    updateNode(id, front, back, category, selectedColor || "");
+    setParentName(parentName);
+    setIsDialogOpen(false);
+    updateNode(
+      id,
+      front,
+      back,
+      parentName,
+      selectedColor || "",
+      isNew || false,
+    );
   };
 
   // for multiline textarea
@@ -103,18 +124,99 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
 
   const closeDialog = () => setIsDialogOpen(false);
 
+  const borderClasses =
+    cardType === "flashcard"
+      ? `border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50`
+      : "border-2 border-ashberry border-opacity-25 hover:border-opacity-50";
+
   return (
     <div
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
       onClick={toggleCard}
-      className={`dragHandle min-w-48 relative box-border bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
+      className={`dragHandle min-w-48 relative border-none bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
     >
-      {isFocused && (
+      {cardType === "stack" && (
+        <>
+          <div className="flex relative flex-row align-middle ml-2">
+            <FlashcardDialog
+              nodeId={id}
+              onSubmit={handleDialogSubmit}
+              flashcardParentName={parentName}
+              flashcardFrontText={frontText}
+              flashcardBackText={backText}
+              isDialogOpen={isDialogOpen}
+              cardType={cardType}
+              closeDialog={() => setIsDialogOpen(false)}
+            />
+          </div>
+          <div
+            className={`p-4 bg-primary rounded-lg  border-2 border-ashberry border-opacity-25 hover:border-opacity-50 `}
+          >
+            <div className="inputWrapper">
+              <div>
+                <div className="flex bg-primary items-center justify-between">
+                  {isFront ? (
+                    <textarea
+                      className="h-fit bg-primary font-semibold text-white outline-none resize-none break-words"
+                      value={frontText}
+                      ref={frontTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  ) : (
+                    <textarea
+                      className="h-fit outline-none bg-primary font-semibold text-white resize-none break-words"
+                      value={backText}
+                      ref={backTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {cardType === "flashcard" && (
+        <>
+          <div
+            className={`p-4 rounded-lg  border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
+          >
+            <div className="inputWrapper">
+              <div>
+                <div className="flex items-center justify-between">
+                  {isFront ? (
+                    <>
+                      <textarea
+                        className="h-fit outline-none resize-none break-words"
+                        value={frontText}
+                        ref={frontTextAreaRef}
+                        rows={1}
+                        readOnly
+                      />
+                    </>
+                  ) : (
+                    <textarea
+                      className="h-fit outline-none resize-none break-words"
+                      value={backText}
+                      ref={backTextAreaRef}
+                      rows={1}
+                      readOnly
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      {isFocused && cardType === "stack" && (
         <div
           className="absolute"
           style={{
@@ -122,8 +224,44 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
         >
-          <div className="flex flex-row align-middle ml-2">
-            <div className="pr-2 mt-1">
+          <div className="flex relative flex-row align-middle ml-2">
+            <div className="flex flex-col items-center space-y-2">
+              <Button onClick={toggleCard} variant="secondary" size="icon">
+                <RotateCcw />
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className=""
+                onClick={openDialog}
+              >
+                <Maximize2 />
+              </Button>
+              <FlashcardDialog
+                nodeId={id}
+                cardType={cardType}
+                onSubmit={handleDialogSubmit}
+                flashcardParentName={parentName}
+                flashcardFrontText={frontText}
+                flashcardBackText={backText}
+                isDialogOpen={isDialogOpen}
+                closeDialog={() => setIsDialogOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isFocused && cardType === "flashcard" && (
+        <div
+          className="absolute"
+          style={{
+            right: "-5rem",
+            transform: `scale(${normalizeZoom(zoom)})`,
+          }}
+        >
+          <div className="flex relative flex-row align-middle ml-2">
+            <div className="z-10 pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
             <div className="flex flex-col items-center space-y-2">
@@ -139,9 +277,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
                 <Maximize2 />
               </Button>
               <FlashcardDialog
+                cardType={cardType}
                 nodeId={id}
                 onSubmit={handleDialogSubmit}
-                flashcardCategory={category}
+                flashcardParentName={parentName}
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}
@@ -151,31 +290,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       )}
-      <div className="p-4 rounded-lg ">
-        <div className="inputWrapper">
-          <div>
-            <div className="flex items-center justify-between">
-              {isFront ? (
-                <textarea
-                  className="h-fit outline-none resize-none break-words"
-                  value={frontText}
-                  ref={frontTextAreaRef}
-                  rows={1}
-                  readOnly
-                />
-              ) : (
-                <textarea
-                  className="h-fit outline-none resize-none break-words"
-                  value={backText}
-                  ref={backTextAreaRef}
-                  rows={1}
-                  readOnly
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       <CustomHandle position={Position.Top} />
       <CustomHandle position={Position.Bottom} />

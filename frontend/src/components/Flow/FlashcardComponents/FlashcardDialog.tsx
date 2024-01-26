@@ -5,29 +5,32 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface FlashcardDialogProps {
   nodeId: string;
-  flashcardCategory: string;
+  flashcardParentName: string;
   flashcardFrontText: string;
   flashcardBackText: string;
-  onSubmit: (frontText: string, backText: string, category: string) => void;
+  onSubmit: (frontText: string, backText: string, parentText: string) => void;
   isDialogOpen: boolean;
   closeDialog: () => void;
+  cardType: string;
 }
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   nodeId,
-  flashcardCategory,
+  flashcardParentName,
   flashcardFrontText,
   flashcardBackText,
   onSubmit,
   isDialogOpen,
   closeDialog,
+  cardType,
 }) => {
-  const [category, setCategory] = useState(flashcardCategory);
+  const [parentName, setParentName] = useState(flashcardParentName);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
+  const [passedCardType, setPassedCardType] = useState(cardType);
 
   const handleSubmit = () => {
-    onSubmit(frontText, backText, category);
+    onSubmit(frontText, backText, parentName);
     closeDialog();
   };
 
@@ -55,12 +58,15 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>
-              <div className="font-medium text-primary leading-10">
-                {category}
-              </div>
+              <>
+                <div className="font-medium text-primary leading-10">
+                  {parentName}
+                </div>
+              </>
+
               <textarea
                 className=" rounded-md h-fit outline-none resize-none w-full break-words"
-                defaultValue={frontText}
+                defaultValue={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
                 ref={frontTextAreaRef}
                 rows={1}
@@ -70,15 +76,18 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
             <hr className="m-2" />
             <div className="leading-6 text-justify">
               <textarea
-                className="rounded-md h-fit outline-none resize-none w-full break-words"
-                defaultValue={backText}
+                className="rounded-md h-fit outline-none resize-none w-full break-words focus:outline-primary"
+                defaultValue={backText === "New Back Text" ? "" : backText}
                 placeholder="Back Text"
                 ref={backTextAreaRef}
                 rows={1}
                 onChange={handleChangeBack}
               />
             </div>
-            <Button className="  mt-4" onClick={handleSubmit}>
+            <Button
+              className="focus:outline focus:outline-primary  mt-4"
+              onClick={handleSubmit}
+            >
               Save
             </Button>
           </div>
