@@ -1,11 +1,13 @@
 name: Staging Database Migration
 
-on:
-  push:
-    paths:
-    - './backend/drizzle/**'
-    branches:
-    - master 
+on: workflow_dispatch
+
+  #  #on:
+  #  #  push:
+  #  #    paths:
+  #  #    - './backend/drizzle/**'
+  #  #    branches:
+  #  #    - master 
 
 jobs:
   run-migrations:
