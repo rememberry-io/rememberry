@@ -58,13 +58,11 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>
-              {passedCardType === "flashcard" && (
-                <>
-                  <div className="font-medium text-primary leading-10">
-                    {parentName}
-                  </div>
-                </>
-              )}
+              <>
+                <div className="font-medium text-primary leading-10">
+                  {parentName}
+                </div>
+              </>
 
               <textarea
                 className=" rounded-md h-fit outline-none resize-none w-full break-words"

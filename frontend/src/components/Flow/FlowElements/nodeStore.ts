@@ -38,7 +38,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        parentName:"New Front Text",
+        parentName: "",
         mainStackID: "",
       },
     },
@@ -61,7 +61,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
-        parentName: parentNode.data.parentName,
+        parentName: parentNode.data.frontText,
         borderColor: "red",
         isNew: true,
       },
@@ -132,7 +132,7 @@ const useStore = create<RFState>((set, get) => ({
               },
             };
           } else {
-            return { ...node, type: newNodeType };
+            return { ...node, type: newNodeType, data: { ...node.data }};
           }
         }
         return node;

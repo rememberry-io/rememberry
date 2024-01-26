@@ -89,7 +89,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     setBack(back);
     setParentName(parentName);
     setIsDialogOpen(false);
-    updateNode(id, front, back, parentName, selectedColor || "", isNew || false);
+    updateNode(
+      id,
+      front,
+      back,
+      parentName,
+      selectedColor || "",
+      isNew || false,
+    );
   };
 
   // for multiline textarea
@@ -117,10 +124,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const closeDialog = () => setIsDialogOpen(false);
 
-  const borderClasses = cardType === "flashcard" 
-    ? `border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50` 
-    : "border-2 border-ashberry border-opacity-25 hover:border-opacity-50";
-
+  const borderClasses =
+    cardType === "flashcard"
+      ? `border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50`
+      : "border-2 border-ashberry border-opacity-25 hover:border-opacity-50";
 
   return (
     <div
@@ -178,20 +185,23 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-         <div
+          <div
             className={`p-4 rounded-lg  border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
           >
             <div className="inputWrapper">
               <div>
                 <div className="flex items-center justify-between">
                   {isFront ? (
-                    <textarea
-                      className="h-fit outline-none resize-none break-words"
-                      value={frontText}
-                      ref={frontTextAreaRef}
-                      rows={1}
-                      readOnly
-                    />
+                    <>
+                      {/* <>{parentName}</> */}
+                      <textarea
+                        className="h-fit outline-none resize-none break-words"
+                        value={frontText}
+                        ref={frontTextAreaRef}
+                        rows={1}
+                        readOnly
+                      />
+                    </>
                   ) : (
                     <textarea
                       className="h-fit outline-none resize-none break-words"
