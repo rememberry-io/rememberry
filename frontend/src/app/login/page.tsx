@@ -66,7 +66,6 @@ export default function Login() {
                         <CardTitle>Welcome back to rememberry :)</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        
                         {errors.email! && (
                           <p className="text-sm text-error">{errors.email}</p>
                         )}
@@ -131,9 +130,7 @@ export default function Login() {
                       <CardContent>
                         <div className="flex flex-col gap-1.5">
                           {errors.email && (
-                            <p className="text-sm text-error">
-                              {errors.email}
-                            </p>
+                            <p className="text-sm text-error">{errors.email}</p>
                           )}
 
                           <FormElement
