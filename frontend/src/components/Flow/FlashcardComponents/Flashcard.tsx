@@ -193,7 +193,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                 <div className="flex items-center justify-between">
                   {isFront ? (
                     <>
-                      {/* <>{parentName}</> */}
                       <textarea
                         className="h-fit outline-none resize-none break-words"
                         value={frontText}
