@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { LuciaError } from "lucia";
 import { DatabaseError } from "pg";
 import { Auth, auth } from "../../auth/lucia";
+import env from "../../env";
 import {
   AuthOutput,
   LoginInput,
@@ -9,7 +10,6 @@ import {
   RegisterInput,
   TRPCStatus,
 } from "./types";
-import env from "../../env";
 
 export interface AuthenticationController {
   register(input: RegisterInput): Promise<TRPCStatus<AuthOutput>>;
@@ -46,7 +46,7 @@ class LuciaAuthentication implements AuthenticationController {
       });
       const sessionCookie = this.auth.createSessionCookie(session);
 
-      sessionCookie.attributes.domain = env.WEB_PAGE_DOMAIN.split("//")[1]
+      sessionCookie.attributes.domain = env.WEB_PAGE_DOMAIN.split("//")[1];
       sessionCookie.attributes.httpOnly = true;
       sessionCookie.attributes.sameSite = "none";
       sessionCookie.attributes.secure = true;
@@ -105,7 +105,7 @@ class LuciaAuthentication implements AuthenticationController {
       });
       const sessionCookie = auth.createSessionCookie(session);
 
-      sessionCookie.attributes.domain = env.WEB_PAGE_DOMAIN.split("//")[1]
+      sessionCookie.attributes.domain = env.WEB_PAGE_DOMAIN.split("//")[1];
       sessionCookie.attributes.httpOnly = true;
       sessionCookie.attributes.sameSite = "none";
       sessionCookie.attributes.secure = true;
