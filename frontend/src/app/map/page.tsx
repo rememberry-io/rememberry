@@ -28,7 +28,6 @@ import "reactflow/dist/style.css";
 import { FlowHeader } from "@/components/Flow/FlowHeader/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
-import { FlashcardDialog } from "@/components/Flow/FlashcardComponents/FlashcardDialog";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -40,7 +39,7 @@ const selector = (state: RFState) => ({
 
 const nodeTypes = {
   flashcard: Flashcard,
-  stack: Stack,
+  stack: Flashcard,
 };
 
 const edgeTypes = {
@@ -105,11 +104,8 @@ function Map() {
     connectingNodeId.current = nodeId;
   }, []);
 
-
-
   const onConnectEnd: OnConnectEnd = useCallback(
     (event) => {
-      
       const { nodeInternals } = store.getState();
       const targetIsPane = (event.target as Element).classList.contains(
         "react-flow__pane",
@@ -140,7 +136,7 @@ function Map() {
       className="flex flex-col justify-items-center"
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
-      
+
       <ReactFlow
         nodes={nodes}
         edges={edges}

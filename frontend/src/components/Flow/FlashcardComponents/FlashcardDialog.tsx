@@ -11,6 +11,7 @@ interface FlashcardDialogProps {
   onSubmit: (frontText: string, backText: string, stackName: string) => void;
   isDialogOpen: boolean;
   closeDialog: () => void;
+  cardType: string;
 }
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
@@ -21,10 +22,12 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   onSubmit,
   isDialogOpen,
   closeDialog,
+  cardType,
 }) => {
   const [stackName, setstackName] = useState(flashcardStackName);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
+  const [passedCardType, setPassedCardType] = useState(cardType);
 
   const handleSubmit = () => {
     onSubmit(frontText, backText, stackName);
@@ -55,14 +58,18 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>
-              <div className="font-medium text-primary leading-10">
-                {stackName}
-              </div>
+              {passedCardType === "stack" && (
+                <>
+                  <div className="font-medium text-primary leading-10">
+                    {stackName}
+                  </div>
+                </>
+              )}
+
               <textarea
                 className=" rounded-md h-fit outline-none resize-none w-full break-words"
-                defaultValue={frontText==="New Front Text"? "":frontText}
+                defaultValue={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
-                
                 ref={frontTextAreaRef}
                 rows={1}
                 onChange={handleChangeFront}
@@ -72,14 +79,17 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
             <div className="leading-6 text-justify">
               <textarea
                 className="rounded-md h-fit outline-none resize-none w-full break-words focus:outline-primary"
-                defaultValue={backText==="New Back Text"? "":backText}
+                defaultValue={backText === "New Back Text" ? "" : backText}
                 placeholder="Back Text"
                 ref={backTextAreaRef}
                 rows={1}
                 onChange={handleChangeBack}
               />
             </div>
-            <Button className="focus:outline focus:outline-primary  mt-4" onClick={handleSubmit}>
+            <Button
+              className="focus:outline focus:outline-primary  mt-4"
+              onClick={handleSubmit}
+            >
               Save
             </Button>
           </div>

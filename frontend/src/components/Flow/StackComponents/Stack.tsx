@@ -6,24 +6,26 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface StackProps {
   data: {
-    stackName: string;
+    frontText: string;
+    backText:  string;
   };
 }
 
 export const Stack: React.FC<StackProps> = ({ data }) => {
   const [inputOpen, setInputOpen] = useState(false);
-  const [stackName, setStackName] = useState(data.stackName);
+  const [frontText, setFrontText] = useState(data.frontText);
+  const [backText, setBackText] = useState(data.backText);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  useAutosizeTextArea(textAreaRef.current, stackName);
+  useAutosizeTextArea(textAreaRef.current, frontText);
 
   const handleChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const val = evt.target?.value;
 
-    setStackName(val);
+    setFrontText(val);
   };
 
-  // todo: update stackName of all the child nodes
+  // todo: update frontText of all the child nodes
 
   return (
     <div>
@@ -39,7 +41,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
               <>
                 <textarea
                   className="text-xl bg-primary rounded-md h-fit outline-none resize-none  break-words"
-                  defaultValue={stackName}
+                  defaultValue={frontText}
                   placeholder="Give this stack a name"
                   ref={textAreaRef}
                   onBlur={() => setInputOpen(false)}
@@ -51,7 +53,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
             {!inputOpen && (
               <textarea
                 className="text-xl bg-primary rounded-md h-fit outline-none resize-none  break-words"
-                defaultValue={stackName}
+                defaultValue={frontText}
                 ref={textAreaRef}
                 rows={1}
               />

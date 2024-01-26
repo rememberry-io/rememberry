@@ -28,6 +28,7 @@ interface NodeProps {
 }
 
 interface FlashcardProps extends NodeProps {
+  type: string;
   data: {
     id: string;
     stackName: string;
@@ -35,16 +36,17 @@ interface FlashcardProps extends NodeProps {
     backText: string;
     borderColor?: ColorType;
     isNew?: boolean;
-    newNodeType: string
+    newNodeType: string;
   };
 }
 
-export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
+export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   const [isFront, setIsFront] = useState(true);
   const [stackName, setStackName] = useState(data.stackName);
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
   const [isNew, setIsNew] = useState(data.isNew);
+  const [cardType, setCardType] = useState(type);
 
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
@@ -87,7 +89,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
     setBack(back);
     setStackName(stackName);
     setIsDialogOpen(false);
-    updateNode(id, front, back, stackName, selectedColor || "", isNew || false, data.newNodeType);
+    updateNode(id, front, back, stackName, selectedColor || "", isNew || false);
   };
 
   // for multiline textarea
@@ -126,42 +128,21 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
         borderWidth: normalizeZoom(zoom) * 3,
       }}
     >
-      {isFocused && (
-        <div
-          className="absolute"
-          style={{
-            right: "-5rem",
-            transform: `scale(${normalizeZoom(zoom)})`,
-          }}
-        >
+      {cardType === "stack" && (
+        <>
           <div className="flex relative flex-row align-middle ml-2">
-            <div className="z-10 pr-2 mt-1">
-              <TrafficLights onColorChange={handleColorChange} />
-            </div>
-            <div className="flex flex-col items-center space-y-2">
-              <Button onClick={toggleCard} variant="secondary" size="icon">
-                <RotateCcw />
-              </Button>
-              <Button
-                variant="secondary"
-                size="icon"
-                className=""
-                onClick={openDialog}
-              >
-                <Maximize2 />
-              </Button>
-              <FlashcardDialog
-                nodeId={id}
-                onSubmit={handleDialogSubmit}
-                flashcardStackName={stackName}
-                flashcardFrontText={frontText}
-                flashcardBackText={backText}
-                isDialogOpen={isDialogOpen}
-                closeDialog={() => setIsDialogOpen(false)}
-              />
-            </div>
+            <FlashcardDialog
+              nodeId={id}
+              onSubmit={handleDialogSubmit}
+              flashcardStackName={stackName}
+              flashcardFrontText={frontText}
+              flashcardBackText={backText}
+              isDialogOpen={isDialogOpen}
+              cardType={cardType}
+              closeDialog={() => setIsDialogOpen(false)}
+            />
           </div>
-        </div>
+        </>
       )}
       <div className="p-4 rounded-lg ">
         <div className="inputWrapper">
@@ -188,6 +169,81 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id }) => {
           </div>
         </div>
       </div>
+
+      {isFocused && cardType === "stack" && (
+        <div
+          className="absolute"
+          style={{
+            right: "-5rem",
+            transform: `scale(${normalizeZoom(zoom)})`,
+          }}
+        >
+          <div className="flex relative flex-row align-middle ml-2">
+            <div className="flex flex-col items-center space-y-2">
+              <Button onClick={toggleCard} variant="secondary" size="icon">
+                <RotateCcw />
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className=""
+                onClick={openDialog}
+              >
+                <Maximize2 />
+              </Button>
+              <FlashcardDialog
+                nodeId={id}
+                cardType={cardType}
+                onSubmit={handleDialogSubmit}
+                flashcardStackName={stackName}
+                flashcardFrontText={frontText}
+                flashcardBackText={backText}
+                isDialogOpen={isDialogOpen}
+                closeDialog={() => setIsDialogOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isFocused && cardType === "flashcard" && (
+        <div
+          className="absolute"
+          style={{
+            right: "-5rem",
+            transform: `scale(${normalizeZoom(zoom)})`,
+          }}
+        >
+          <div className="flex relative flex-row align-middle ml-2">
+            <div className="z-10 pr-2 mt-1">
+              <TrafficLights onColorChange={handleColorChange} />
+            </div>
+            <div className="flex flex-col items-center space-y-2">
+              <Button onClick={toggleCard} variant="secondary" size="icon">
+                <RotateCcw />
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className=""
+                onClick={openDialog}
+              >
+                <Maximize2 />
+              </Button>
+              <FlashcardDialog
+                cardType={cardType}
+                nodeId={id}
+                onSubmit={handleDialogSubmit}
+                flashcardStackName={stackName}
+                flashcardFrontText={frontText}
+                flashcardBackText={backText}
+                isDialogOpen={isDialogOpen}
+                closeDialog={() => setIsDialogOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <CustomHandle position={Position.Top} />
       <CustomHandle position={Position.Bottom} />

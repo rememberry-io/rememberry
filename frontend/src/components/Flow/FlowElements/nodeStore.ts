@@ -25,7 +25,6 @@ export type RFState = {
     stackName: string,
     borderColor: string,
     isNew: boolean,
-    newNodeType: string,
   ) => void;
   updateNodeType: (nodeId: string, newNodeType: string) => void;
 };
@@ -33,12 +32,13 @@ export type RFState = {
 const useStore = create<RFState>((set, get) => ({
   nodes: [
     {
-      id: "1",
+      id: nanoid(),
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        stackName: "Cellular structure",
-        mainstackID: "",
+        frontText: "New Front Text",
+        backText: "New Back Text",
+        mainStackID: "",
       },
     },
   ],
@@ -118,9 +118,24 @@ const useStore = create<RFState>((set, get) => ({
   },
   updateNodeType: (nodeId: string, newNodeType: string) => {
     set({
-      nodes: get().nodes.map((node) =>
-        node.id === nodeId ? { ...node, type: newNodeType } : node,
-      ),
+      nodes: get().nodes.map((node) => {
+        if (node.id === nodeId) {
+          // Preserve frontText and backText when type changes to 'stack'
+          if (newNodeType === "stack") {
+            return {
+              ...node,
+              type: newNodeType,
+              data: {
+                ...node.data, // Keeps existing data
+                stackName: node.data.frontText, // Use frontText as stackName
+              },
+            };
+          } else {
+            return { ...node, type: newNodeType };
+          }
+        }
+        return node;
+      }),
     });
   },
 }));
