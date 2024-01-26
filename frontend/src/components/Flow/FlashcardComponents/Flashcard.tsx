@@ -31,7 +31,7 @@ interface FlashcardProps extends NodeProps {
   type: string;
   data: {
     id: string;
-    stackName: string;
+    parentName: string;
     frontText: string;
     backText: string;
     borderColor?: ColorType;
@@ -42,7 +42,7 @@ interface FlashcardProps extends NodeProps {
 
 export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   const [isFront, setIsFront] = useState(true);
-  const [stackName, setStackName] = useState(data.stackName);
+  const [parentName, setParentName] = useState(data.parentName);
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
   const [isNew, setIsNew] = useState(data.isNew);
@@ -83,13 +83,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   const handleDialogSubmit = (
     front: string,
     back: string,
-    stackName: string,
+    parentName: string,
   ) => {
     setFront(front);
     setBack(back);
-    setStackName(stackName);
+    setParentName(parentName);
     setIsDialogOpen(false);
-    updateNode(id, front, back, stackName, selectedColor || "", isNew || false);
+    updateNode(id, front, back, parentName, selectedColor || "", isNew || false);
   };
 
   // for multiline textarea
@@ -139,7 +139,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             <FlashcardDialog
               nodeId={id}
               onSubmit={handleDialogSubmit}
-              flashcardStackName={stackName}
+              parentName={parentName}
               flashcardFrontText={frontText}
               flashcardBackText={backText}
               isDialogOpen={isDialogOpen}
@@ -232,7 +232,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                 nodeId={id}
                 cardType={cardType}
                 onSubmit={handleDialogSubmit}
-                flashcardStackName={stackName}
+                parentName={parentName}
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}
@@ -271,7 +271,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                 cardType={cardType}
                 nodeId={id}
                 onSubmit={handleDialogSubmit}
-                flashcardStackName={stackName}
+                parentName={parentName}
                 flashcardFrontText={frontText}
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}

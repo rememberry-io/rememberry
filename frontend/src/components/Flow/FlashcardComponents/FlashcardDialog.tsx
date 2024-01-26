@@ -5,7 +5,7 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface FlashcardDialogProps {
   nodeId: string;
-  flashcardStackName: string;
+  parentName: string;
   flashcardFrontText: string;
   flashcardBackText: string;
   onSubmit: (frontText: string, backText: string, stackName: string) => void;
@@ -16,7 +16,7 @@ interface FlashcardDialogProps {
 
 export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   nodeId,
-  flashcardStackName,
+  parentName,
   flashcardFrontText,
   flashcardBackText,
   onSubmit,
@@ -24,7 +24,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
   closeDialog,
   cardType,
 }) => {
-  const [stackName, setstackName] = useState(flashcardStackName);
+  const [stackName, setstackName] = useState(parentName);
   const [frontText, setFrontText] = useState(flashcardFrontText);
   const [backText, setBackText] = useState(flashcardBackText);
   const [passedCardType, setPassedCardType] = useState(cardType);

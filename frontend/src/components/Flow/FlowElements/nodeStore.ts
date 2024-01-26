@@ -38,6 +38,7 @@ const useStore = create<RFState>((set, get) => ({
       data: {
         frontText: "New Front Text",
         backText: "New Back Text",
+        parentName:"",
         mainStackID: "",
       },
     },
