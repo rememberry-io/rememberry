@@ -194,7 +194,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                   {isFront ? (
                     <>
                       <textarea
-                        className="h-fit outline-none resize-none break-words"
+                        className="h-fit dark:bg-colors-dark-600 outline-none resize-none break-words"
                         value={frontText}
                         ref={frontTextAreaRef}
                         rows={1}
@@ -203,7 +203,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                     </>
                   ) : (
                     <textarea
-                      className="h-fit outline-none resize-none break-words"
+                      className="h-fit outline-none dark:bg-colors-dark-600  resize-none break-words"
                       value={backText}
                       ref={backTextAreaRef}
                       rows={1}
