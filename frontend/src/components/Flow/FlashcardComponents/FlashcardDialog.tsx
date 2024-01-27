@@ -56,7 +56,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
     <div>
       <Dialog open={isDialogOpen}>
         <DialogContent onAbort={handleSubmit}>
-          <div>
+          <div >
             <div>
               <>
                 <div className="font-medium text-primary leading-10">
@@ -65,7 +65,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               </>
 
               <textarea
-                className=" rounded-md h-fit outline-none resize-none w-full break-words"
+                className=" rounded-md h-fit p-2 outline-none resize-none w-full break-words"
                 defaultValue={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
                 ref={frontTextAreaRef}
@@ -76,7 +76,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
             <hr className="m-2" />
             <div className="leading-6 text-justify">
               <textarea
-                className="rounded-md h-fit outline-none resize-none w-full break-words focus:outline-primary"
+                className="rounded-md h-fit p-2 outline-none resize-none w-full break-words focus:outline-primary"
                 defaultValue={backText === "New Back Text" ? "" : backText}
                 placeholder="Back Text"
                 ref={backTextAreaRef}
