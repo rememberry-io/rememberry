@@ -1,4 +1,4 @@
-import { DropDown } from "@/components/Flow/FlowHeader/DropDown";
+import { DropDown } from "@/components/Flow/Header/DropDown";
 import { MainStack } from "@/components/Flow/StackComponents/MainStack";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { SidebarButton } from "@/components/ui/SidebarButton";
@@ -37,7 +37,7 @@ export const FlowHeader: React.FC<HeaderProps> = () => {
           isOpen={isOpen}
           toggleSidebar={() => setIsOpen(!isOpen)}
         />
-        <Link href="/map/menu">
+        <Link href="/">
           <Button variant="ghost">
             <ArrowLeftCircle className="mr-2" />
             Back to menu

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Maximize2, RotateCcw } from "lucide-react";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
-import useStore, { RFState } from "../FlowElements/nodeStore";
+import useStore, { RFState } from "../stores/nodeStore";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
@@ -126,8 +126,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const borderClasses =
     cardType === "flashcard"
-      ? `border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50`
-      : "border-2 border-ashberry border-opacity-25 hover:border-opacity-50";
+      ? `border-2 ${borderStyle} border-opacity-50 hover:border-opacity-75`
+      : "border-2 border-ashberry border-opacity-50 hover:border-opacity-75";
 
   return (
     <div
@@ -135,7 +135,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       onFocus={onFocus}
       onBlur={onBlur}
       onClick={toggleCard}
-      className={`dragHandle min-w-48 relative border-none bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
+      className={`dragHandle  min-w-48 relative border-none dark:bg-dark-600 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
@@ -154,12 +154,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               closeDialog={() => setIsDialogOpen(false)}
             />
           </div>
-          <div
-            className={`p-4 bg-primary rounded-lg  border-2 border-ashberry border-opacity-25 hover:border-opacity-50 `}
-          >
+          <div className={`p-4 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>
-                <div className="flex bg-primary items-center justify-between">
+                <div className="flex bg-primaryitems-center justify-between">
                   {isFront ? (
                     <textarea
                       className="h-fit bg-primary font-semibold text-white outline-none resize-none break-words"
@@ -185,16 +183,14 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-          <div
-            className={`p-4 rounded-lg  border-2 ${borderStyle} border-opacity-25 hover:border-opacity-50 `}
-          >
+          <div className={`p-4 rounded-lg ${borderClasses}`}>
             <div className="inputWrapper">
               <div>
                 <div className="flex items-center justify-between">
                   {isFront ? (
                     <>
                       <textarea
-                        className="h-fit outline-none resize-none break-words"
+                        className="h-fit dark:bg-dark-600 outline-none resize-none break-words"
                         value={frontText}
                         ref={frontTextAreaRef}
                         rows={1}
@@ -203,7 +199,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                     </>
                   ) : (
                     <textarea
-                      className="h-fit outline-none resize-none break-words"
+                      className="h-fit outline-none dark:bg-dark-600  resize-none break-words"
                       value={backText}
                       ref={backTextAreaRef}
                       rows={1}

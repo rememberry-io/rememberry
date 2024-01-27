@@ -2,6 +2,7 @@ import { Handle, Position } from "reactflow";
 
 export const CustomHandle = ({ position }: { position: Position }) => {
   const handleStyle = {
+    // classNames: "dark:bg-colors-dark-500",
     placeSelf: "center",
     height: "0.75rem",
     width: "0.75rem",

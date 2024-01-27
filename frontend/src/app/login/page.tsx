@@ -1,5 +1,5 @@
 "use client";
-import FlowBackground from "@/components/Flow/FlowBackground/flowBackground"; // Adjust the import based on the actual path
+import FlowBackground from "@/components/Flow/Background/flowBackground"; // Adjust the import based on the actual path
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FormElement from "@/components/ui/formElement";
