@@ -1,4 +1,4 @@
-import useStore from "@/components/Flow/FlowElements/nodeStore"; // Adjust the import path as needed
+import useStore from "@/components/Flow/stores/nodeStore"; // Adjust the import path as needed
 import { nanoid } from "nanoid/non-secure";
 import { useCallback } from "react";
 

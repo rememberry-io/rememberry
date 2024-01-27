@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Maximize2, RotateCcw } from "lucide-react";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
-import useStore, { RFState } from "../FlowElements/nodeStore";
+import useStore, { RFState } from "../stores/nodeStore";
 import { FlashcardDialog } from "./FlashcardDialog";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
