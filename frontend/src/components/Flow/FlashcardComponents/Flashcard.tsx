@@ -154,9 +154,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               closeDialog={() => setIsDialogOpen(false)}
             />
           </div>
-          <div
-            className={`p-4 bg-primary rounded-lg ${borderClasses} `}
-          >
+          <div className={`p-4 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>
                 <div className="flex bg-primaryitems-center justify-between">
@@ -185,9 +183,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-          <div
-            className={`p-4 rounded-lg ${borderClasses}`}
-          >
+          <div className={`p-4 rounded-lg ${borderClasses}`}>
             <div className="inputWrapper">
               <div>
                 <div className="flex items-center justify-between">

@@ -60,15 +60,15 @@ const config: Config = {
   },
   colors: {
     dark: {
-      900: '#121212', // very dark gray for backgrounds
-      800: '#1D1D1D', // for back panels or cards
-      700: '#2A2A2A', // for secondary containers or sidebars
-      600: '#383838', // for hover states or selected items
-      500: '#4D4D4D', // for borders and lines
-      400: '#626262', // for icons or secondary text
-      300: '#9E9E9E', // for placeholder text or disabled states
-      200: '#B3B3B3', // for input fields backgrounds
-      100: '#D4D4D4', // for text
+      900: "#121212", // very dark gray for backgrounds
+      800: "#1D1D1D", // for back panels or cards
+      700: "#2A2A2A", // for secondary containers or sidebars
+      600: "#383838", // for hover states or selected items
+      500: "#4D4D4D", // for borders and lines
+      400: "#626262", // for icons or secondary text
+      300: "#9E9E9E", // for placeholder text or disabled states
+      200: "#B3B3B3", // for input fields backgrounds
+      100: "#D4D4D4", // for text
     },
     primary: "#1370DD",
     primarylight: "#5A97F1",
@@ -78,9 +78,7 @@ const config: Config = {
     dewberry: "333333",
     mulberry: "#C4C9D6",
     ashberry: "#E6E9EF",
-    snowberry: "#FFFFFF"
-    
-
+    snowberry: "#FFFFFF",
   },
 
   plugins: [],

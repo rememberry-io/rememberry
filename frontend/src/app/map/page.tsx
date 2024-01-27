@@ -149,12 +149,18 @@ function Map() {
         <MiniMap />
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
-          <Button variant="default" className="border-2 border-white dark:border-dark-900" onClick={addStack}>Add Stack</Button>
+          <Button
+            variant="default"
+            className="border-2 border-white dark:border-dark-900"
+            onClick={addStack}
+          >
+            Add Stack
+          </Button>
         </Panel>
       </ReactFlow>
     </div>
   );
-} 
+}
 export default function MapFlow() {
   return (
     <ReactFlowProvider>

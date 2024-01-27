@@ -1,9 +1,9 @@
 // Dialog components and styles
-import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { X } from 'lucide-react';
-import * as React from 'react';
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
+import * as React from "react";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 const Dialog = DialogPrimitive.Root;
 const DialogTrigger = DialogPrimitive.Trigger;
@@ -17,15 +17,15 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/30 dark:bg-dark-800/80 backdrop-blur-sm',
-      'data-state=open:animate-fadeIn',
-      'data-state=closed:animate-fadeOut',
-      className
+      "fixed inset-0 z-50 bg-black/30 dark:bg-dark-800/80 backdrop-blur-sm",
+      "data-state=open:animate-fadeIn",
+      "data-state=closed:animate-fadeOut",
+      className,
     )}
     {...props}
   />
 ));
-DialogOverlay.displayName = 'DialogOverlay';
+DialogOverlay.displayName = "DialogOverlay";
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
@@ -36,10 +36,10 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4',
-        'border bg-white dark:bg-dark-700 p-6 shadow-lg rounded-lg',
-        'data-state=open:animate-scaleIn data-state=closed:animate-scaleOut',
-        className
+        "fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4",
+        "border bg-white dark:bg-dark-700 p-6 shadow-lg rounded-lg",
+        "data-state=open:animate-scaleIn data-state=closed:animate-scaleOut",
+        className,
       )}
       {...props}
     >
@@ -51,7 +51,7 @@ const DialogContent = React.forwardRef<
     </DialogPrimitive.Content>
   </DialogPortal>
 ));
-DialogContent.displayName = 'DialogContent';
+DialogContent.displayName = "DialogContent";
 
 const DialogHeader = ({
   className,
@@ -59,14 +59,14 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex justify-between items-start p-4',
-      'border-b border-gray-300 dark:border-dark-600',
-      className
+      "flex justify-between items-start p-4",
+      "border-b border-gray-300 dark:border-dark-600",
+      className,
     )}
     {...props}
   />
 );
-DialogHeader.displayName = 'DialogHeader';
+DialogHeader.displayName = "DialogHeader";
 
 const DialogFooter = ({
   className,
@@ -74,14 +74,14 @@ const DialogFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      'flex justify-end items-center p-4',
-      'border-t border-gray-300 dark:border-dark-500',
-      className
+      "flex justify-end items-center p-4",
+      "border-t border-gray-300 dark:border-dark-500",
+      className,
     )}
     {...props}
   />
 );
-DialogFooter.displayName = 'DialogFooter';
+DialogFooter.displayName = "DialogFooter";
 
 const DialogTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
@@ -90,13 +90,13 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      'text-lg font-semibold leading-tight text-gray-900 dark:text-gray-100',
-      className
+      "text-lg font-semibold leading-tight text-gray-900 dark:text-gray-100",
+      className,
     )}
     {...props}
   />
 ));
-DialogTitle.displayName = 'DialogTitle';
+DialogTitle.displayName = "DialogTitle";
 
 const DialogDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
@@ -104,14 +104,11 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn(
-      'text-sm text-gray-700 dark:text-gray-300',
-      className
-    )}
+    className={cn("text-sm text-gray-700 dark:text-gray-300", className)}
     {...props}
   />
 ));
-DialogDescription.displayName = 'DialogDescription';
+DialogDescription.displayName = "DialogDescription";
 
 export {
   Dialog,
