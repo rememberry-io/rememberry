@@ -24,16 +24,16 @@ export default function Login() {
 
       <div className="z-10 absolute top-0 left-0 w-full h-full flex items-center justify-center">
         <div className="z-10 relative flex flex-col items-center justify-center min-h-screen">
-          <Tabs.Root defaultValue="login" className="w-[400px] h-[480px]">
-            <Tabs.List className="h-10 rounded-md bg-muted p-1 text-muted-foreground grid w-fit grid-cols-2">
+          <Tabs.Root defaultValue="login" className="w-[400px] h-[480px] ">
+            <Tabs.List className="dark:bg-dark-800 h-10 rounded-md bg-muted p-1 text-muted-foreground grid w-fit grid-cols-2">
               <Tabs.Trigger
-                className="rounded-sm px-0.75 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                className="  rounded-sm px-0.75 py-1.5 text-sm font-medium transition-all light:data-[state=active]:bg-background dark:data-[state=active]:bg-dark-500 light:data-[state=active]:text-foreground  dark:data-[state=active]:text-white dark:data-[state=inactive]:text-white/50 data-[state=active]:shadow-sm"
                 value="login"
               >
                 Login
               </Tabs.Trigger>
               <Tabs.Trigger
-                className="rounded-sm px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                className=" rounded-sm px-3 py-1.5 text-sm font-medium transition-all light:data-[state=active]:bg-background dark:data-[state=active]:bg-dark-500 light:data-[state=active]:text-foreground dark:data-[state=active]:text-white dark:data-[state=inactive]:text-white/50 data-[state=active]:shadow-sm"
                 value="register"
               >
                 Register
@@ -60,8 +60,8 @@ export default function Login() {
                 }}
               >
                 {({ errors }) => (
-                  <Form>
-                    <Card>
+                  <Form className="">
+                    <Card className="dark:bg-dark-800 dark:border-dark-700">
                       <CardHeader>
                         <CardTitle>Welcome back to rememberry :)</CardTitle>
                       </CardHeader>
@@ -70,7 +70,7 @@ export default function Login() {
                           <p className="text-sm text-error">{errors.email}</p>
                         )}
 
-                        <div className="flex flex-col gap-1.5">
+                        <div className="flex flex-col gap-1.5 ">
                           <FormElement
                             id="email"
                             type="email"
@@ -121,13 +121,13 @@ export default function Login() {
               >
                 {({ errors }) => (
                   <Form>
-                    <Card>
+                    <Card className="dark:bg-dark-800 dark:border-dark-700">
                       <CardHeader>
                         <CardTitle>
                           Ready to start a new learning journey?
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="dark:bg-dark-800">
                         <div className="flex flex-col gap-1.5">
                           {errors.email && (
                             <p className="text-sm text-error">{errors.email}</p>

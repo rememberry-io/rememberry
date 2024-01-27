@@ -3,7 +3,6 @@ import ReactFlow, {
   Background,
   ConnectionLineType,
   Controls,
-  MiniMap,
   Node,
   NodeOrigin,
   OnConnectEnd,
@@ -146,7 +145,7 @@ function Map() {
         fitView
       >
         <Background />
-        <MiniMap />
+        {/* <MiniMap /> */}
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
           <Button
