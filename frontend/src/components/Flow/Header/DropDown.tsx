@@ -20,7 +20,9 @@ export function DropDown() {
           <SelectItem className="" value="apple">
             Colored borders
           </SelectItem>
-          <SelectItem className="" value="banana">Colored flashcards</SelectItem>
+          <SelectItem className="" value="banana">
+            Colored flashcards
+          </SelectItem>
           <SelectItem value="blueberry">Not at all</SelectItem>
         </SelectGroup>
       </SelectContent>

@@ -3,7 +3,6 @@ import ReactFlow, {
   Background,
   ConnectionLineType,
   Controls,
-  MiniMap,
   Node,
   NodeOrigin,
   OnConnectEnd,

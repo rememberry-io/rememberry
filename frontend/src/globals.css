@@ -452,12 +452,9 @@ video {
 
 :root {
   --background: 0 0% 100%;
-  --foreground: 0 0% 7%
-  --card: 0 0% 100%;
-  --card-foreground: 0 0% 7%
-  --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 7%
-  --primary: 222.2 80% 50%;
+  --foreground: 0 0% 7% --card: 0 0% 100%;
+  --card-foreground: 0 0% 7% --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 7% --primary: 222.2 80% 50%;
   --primary-foreground: 210 40% 98%;
   --secondary: 210 40% 96.1%;
   --secondary-foreground: 222.2 47.4% 11.2%;
@@ -469,17 +466,13 @@ video {
   --destructive-foreground: 210 40% 98%;
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
-  --ring: 0 0% 7%
-  --radius: 0.5rem;
+  --ring: 0 0% 7% --radius: 0.5rem;
 }
 
 .dark {
-  --background: 0 0% 7%
-  --foreground: 210 40% 98%;
-  --card: 0 0% 7%
-  --card-foreground: 210 40% 98%;
-  --popover: 0 0% 7%
-  --popover-foreground: 210 40% 98%;
+  --background: 0 0% 7% --foreground: 210 40% 98%;
+  --card: 0 0% 7% --card-foreground: 210 40% 98%;
+  --popover: 0 0% 7% --popover-foreground: 210 40% 98%;
   --primary: 210 40% 98%;
   --primary-foreground: 222.2 47.4% 11.2%;
   --secondary: 217.2 32.6% 17.5%;
