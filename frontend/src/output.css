@@ -1233,6 +1233,11 @@ body {
   border-color: rgb(234 179 8 / var(--tw-border-opacity));
 }
 
+.border-white {
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
 .border-opacity-50 {
   --tw-border-opacity: 0.5;
 }
@@ -2055,6 +2060,11 @@ body {
 :is(.dark .dark\:border-dark-600) {
   --tw-border-opacity: 1;
   border-color: rgb(56 56 56 / var(--tw-border-opacity));
+}
+
+:is(.dark .dark\:border-dark-900) {
+  --tw-border-opacity: 1;
+  border-color: rgb(18 18 18 / var(--tw-border-opacity));
 }
 
 :is(.dark .dark\:bg-dark-600) {

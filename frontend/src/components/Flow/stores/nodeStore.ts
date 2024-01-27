@@ -37,8 +37,8 @@ const useStore = create<RFState>((set, get) => ({
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        frontText: "Stack Name",
-        backText: "Description",
+        frontText: "New Front Text",
+        backText: "New Back Text",
         parentName: "",
         mainStackID: "",
       },

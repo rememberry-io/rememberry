@@ -37,8 +37,8 @@ export const FlowHeader: React.FC<HeaderProps> = () => {
           isOpen={isOpen}
           toggleSidebar={() => setIsOpen(!isOpen)}
         />
-        <Link href="/map/menu">
-          <Button variant="ghost">
+        <Link href="/">
+          <Button variant="secondary">
             <ArrowLeftCircle className="mr-2" />
             Back to menu
           </Button>
