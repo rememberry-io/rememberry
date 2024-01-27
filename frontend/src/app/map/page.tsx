@@ -154,7 +154,7 @@ function Map() {
       </ReactFlow>
     </div>
   );
-}
+} 
 export default function MapFlow() {
   return (
     <ReactFlowProvider>

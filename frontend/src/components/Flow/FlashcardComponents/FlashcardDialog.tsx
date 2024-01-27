@@ -59,7 +59,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
           <div >
             <div>
               <>
-                <div className="font-medium text-primary leading-10">
+                <div className="font-medium text-primary dark:text-white leading-10">
                   {parentName}
                 </div>
               </>
@@ -85,7 +85,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               />
             </div>
             <Button
-              className="focus:outline focus:outline-primary  mt-4"
+              className="focus:outline dark:bg-primary dark:text-white focus:outline-primary  mt-4"
               onClick={handleSubmit}
             >
               Save

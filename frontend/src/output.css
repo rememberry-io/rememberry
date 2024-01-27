@@ -1195,7 +1195,7 @@ body {
   border-style: none;
 }
 
-.border-colors-ashberry {
+.border-ashberry {
   --tw-border-opacity: 1;
   border-color: rgb(230 233 239 / var(--tw-border-opacity));
 }
@@ -1237,6 +1237,11 @@ body {
   --tw-border-opacity: 0.5;
 }
 
+.bg-ashberry {
+  --tw-bg-opacity: 1;
+  background-color: rgb(230 233 239 / var(--tw-bg-opacity));
+}
+
 .bg-background {
   background-color: hsl(var(--background));
 }
@@ -1263,11 +1268,6 @@ body {
   background-color: hsl(var(--card));
 }
 
-.bg-colors-primary {
-  --tw-bg-opacity: 1;
-  background-color: rgb(19 112 221 / var(--tw-bg-opacity));
-}
-
 .bg-destructive {
   background-color: hsl(var(--destructive));
 }
@@ -1291,7 +1291,8 @@ body {
 }
 
 .bg-primary {
-  background-color: hsl(var(--primary));
+  --tw-bg-opacity: 1;
+  background-color: rgb(19 112 221 / var(--tw-bg-opacity));
 }
 
 .bg-red-100 {
@@ -1481,6 +1482,11 @@ body {
   letter-spacing: 0.1em;
 }
 
+.text-blackberry {
+  --tw-text-opacity: 1;
+  color: rgb(40 40 40 / var(--tw-text-opacity));
+}
+
 .text-card-foreground {
   color: hsl(var(--card-foreground));
 }
@@ -1517,11 +1523,8 @@ body {
 }
 
 .text-primary {
-  color: hsl(var(--primary));
-}
-
-.text-primary-foreground {
-  color: hsl(var(--primary-foreground));
+  --tw-text-opacity: 1;
+  color: rgb(19 112 221 / var(--tw-text-opacity));
 }
 
 .text-secondary-foreground {
@@ -1726,7 +1729,7 @@ body {
 }
 
 .hover\:bg-primary\/90:hover {
-  background-color: hsl(var(--primary) / 0.9);
+  background-color: rgb(19 112 221 / 0.9);
 }
 
 .hover\:bg-secondary\/80:hover {
@@ -1772,7 +1775,7 @@ body {
 }
 
 .focus\:outline-primary:focus {
-  outline-color: hsl(var(--primary));
+  outline-color: #1370DD;
 }
 
 .focus\:ring-1:focus {
@@ -1817,7 +1820,8 @@ body {
 }
 
 .focus-visible\:ring-primary:focus-visible {
-  --tw-ring-color: hsl(var(--primary));
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(19 112 221 / var(--tw-ring-opacity));
 }
 
 .focus-visible\:ring-ring:focus-visible {
@@ -1891,7 +1895,8 @@ body {
 }
 
 .data-\[state\=checked\]\:bg-primary[data-state=checked] {
-  background-color: hsl(var(--primary));
+  --tw-bg-opacity: 1;
+  background-color: rgb(19 112 221 / var(--tw-bg-opacity));
 }
 
 .data-\[state\=open\]\:bg-accent[data-state=open] {
@@ -2042,28 +2047,38 @@ body {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-:is(.dark .dark\:border-colors-dark-600) {
+:is(.dark .dark\:border-dark-500) {
+  --tw-border-opacity: 1;
+  border-color: rgb(77 77 77 / var(--tw-border-opacity));
+}
+
+:is(.dark .dark\:border-dark-600) {
   --tw-border-opacity: 1;
   border-color: rgb(56 56 56 / var(--tw-border-opacity));
 }
 
-:is(.dark .dark\:bg-colors-dark-500) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(77 77 77 / var(--tw-bg-opacity));
-}
-
-:is(.dark .dark\:bg-colors-dark-600) {
+:is(.dark .dark\:bg-dark-600) {
   --tw-bg-opacity: 1;
   background-color: rgb(56 56 56 / var(--tw-bg-opacity));
 }
 
-:is(.dark .dark\:bg-colors-dark-700) {
+:is(.dark .dark\:bg-dark-700) {
   --tw-bg-opacity: 1;
   background-color: rgb(42 42 42 / var(--tw-bg-opacity));
 }
 
-:is(.dark .dark\:bg-colors-dark-800\/80) {
+:is(.dark .dark\:bg-dark-800\/80) {
   background-color: rgb(29 29 29 / 0.8);
+}
+
+:is(.dark .dark\:bg-primary) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(19 112 221 / var(--tw-bg-opacity));
+}
+
+:is(.dark .dark\:text-dark-100) {
+  --tw-text-opacity: 1;
+  color: rgb(212 212 212 / var(--tw-text-opacity));
 }
 
 :is(.dark .dark\:text-gray-100) {
@@ -2074,6 +2089,20 @@ body {
 :is(.dark .dark\:text-gray-300) {
   --tw-text-opacity: 1;
   color: rgb(209 213 219 / var(--tw-text-opacity));
+}
+
+:is(.dark .dark\:text-white) {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+:is(.dark .dark\:hover\:bg-dark-600:hover) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(56 56 56 / var(--tw-bg-opacity));
+}
+
+:is(.dark .dark\:hover\:bg-primary\/90:hover) {
+  background-color: rgb(19 112 221 / 0.9);
 }
 
 @media (min-width: 640px) {

@@ -17,7 +17,6 @@ module.exports = {
     },
     extend: {
       colors: {
-        colors: {
           dark: {
             900: "#121212", // very dark gray for backgrounds
             800: "#1D1D1D", // for back panels or cards
@@ -38,17 +37,14 @@ module.exports = {
           mulberry: "#C4C9D6",
           ashberry: "#E6E9EF",
           snowberry: "#FFFFFF",
-        },
+       
         error: "#dc2626",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
+        
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",

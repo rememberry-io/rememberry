@@ -17,7 +17,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-50 bg-black/30 dark:bg-colors-dark-800/80 backdrop-blur-sm',
+      'fixed inset-0 z-50 bg-black/30 dark:bg-dark-800/80 backdrop-blur-sm',
       'data-state=open:animate-fadeIn',
       'data-state=closed:animate-fadeOut',
       className
@@ -37,7 +37,7 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-1/2 top-1/2 z-50 grid w-full max-w-lg -translate-x-1/2 -translate-y-1/2 gap-4',
-        'border bg-white dark:bg-colors-dark-700 p-6 shadow-lg rounded-lg',
+        'border bg-white dark:bg-dark-700 p-6 shadow-lg rounded-lg',
         'data-state=open:animate-scaleIn data-state=closed:animate-scaleOut',
         className
       )}
@@ -60,7 +60,7 @@ const DialogHeader = ({
   <div
     className={cn(
       'flex justify-between items-start p-4',
-      'border-b border-gray-300 dark:border-colors-dark-600',
+      'border-b border-gray-300 dark:border-dark-600',
       className
     )}
     {...props}
