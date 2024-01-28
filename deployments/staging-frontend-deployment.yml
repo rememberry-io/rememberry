@@ -39,8 +39,18 @@ spec:
                 configMapKeyRef:
                   name: staging-frontend-cfg
                   key: NEXT_PUBLIC_BACKEND_PORT
-            - name: PORT
+            - name: NEXT_PUBLIC_APP_ENV
               valueFrom:
                 configMapKeyRef:
                   name: staging-frontend-cfg
-                  key: NEXT_PORT
+                  key: NEXT_PUBLIC_APP_ENV
+            - name: APP_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-frontend-cfg
+                  key: APP_ENV
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: staging-frontend-cfg
+                  key: NODE_ENV
