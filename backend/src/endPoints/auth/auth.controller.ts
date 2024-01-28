@@ -111,7 +111,7 @@ class LuciaAuthentication implements AuthenticationController {
       const sessionCookie = auth.createSessionCookie(session);
 
       const a = env.WEB_PAGE_DOMAIN.split("//")[1];
-      const b = a.split(":")[0];
+      const b = "stage.rememberry.app";
       console.log(b);
       sessionCookie.attributes.domain = b;
 

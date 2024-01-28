@@ -1,6 +1,7 @@
 name: Staging Deployment Frontend 
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "frontend/**"
