@@ -26,7 +26,7 @@ export const authRouter = router({
         throw errorCheck;
       }
       opts.ctx.res.setHeader("Set-Cookie", res.sessionCookie);
-      console.log(opts.ctx.res)
+      console.log(opts.ctx.res);
       return res.user;
     }),
   logout: publicProcedure.output(UserRouterOutput).mutation(async (opts) => {
