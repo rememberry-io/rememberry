@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [lint-format, test]
     name: build & push docker image
-    if: github.ref == 'refs/heads/master'
+      #if: github.ref == 'refs/heads/master'
     # Current Solution is to directly pass in the pararmeter for the host and port 
     # so there is no build time error should be fixed at some time
     steps:
@@ -101,7 +101,7 @@ jobs:
   staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging frontend
-    if: github.ref == 'refs/heads/master'
+      #if: github.ref == 'refs/heads/master'
     needs: [build-image]
     steps:
       - name: set the kubernetes context
