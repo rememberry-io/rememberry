@@ -1,15 +1,18 @@
 import { TRPCError } from "@trpc/server";
 import { verifyRequestOrigin } from "lucia";
-import { getDomain, lucia } from "../auth/lucia";
+import { lucia } from "../auth/lucia";
 import env from "../env";
 import { middleware, publicProcedure } from "../trpc";
 import { getTRPCError } from "../utils";
 
 const allowedHost = () => {
-  const host = getDomain();
-
-  if (env.NODE_ENV === "development") return host + ":3000";
-  return host;
+  if (env.NODE_ENV === "staging") {
+    return "web.stage.rememberry.app";
+  } else if (env.NODE_ENV === "production") {
+    return "rememberry.app";
+  } else {
+    return "127.0.0.1:3000";
+  }
 };
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
