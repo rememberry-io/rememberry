@@ -1,8 +1,8 @@
-import { TRPCError } from "@trpc/server";
-import { LuciaError } from "lucia";
-import { DatabaseError } from "pg";
-import { Auth, auth } from "../../auth/lucia";
-import env from "../../env";
+import { Lucia, Scrypt, User } from "lucia";
+import { lucia } from "../../auth/lucia";
+import { User as DBUser } from "../../db/schema";
+import { getTRPCError } from "../../utils";
+import { UserController, userController } from "../user/user.controller";
 import {
   AuthOutput,
   LoginInput,
@@ -14,170 +14,97 @@ import {
 export interface AuthenticationController {
   register(input: RegisterInput): Promise<TRPCStatus<AuthOutput>>;
   login(input: LoginInput): Promise<TRPCStatus<AuthOutput>>;
-  logout(input: LogoutInput): Promise<TRPCStatus<AuthOutput>>;
+  logout(input: LogoutInput): Promise<TRPCStatus<AuthWithoutUser>>;
 }
 
 class LuciaAuthentication implements AuthenticationController {
-  auth: Auth;
-  constructor(auth: Auth) {
-    this.auth = auth;
+  userController: UserController;
+  luciaAuth: Lucia;
+  constructor(userController: UserController, luciaAuth: Lucia) {
+    this.userController = userController;
+    this.luciaAuth = luciaAuth;
   }
-  async register(
-    registerInput: RegisterInput,
-  ): Promise<TRPCStatus<AuthOutput>> {
-    const { username, email, password } = registerInput;
-    try {
-      const user = await this.auth.createUser({
-        userId: crypto.randomUUID(),
-        key: {
-          providerId: "email",
-          providerUserId: email.toLowerCase(),
-          password,
-        },
-        attributes: {
-          username,
-          email,
-        },
-      });
+  async register(registerInput: RegisterInput) {
+    const [err, user] = await this.userController.createUser(registerInput);
 
-      const session = await this.auth.createSession({
-        userId: user.userId,
-        attributes: {},
-      });
-      const sessionCookie = this.auth.createSessionCookie(session);
-      const a = env.WEB_PAGE_DOMAIN.split("//")[1];
-      const b = a.split(":")[0];
-      console.log(b);
-      sessionCookie.attributes.domain = b;
+    if (err) return getTRPCError(err.message, err.code);
 
-      sessionCookie.attributes.httpOnly = true;
-      sessionCookie.attributes.sameSite = "none";
-      sessionCookie.attributes.secure = true;
-
-      console.log(sessionCookie);
-
-      const payload: AuthOutput = {
-        user,
-        sessionCookie: sessionCookie.serialize(),
-      };
-      return [null, payload] as const;
-    } catch (e) {
-      if (e instanceof DatabaseError) {
-        if (e.code === "23505") {
-          if (e.detail?.includes("username")) {
-            return [
-              new TRPCError({
-                code: "CONFLICT",
-                message: "Username already used",
-              }),
-              null,
-            ] as const;
-          } else if (e.detail?.includes("email")) {
-            return [
-              new TRPCError({
-                code: "CONFLICT",
-                message: "Email already used",
-              }),
-              null,
-            ] as const;
-          } else {
-            return [
-              new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: "Somethings wrong with the db: " + JSON.stringify(e),
-              }),
-              null,
-            ] as const;
-          }
-        }
-      }
-      return [
-        new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Could not register new user: " + JSON.stringify(e),
-        }),
-        null,
-      ] as const;
-    }
+    return this.createSessionAndCookie(user);
   }
-  async login(input: LoginInput): Promise<TRPCStatus<AuthOutput>> {
+  async login(input: LoginInput) {
     const { email, password } = input;
     try {
-      const key = await auth.useKey("email", email.toLowerCase(), password);
-      const session = await auth.createSession({
-        userId: key.userId,
-        attributes: {},
-      });
-      const sessionCookie = auth.createSessionCookie(session);
+      const [err, user] = await this.userController.getUserByEmail(email);
+      if (err) return getTRPCError(err.message, err.code);
 
-      const a = env.WEB_PAGE_DOMAIN.split("//")[1];
-      const b = "stage.rememberry.app";
-      console.log(b);
-      sessionCookie.attributes.domain = b;
+      const validPw = await new Scrypt().verify(user.password, password);
+      if (!validPw)
+        return getTRPCError("Invalid Username or password", "BAD_REQUEST");
 
-      sessionCookie.attributes.httpOnly = true;
-      sessionCookie.attributes.sameSite = "none";
-      sessionCookie.attributes.secure = true;
-
-      console.log(sessionCookie);
-
-      const user = await auth.getUser(key.userId);
-
-      const payload: AuthOutput = {
-        user,
-        sessionCookie: sessionCookie.serialize(),
-      };
-
-      return [null, payload] as const;
+      return this.createSessionAndCookie(user);
     } catch (e) {
-      if (
-        e instanceof LuciaError &&
-        (e.message === "AUTH_INVALID_KEY_ID" ||
-          e.message === "AUTH_INVALID_PASSWORD")
-      ) {
-        return [
-          new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Incorrect email or password",
-          }),
-          null,
-        ] as const;
-      }
-      return [
-        new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Could not login user: " + JSON.stringify(e),
-        }),
-        null,
-      ] as const;
+      return getTRPCError(
+        "Could not log in: " + JSON.stringify(e),
+        "INTERNAL_SERVER_ERROR",
+      );
     }
   }
-  async logout(input: LogoutInput): Promise<TRPCStatus<AuthOutput>> {
-    const authRequest = this.auth.handleRequest(
-      input.opts.ctx.req,
-      input.opts.ctx.res,
-    );
+  async logout(input: LogoutInput) {
+    const { req } = input.opts.ctx;
 
-    const session = await authRequest.validate();
+    const cookieHeader = req.headers.cookie;
 
-    if (!session) {
-      return [new TRPCError({ code: "UNAUTHORIZED" }), null] as const;
+    const sessionId = this.luciaAuth.readSessionCookie(cookieHeader ?? "");
+    if (!sessionId) return getTRPCError("Invalid cookie", "UNAUTHORIZED");
+
+    try {
+      await this.luciaAuth.invalidateSession(sessionId);
+    } catch (e) {
+      return getTRPCError(
+        "Could not invalidate Session",
+        "INTERNAL_SERVER_ERROR",
+      );
     }
-    await this.auth.invalidateSession(session.sessionId);
 
-    const sessionCookie = auth.createSessionCookie(null);
+    const sessionCookie = this.luciaAuth.createBlankSessionCookie();
 
-    sessionCookie.attributes.httpOnly = true;
-    sessionCookie.attributes.sameSite = "none";
-    sessionCookie.attributes.secure = true;
-
-    const payload: AuthOutput = {
-      user: session.user,
+    const payload: AuthWithoutUser = {
       sessionCookie: sessionCookie.serialize(),
     };
 
     return [null, payload] as const;
   }
+  private async createSessionAndCookie(userIn: DBUser) {
+    try {
+      const session = await this.luciaAuth.createSession(userIn.id, {});
+
+      const sessionCookie = this.luciaAuth.createSessionCookie(session.id);
+
+      console.log(sessionCookie);
+
+      const user: User = {
+        id: userIn.id,
+        email: userIn.email,
+        username: userIn.username,
+      };
+
+      const payload: AuthOutput = {
+        user,
+        sessionCookie: sessionCookie.serialize(),
+      };
+      return [null, payload] as const;
+    } catch (e) {
+      return getTRPCError(
+        "Could not create session" + JSON.stringify(e),
+        "INTERNAL_SERVER_ERROR",
+      );
+    }
+  }
 }
 
-export const luciaAuthentication = new LuciaAuthentication(auth);
+type AuthWithoutUser = Omit<AuthOutput, "user">;
+
+export const luciaAuthentication = new LuciaAuthentication(
+  userController,
+  lucia,
+);
