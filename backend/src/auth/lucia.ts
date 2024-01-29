@@ -6,7 +6,7 @@ import env from "../env";
 
 const adapter = new DrizzlePostgreSQLAdapter(db, session, users);
 
-const getDomain = () => {
+export const getDomain = () => {
   if (env.NODE_ENV === "staging") {
     return "stage.rememberry.app";
   } else if (env.NODE_ENV === "production") {

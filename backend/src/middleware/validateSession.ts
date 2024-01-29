@@ -1,8 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { verifyRequestOrigin } from "lucia";
-import { lucia } from "../auth/lucia";
+import { getDomain, lucia } from "../auth/lucia";
+import env from "../env";
 import { middleware, publicProcedure } from "../trpc";
 import { getTRPCError } from "../utils";
+
+const allowedHost = () => {
+  const host = getDomain();
+
+  if (env.NODE_ENV === "development") return host + ":3000";
+  return host;
+};
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
   const { req, res } = ctx;
@@ -11,11 +19,11 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   if (method === "POST") {
     const originHeader = headers.origin;
     // NOTE: You may need to use `X-Forwarded-Host` instead
-    const hostHeader = req.headers.host;
+    const allowedHosts = allowedHost();
     if (
       !originHeader ||
-      !hostHeader ||
-      !verifyRequestOrigin(originHeader, [hostHeader])
+      !allowedHosts ||
+      !verifyRequestOrigin(originHeader, [allowedHosts])
     )
       throw getTRPCError("CSFR Protection", "FORBIDDEN")[0];
   }
