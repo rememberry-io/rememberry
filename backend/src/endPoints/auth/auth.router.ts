@@ -1,4 +1,5 @@
 import { User } from "lucia";
+import { privateProcedure } from "../../middleware/validateSession";
 import { publicProcedure, router } from "../../trpc";
 import { UserRouterOutput } from "../user/types";
 import { luciaAuthentication } from "./auth.controller";
@@ -15,6 +16,7 @@ export const authRouter = router({
         throw errorCheck;
       }
       opts.ctx.res.setHeader("Set-Cookie", res.sessionCookie);
+      opts.ctx.res.setHeader("Location", "/");
       return res.user as User;
     }),
   login: publicProcedure
@@ -26,16 +28,16 @@ export const authRouter = router({
         throw errorCheck;
       }
       opts.ctx.res.setHeader("Set-Cookie", res.sessionCookie);
-      console.log(opts.ctx.res);
+      opts.ctx.res.setHeader("Location", "/");
       return res.user;
     }),
-  logout: publicProcedure.output(UserRouterOutput).mutation(async (opts) => {
+  logout: privateProcedure.mutation(async (opts) => {
     const [errorCheck, res] = await luciaAuthentication.logout({ opts });
     if (errorCheck) {
       throw errorCheck;
     }
     opts.ctx.res.setHeader("Set-Cookie", res.sessionCookie);
-    return res.user;
+    opts.ctx.res.setHeader("Location", "/login");
   }),
 });
 

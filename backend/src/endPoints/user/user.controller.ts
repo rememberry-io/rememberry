@@ -1,114 +1,77 @@
-import { TRPCError } from "@trpc/server";
-import { LuciaError } from "lucia";
-import { Auth, auth } from "../../auth/lucia";
+import { Lucia, Scrypt, User as luciaUser } from "lucia";
+import { lucia } from "../../auth/lucia";
+import { NewUser, User } from "../../db/schema";
+import { getTRPCError } from "../../utils";
 import { TRPCStatus } from "../auth/types";
-import {
-  GetUserBySessionInput,
-  UpdatePasswordInput,
-  UpdateUsernameAndEmailInput,
-  UserControllerOutput,
-} from "./types";
+import { GetUserBySessionInput } from "./types";
+import { UserModel, userModelDrizzle } from "./user.model";
 
-interface UserController {
+export interface UserController {
+  createUser(input: NewUser): Promise<TRPCStatus<User>>;
+  getUserByEmail(email: string): Promise<TRPCStatus<User>>;
   getUserBySession(
     input: GetUserBySessionInput,
-  ): Promise<TRPCStatus<UserControllerOutput>>;
-  updateUsernameAndEmail(
-    input: UpdateUsernameAndEmailInput,
-  ): Promise<TRPCStatus<UserControllerOutput>>;
-  updatePassword(
-    input: UpdatePasswordInput,
-  ): Promise<TRPCStatus<UserControllerOutput>>;
+  ): Promise<TRPCStatus<luciaUser>>;
+  updateUserById(input: User): Promise<TRPCStatus<luciaUser>>;
   deleteUserById(userId: string): Promise<TRPCStatus<string>>;
 }
 
 class LuciaUserController implements UserController {
-  auth: Auth;
-  constructor(auth: Auth) {
-    this.auth = auth;
+  userModel: UserModel;
+  luciaAuth: Lucia;
+  constructor(userModel: UserModel, luciaAuth: Lucia) {
+    this.userModel = userModel;
+    this.luciaAuth = luciaAuth;
+  }
+  async createUser(input: NewUser): Promise<TRPCStatus<User>> {
+    try {
+      const userAtrributes = {
+        username: input.username,
+        email: input.email,
+        password: await new Scrypt().hash(input.password),
+      };
+
+      const [err, user] = await this.userModel.createUser(userAtrributes);
+
+      if (err) return [err, null] as const;
+
+      return [null, user] as const;
+    } catch (e) {
+      return getTRPCError();
+    }
+  }
+  async getUserByEmail(email: string): Promise<TRPCStatus<User>> {
+    const [err, user] = await this.userModel.getUserByEmail(email);
+    if (err) return getTRPCError(err.message, err.code);
+    return [null, user] as const;
   }
   async getUserBySession(input: GetUserBySessionInput) {
-    const authRequest = this.auth.handleRequest(input.req, input.res);
+    const cookieHeader = input.req.headers.cookie;
+    if (!cookieHeader) return getTRPCError("No cookie");
+    const sessionId = this.luciaAuth.readSessionCookie(cookieHeader);
+    if (!sessionId) return getTRPCError("Could not read session");
 
-    const session = await authRequest.validate();
+    const { session, user } = await this.luciaAuth.validateSession(sessionId);
 
-    if (!session) {
-      return [
-        new TRPCError({
-          code: "UNAUTHORIZED",
-        }),
-        null,
-      ] as const;
-    }
-    const payload = {
-      user: session.user,
-    };
+    if (!session) return getTRPCError("Session is invalid");
 
-    return [null, payload] as const;
+    return [null, user] as const;
   }
-  async updateUsernameAndEmail(input: UpdateUsernameAndEmailInput) {
-    const { username, email, userId } = input;
+  async updateUserById(input: User) {
     try {
-      const user = await this.auth.updateUserAttributes(userId, {
-        username,
-        email,
-      });
-      const payload = {
-        user,
-      };
-      return [null, payload] as const;
+      const [err, user] = await this.userModel.updateUserById(input);
+      if (err) return getTRPCError(err.message, err.code);
+      return [null, user] as const;
     } catch (e) {
-      if (e instanceof LuciaError && e.message === `AUTH_INVALID_USER_ID`) {
-        return [
-          new TRPCError({ code: "BAD_REQUEST", message: "Invalid user id" }),
-          null,
-        ] as const;
-      }
+      return getTRPCError("Could not update User");
     }
-    return [
-      new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Invalid user id",
-      }),
-      null,
-    ] as const;
   }
   //TODO: unvalidate all session (and send a new session so user stays logged in)
-  async updatePassword(input: UpdatePasswordInput) {
-    const { email, newPassword } = input;
-    try {
-      const key = await this.auth.updateKeyPassword(
-        "email",
-        email,
-        newPassword,
-      );
-      const user = await this.auth.getUser(key.userId);
-
-      const payload = {
-        user,
-      };
-
-      return [null, payload] as const;
-    } catch (e) {
-      if (e instanceof LuciaError && e.message === "AUTH_INVALID_KEY_ID") {
-        return [
-          new TRPCError({ code: "BAD_REQUEST", message: "Invalid key id" }),
-          null,
-        ] as const;
-      }
-      return [
-        new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Invalid user id",
-        }),
-        null,
-      ] as const;
-    }
-  }
   async deleteUserById(userId: string) {
-    await this.auth.deleteUser(userId);
+    const [err, _] = await this.userModel.deleteUserById(userId);
+    if (err) return getTRPCError(err.message, err.code);
     return [null, "Successfully deleted user"] as const;
   }
 }
 
-export const userController = new LuciaUserController(auth);
+export const userController = new LuciaUserController(userModelDrizzle, lucia);

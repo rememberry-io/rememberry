@@ -2,15 +2,11 @@ import { IncomingMessage, ServerResponse } from "http";
 import { User } from "lucia";
 import { z } from "zod";
 
-export const UpdateUsernameAndEmailRouteInput = z.object({
-  userId: z.string(),
+export const UpdateUserByIdRouteInput = z.object({
+  id: z.string(),
   email: z.string(),
   username: z.string(),
-});
-
-export const UpdatePasswordRouteInput = z.object({
-  email: z.string(),
-  newPassword: z.string(),
+  password: z.string(),
 });
 
 export type GetUserBySessionInput = {
@@ -36,5 +32,5 @@ export type UserControllerOutput = {
 export const UserRouterOutput = z.object({
   username: z.string(),
   email: z.string(),
-  userId: z.string(),
+  id: z.string(),
 });

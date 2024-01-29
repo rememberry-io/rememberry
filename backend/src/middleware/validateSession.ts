@@ -1,19 +1,52 @@
 import { TRPCError } from "@trpc/server";
-import { auth } from "../auth/lucia";
+import { verifyRequestOrigin } from "lucia";
+import { getDomain, lucia } from "../auth/lucia";
+import env from "../env";
 import { middleware, publicProcedure } from "../trpc";
+import { getTRPCError } from "../utils";
+
+const allowedHost = () => {
+  const host = getDomain();
+
+  if (env.NODE_ENV === "development") return host + ":3000";
+  return host;
+};
 
 const isLoggedIn = middleware(async ({ next, ctx }) => {
   const { req, res } = ctx;
-  const authRequest = auth.handleRequest(req, res);
+  const method = req.method;
+  const headers = req.headers;
+  if (method === "POST") {
+    const originHeader = headers.origin;
+    // NOTE: You may need to use `X-Forwarded-Host` instead
+    const allowedHosts = allowedHost();
+    if (
+      !originHeader ||
+      !allowedHosts ||
+      !verifyRequestOrigin(originHeader, [allowedHosts])
+    )
+      throw getTRPCError("CSFR Protection", "FORBIDDEN")[0];
+  }
 
-  console.log(JSON.stringify(authRequest));
+  const cookieHeader = req.headers.cookie;
 
-  const session = await authRequest.validate();
+  const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
+  if (!sessionId) throw getTRPCError("Invalid cookie", "UNAUTHORIZED")[0];
 
+  const { session, user } = await lucia.validateSession(sessionId);
   if (!session) {
+    const sessionCookie = lucia.createBlankSessionCookie();
+    res.setHeader("Set-Cookie", sessionCookie.serialize());
+
     throw new TRPCError({
       code: "UNAUTHORIZED",
+      message: "Invalid Session",
     });
+  }
+
+  if (session.fresh) {
+    const sessionCookie = lucia.createSessionCookie(session.id);
+    res.setHeader("Set-Cookie", sessionCookie.serialize());
   }
 
   return next();

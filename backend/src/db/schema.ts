@@ -1,7 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
   AnyPgColumn,
-  bigint,
   boolean,
   date,
   integer,
@@ -12,45 +11,24 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
-  id: uuid("id").primaryKey().notNull(),
+  id: uuid("id").primaryKey().defaultRandom().notNull(),
   username: varchar("username").unique().notNull(),
   email: varchar("email").unique().notNull(),
+  password: varchar("password").notNull(),
 });
 
 export const session = pgTable("user_session", {
-  id: varchar("id", {
-    length: 128,
-  }).primaryKey(),
+  id: varchar("id").primaryKey(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, {
       onDelete: "cascade",
     }),
-  activeExpires: bigint("active_expires", {
-    mode: "number",
-  }).notNull(),
-  idleExpires: bigint("idle_expires", {
-    mode: "number",
+  expiresAt: timestamp("expires_at", {
+    withTimezone: true,
+    mode: "date",
   }).notNull(),
 });
-
-export const key = pgTable("user_key", {
-  id: varchar("id", {
-    length: 255,
-  }).primaryKey(),
-  userId: uuid("user_id")
-    .notNull()
-    .references(() => users.id, {
-      onDelete: "cascade",
-    }),
-  hashedPassword: varchar("hashed_password", {
-    length: 255,
-  }),
-});
-
-export const userKeyRelation = relations(users, ({ many }) => ({
-  maps: many(key),
-}));
 
 export const userSessionRelation = relations(users, ({ many }) => ({
   maps: many(session),
