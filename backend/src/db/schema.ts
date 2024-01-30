@@ -45,10 +45,18 @@ export const maps = pgTable("maps", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("user_id").references(() => users.id, {
     onDelete: "cascade",
-  }),
-  peer_id: uuid("peer_id").references(() => Peers.id),
-  map_name: varchar("map_name"),
-  map_description: varchar("map_description"),
+  }).notNull(),
+  peerId: uuid("peer_id").references(() => Peers.id),
+  mapName: varchar("map_name").notNull(),
+  mapDescription: varchar("map_description"),
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const mapRelations = relations(maps, ({ one, many }) => ({
@@ -57,7 +65,7 @@ export const mapRelations = relations(maps, ({ one, many }) => ({
     references: [users.id],
   }),
   peers: one(Peers, {
-    fields: [maps.peer_id],
+    fields: [maps.peerId],
     references: [Peers.id],
   }),
   stacks: many(stacks),
@@ -73,11 +81,18 @@ export const stacks = pgTable("stacks", {
   stack_description: varchar("stack_description"),
   number_of_learned_cards: integer("number_of_learned_cards"),
   number_of_unlearned_cards: integer("number_of_unlearned_cards"),
-  created_at: timestamp("created_at").defaultNow(),
   positioning: varchar("positioning"),
   parent_stack_id: uuid("parent_stack_id").references(
     (): AnyPgColumn => stacks.id,
   ),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const stacksRelations = relations(stacks, ({ one, many }) => ({
@@ -99,6 +114,14 @@ export const flashcards = pgTable("flashcards", {
   }),
   frontside_text: varchar("frontside_text"),
   backside_text: varchar("backside_text"),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const flashcardsRelations = relations(flashcards, ({ one, many }) => ({
@@ -124,6 +147,14 @@ export const session_data = pgTable("session_data", {
   times_learned: integer("times_learned"),
   last_learned: date("last_learned"),
   learning_status: integer("learning_status").default(0),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const session_data_relations = relations(session_data, ({ one }) => ({
@@ -149,6 +180,14 @@ export const Media = pgTable("media", {
   frontside_media_positioning: varchar("frontside_media_positioning"),
   backside_media_link: varchar("backside_media_link"),
   backside_media_positioning: varchar("backside_media_positioning"),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const media_relations = relations(Media, ({ one }) => ({
@@ -164,6 +203,14 @@ export type NewMedia = typeof Media.$inferInsert;
 export const Peers = pgTable("peers", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name").notNull(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const peers_relations = relations(Peers, ({ one, many }) => ({
@@ -201,6 +248,14 @@ export const invites = pgTable("invites", {
   sender_id: uuid("sender_id").references(() => users.id),
   peer_id: uuid("peer_id").references(() => Peers.id),
   text: varchar("text"),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull().defaultNow()
 });
 
 export const invites_relations = relations(invites, ({ one }) => ({
