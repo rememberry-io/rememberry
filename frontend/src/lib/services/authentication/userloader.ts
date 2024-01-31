@@ -4,7 +4,9 @@ import { User } from "./userStore";
 type FetchedUser = {
   status: "error" | "successful";
   error?: string;
-  user?: User;
+  user?: {
+    json: User;
+  };
 };
 
 export async function userLoader(session?: string) {
@@ -16,7 +18,7 @@ export async function userLoader(session?: string) {
 
   if (response.status === 400 || !user.user) return null;
 
-  return user.user;
+  return user.user.json;
 }
 
 const getHost = () => {
