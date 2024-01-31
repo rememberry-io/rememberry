@@ -7,8 +7,6 @@ import superjson from "superjson";
 export async function GET(req: NextRequest) {
   const session = req.nextUrl.searchParams.get("session");
 
-  console.log("halloo");
-
   if (!session) {
     return Response.json(
       { status: "error", message: "No Session" },
