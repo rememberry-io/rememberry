@@ -6,7 +6,7 @@ import { DatabaseError } from "pg";
 import { TRPCStatus } from "../auth/types";
 import dayjs from "dayjs"
 
-interface MapModel {
+export interface MapModel {
   createMap: (input: newMap) => Promise<TRPCStatus<Map>>;
   getMapsByUserId: (userId: string) => Promise<TRPCStatus<Map[]>>;
   updateMapById: (input: Map) => Promise<TRPCStatus<Map>>;
@@ -90,7 +90,7 @@ class MapModelDrizzle implements MapModel {
   }
 }
 
-const mapModelDrizzle = new MapModelDrizzle(db)
+export const mapModelDrizzle = new MapModelDrizzle(db)
 
 // Not sure what this does right now -> only seems to be relevant for peers which
 // has will not be considered right now 
