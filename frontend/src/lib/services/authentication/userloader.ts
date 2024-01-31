@@ -12,9 +12,14 @@ type FetchedUser = {
 export async function userLoader(session?: string) {
   if (!session) return null;
   const host = getHost();
+  console.log(host);
   const url = host + "/api/auth/user?session=" + session;
   const response = await fetch(url);
+
   const user: FetchedUser = await response.json();
+
+  console.log(JSON.stringify(response));
+  console.log(user);
 
   if (response.status === 400 || !user.user) return null;
 
