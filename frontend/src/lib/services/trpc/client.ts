@@ -16,7 +16,7 @@ export const getBackendUrl = () => {
   }
 };
 
-export const rqTrpc = createTRPCReact<AppRouter>();
+export const rqTrpc = createTRPCReact<AppRouter>({});
 
 export type RouterInput = inferRouterInputs<AppRouter>;
 export type RouterOutput = inferRouterOutputs<AppRouter>;

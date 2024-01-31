@@ -80,8 +80,6 @@ class LuciaAuthentication implements AuthenticationController {
 
       const sessionCookie = this.luciaAuth.createSessionCookie(session.id);
 
-      console.log(sessionCookie);
-
       const user: User = {
         id: userIn.id,
         email: userIn.email,

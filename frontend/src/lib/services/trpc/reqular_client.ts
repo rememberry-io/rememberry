@@ -1,6 +1,7 @@
 import { env } from "@/lib/env";
 import { AppRouter } from "@backend/routers/_app";
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
+import superjson from "superjson";
 
 export const getBackendUrll = () => {
   if (env.NEXT_PUBLIC_IS_DEV) {
@@ -16,6 +17,7 @@ export const getBackendUrll = () => {
 };
 
 export const regTrpc = createTRPCProxyClient<AppRouter>({
+  transformer: superjson,
   links: [
     httpBatchLink({
       url: getBackendUrll(),
