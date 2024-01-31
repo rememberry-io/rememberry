@@ -49,8 +49,8 @@ export const maps = pgTable("maps", {
     })
     .notNull(),
   peerId: uuid("peer_id").references(() => Peers.id),
-  mapName: varchar("map_name").notNull(),
-  mapDescription: varchar("map_description").default("").notNull(),
+  name: varchar("name").notNull(),
+  description: varchar("description").default("").notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",

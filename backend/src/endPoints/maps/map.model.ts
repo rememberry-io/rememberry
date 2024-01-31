@@ -52,8 +52,8 @@ class MapModelDrizzle implements MapModel {
       const updatedMap = await this.db
         .update(maps)
         .set({
-          mapName: input.mapName,
-          mapDescription: input.mapDescription,
+          name: input.name,
+          description: input.description,
           peerId: input.peerId,
           updatedAt: dayjs().toDate(),
         })
@@ -114,8 +114,8 @@ export async function createSharedMap(map: newMap): Promise<newMap> {
     .values({
       userId: map.userId,
       peerId: map.peerId,
-      mapName: map.mapName,
-      mapDescription: map.mapDescription,
+      name: map.name,
+      description: map.description,
     })
     .returning();
 

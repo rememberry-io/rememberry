@@ -5,15 +5,15 @@ import { mapControllerDrizzle } from "./map.controller";
 
 const createMapInput = z.object({
   userId: z.string(),
-  mapName: z.string(),
-  mapDescription: z.string(),
+  name: z.string(),
+  description: z.string(),
 });
 
 const updateMapInput = z.object({
   id: z.string(),
   userId: z.string(),
-  mapName: z.string(),
-  mapDescription: z.string(),
+  name: z.string(),
+  description: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
   peerId: z.string().nullable(),
