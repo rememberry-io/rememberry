@@ -1,10 +1,10 @@
+import dayjs from "dayjs";
 import { eq, sql } from "drizzle-orm";
+import { DatabaseError } from "pg";
 import { db, dbConnection } from "../../db/db";
 import { Map, maps, newMap } from "../../db/schema";
 import { getTRPCError, hasOnlyOneEntry } from "../../utils";
-import { DatabaseError } from "pg";
 import { TRPCStatus } from "../auth/types";
-import dayjs from "dayjs"
 
 export interface MapModel {
   createMap: (input: newMap) => Promise<TRPCStatus<Map>>;
@@ -16,22 +16,19 @@ export interface MapModel {
 class MapModelDrizzle implements MapModel {
   db: dbConnection;
   constructor(db: dbConnection) {
-    this.db = db
+    this.db = db;
   }
   async createMap(input: newMap) {
     try {
-      const map = await this.db
-        .insert(maps)
-        .values(input)
-        .returning();
+      const map = await this.db.insert(maps).values(input).returning();
 
-      if (!hasOnlyOneEntry(map)) return getTRPCError()
+      if (!hasOnlyOneEntry(map)) return getTRPCError();
 
       return [null, map[0]] as const;
     } catch (e) {
       if (e instanceof DatabaseError)
         return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e))
+      return getTRPCError(JSON.stringify(e));
     }
   }
   async getMapsByUserId(userId: string) {
@@ -47,7 +44,7 @@ class MapModelDrizzle implements MapModel {
     } catch (e) {
       if (e instanceof DatabaseError)
         return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e))
+      return getTRPCError(JSON.stringify(e));
     }
   }
   async updateMapById(input: Map) {
@@ -63,13 +60,13 @@ class MapModelDrizzle implements MapModel {
         .where(eq(maps.id, input.id))
         .returning();
 
-      if (!hasOnlyOneEntry(updatedMap)) return getTRPCError()
+      if (!hasOnlyOneEntry(updatedMap)) return getTRPCError();
 
       return [null, updatedMap[0]] as const;
     } catch (e) {
       if (e instanceof DatabaseError)
         return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e))
+      return getTRPCError(JSON.stringify(e));
     }
   }
   async deleteMapById(mapId: string) {
@@ -79,21 +76,21 @@ class MapModelDrizzle implements MapModel {
         .where(eq(maps.id, mapId))
         .returning();
 
-      if (!hasOnlyOneEntry(deletedMap)) return getTRPCError()
+      if (!hasOnlyOneEntry(deletedMap)) return getTRPCError();
 
       return [null, true] as const;
     } catch (e) {
       if (e instanceof DatabaseError)
         return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e))
+      return getTRPCError(JSON.stringify(e));
     }
   }
 }
 
-export const mapModelDrizzle = new MapModelDrizzle(db)
+export const mapModelDrizzle = new MapModelDrizzle(db);
 
 // Not sure what this does right now -> only seems to be relevant for peers which
-// has will not be considered right now 
+// has will not be considered right now
 export async function getUsersMaps(userId: string) {
   const res = await db.execute(sql`
   SELECT m.id, m.mapName, m.mapDescription
@@ -109,11 +106,9 @@ export async function getUsersMaps(userId: string) {
   return res.rows;
 }
 
-//also only relevant as soon as we support peers in the frontend 
+//also only relevant as soon as we support peers in the frontend
 //until then does not have to be considered
-export async function createSharedMap(
-  map: newMap,
-): Promise<newMap> {
+export async function createSharedMap(map: newMap): Promise<newMap> {
   const res = await db
     .insert(maps)
     .values({

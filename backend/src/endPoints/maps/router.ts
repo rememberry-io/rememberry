@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
-import * as mapController from "./mapController";
+import { mapControllerDrizzle } from "./map.controller";
 
 const createMapInput = z.object({
   userId: z.string(),
@@ -10,43 +10,46 @@ const createMapInput = z.object({
 });
 
 const updateMapInput = z.object({
+  id: z.string(),
+  userId: z.string(),
   mapName: z.string(),
   mapDescription: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  peerId: z.string().nullable(),
 });
 
 export const mapRouter = router({
   createMap: privateProcedure.input(createMapInput).mutation(async (opts) => {
-    const [errorCheck, res] = await mapController.controlMapCreation(
-      opts.input,
-    );
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
+    const [err, map] = await mapControllerDrizzle.createMap(opts.input);
+    if (err) throw err;
+    return map;
   }),
 
   getUsersMaps: privateProcedure.input(z.string()).query(async (opts) => {
-    const res = await mapController.controlGetUsersMaps(opts.input);
-    return res;
+    const [err, maps] = await mapControllerDrizzle.getMapsByUserId(opts.input);
+
+    if (err) throw err;
+
+    return maps;
   }),
 
   updateMap: privateProcedure.input(updateMapInput).mutation(async (opts) => {
-    const [errorCheck, res] = await mapController.controlUpdateMap(opts.input);
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
+    const [err, map] = await mapControllerDrizzle.updateMapById(opts.input);
+    if (err) throw err;
+
+    return map;
   }),
 
   deleteMapWithAllStacks: privateProcedure
     .input(z.string())
     .mutation(async (opts) => {
-      const [errorCheck, res] =
-        await mapController.controlDeleteMapWithAllStacks(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, success] = await mapControllerDrizzle.deleteMapById(
+        opts.input,
+      );
+      if (err) throw err;
+
+      return success;
     }),
 });
 

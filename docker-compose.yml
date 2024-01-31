@@ -15,6 +15,7 @@ services:
       REDIS_PORT: ${REDIS_PORT}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       REDIS_HOST: ${REDIS_HOST}
+      WEB_PAGE_DOMAIN: ${WEB_PAGE_DOMAIN}
     networks:
       - rem-net
     ports:

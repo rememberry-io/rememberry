@@ -43,20 +43,26 @@ export type NewUser = typeof users.$inferInsert;
 
 export const maps = pgTable("maps", {
   id: uuid("id").defaultRandom().primaryKey(),
-  userId: uuid("user_id").references(() => users.id, {
-    onDelete: "cascade",
-  }).notNull(),
+  userId: uuid("user_id")
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
   peerId: uuid("peer_id").references(() => Peers.id),
   mapName: varchar("map_name").notNull(),
   mapDescription: varchar("map_description").default("").notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const mapRelations = relations(maps, ({ one, many }) => ({
@@ -88,11 +94,15 @@ export const stacks = pgTable("stacks", {
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updated_at: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const stacksRelations = relations(stacks, ({ one, many }) => ({
@@ -117,11 +127,15 @@ export const flashcards = pgTable("flashcards", {
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updated_at: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const flashcardsRelations = relations(flashcards, ({ one, many }) => ({
@@ -150,11 +164,15 @@ export const session_data = pgTable("session_data", {
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updated_at: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const session_data_relations = relations(session_data, ({ one }) => ({
@@ -183,11 +201,15 @@ export const Media = pgTable("media", {
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updated_at: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const media_relations = relations(Media, ({ one }) => ({
@@ -206,11 +228,15 @@ export const Peers = pgTable("peers", {
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updated_at: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const peers_relations = relations(Peers, ({ one, many }) => ({
@@ -251,11 +277,15 @@ export const invites = pgTable("invites", {
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
   updated_at: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
-  }).notNull().defaultNow()
+  })
+    .notNull()
+    .defaultNow(),
 });
 
 export const invites_relations = relations(invites, ({ one }) => ({
