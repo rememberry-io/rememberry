@@ -18,6 +18,7 @@
     "@types/ioredis": "^5.0.0",
     "@types/pg": "^8.10.9",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.10",
     "dotenv": "^16.3.1",
     "drizzle-orm": "^0.28.6",
     "drizzle-zod": "^0.5.1",

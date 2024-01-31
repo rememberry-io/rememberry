@@ -4,14 +4,14 @@ import { router } from "../../trpc";
 import * as mapController from "./mapController";
 
 const createMapInput = z.object({
-  user_id: z.string(),
-  map_name: z.string(),
-  map_description: z.string(),
+  userId: z.string(),
+  mapName: z.string(),
+  mapDescription: z.string(),
 });
 
 const updateMapInput = z.object({
-  map_name: z.string(),
-  map_description: z.string(),
+  mapName: z.string(),
+  mapDescription: z.string(),
 });
 
 export const mapRouter = router({

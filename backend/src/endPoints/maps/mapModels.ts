@@ -1,77 +1,99 @@
-import { TRPCError } from "@trpc/server";
 import { eq, sql } from "drizzle-orm";
-import { db } from "../../db/db";
-import * as schema from "../../db/schema";
+import { db, dbConnection } from "../../db/db";
+import { Map, maps, newMap } from "../../db/schema";
+import { getTRPCError, hasOnlyOneEntry } from "../../utils";
+import { DatabaseError } from "pg";
+import { TRPCStatus } from "../auth/types";
+import dayjs from "dayjs"
 
-const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+interface MapModel {
+  createMap: (input: newMap) => Promise<TRPCStatus<Map>>;
+  getMapsByUserId: (userId: string) => Promise<TRPCStatus<Map[]>>;
+  updateMapById: (input: Map) => Promise<TRPCStatus<Map>>;
+  deleteMapById: (mapId: string) => Promise<TRPCStatus<boolean>>;
+}
 
-export async function createMap(userInput: schema.newMap) {
-  const res = await db
-    .insert(schema.maps)
-    .values({
-      userId: userInput.userId,
-      mapName: userInput.mapName,
-      mapDescription: userInput.mapDescription,
-    })
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+class MapModelDrizzle implements MapModel {
+  db: dbConnection;
+  constructor(db: dbConnection) {
+    this.db = db
   }
+  async createMap(input: newMap) {
+    try {
+      const map = await this.db
+        .insert(maps)
+        .values(input)
+        .returning();
 
-  return [null, res[0]] as const;
-}
+      if (!hasOnlyOneEntry(map)) return getTRPCError()
 
-export async function createSharedMap(
-  map: schema.newMap,
-): Promise<schema.newMap> {
-  const res = await db
-    .insert(schema.maps)
-    .values({
-      userId: map.userId,
-      peerId: map.peerId,
-      mapName: map.mapName,
-      mapDescription: map.mapDescription,
-    })
-    .returning();
-
-  return res[0];
-}
-
-export async function updateMap(userInput: schema.newMap) {
-  const res = await db
-    .update(schema.maps)
-    .set({
-      mapName: userInput.mapName,
-      mapDescription: userInput.mapDescription,
-    })
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+      return [null, map[0]] as const;
+    } catch (e) {
+      if (e instanceof DatabaseError)
+        return getTRPCError("Error with the DB: " + JSON.stringify(e));
+      return getTRPCError(JSON.stringify(e))
+    }
   }
-  return [null, res] as const;
-}
+  async getMapsByUserId(userId: string) {
+    try {
+      const prepared = this.db
+        .select()
+        .from(maps)
+        .where(eq(maps.userId, sql.placeholder("id")))
+        .prepare("maps");
+      const userMaps = await prepared.execute({ id: userId });
 
-export async function deleteMapWithAllStacks(mapId: string) {
-  const res = await db
-    .delete(schema.maps)
-    .where(eq(schema.maps.id, mapId))
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+      return [null, userMaps] as const;
+    } catch (e) {
+      if (e instanceof DatabaseError)
+        return getTRPCError("Error with the DB: " + JSON.stringify(e));
+      return getTRPCError(JSON.stringify(e))
+    }
   }
-  return [null, res] as const;
+  async updateMapById(input: Map) {
+    try {
+      const updatedMap = await this.db
+        .update(maps)
+        .set({
+          mapName: input.mapName,
+          mapDescription: input.mapDescription,
+          peerId: input.peerId,
+          updatedAt: dayjs().toDate(),
+        })
+        .where(eq(maps.id, input.id))
+        .returning();
+
+      if (!hasOnlyOneEntry(updatedMap)) return getTRPCError()
+
+      return [null, updatedMap[0]] as const;
+    } catch (e) {
+      if (e instanceof DatabaseError)
+        return getTRPCError("Error with the DB: " + JSON.stringify(e));
+      return getTRPCError(JSON.stringify(e))
+    }
+  }
+  async deleteMapById(mapId: string) {
+    try {
+      const deletedMap = await this.db
+        .delete(maps)
+        .where(eq(maps.id, mapId))
+        .returning();
+
+      if (!hasOnlyOneEntry(deletedMap)) return getTRPCError()
+
+      return [null, true] as const;
+    } catch (e) {
+      if (e instanceof DatabaseError)
+        return getTRPCError("Error with the DB: " + JSON.stringify(e));
+      return getTRPCError(JSON.stringify(e))
+    }
+  }
 }
 
-export async function getMapsByUserId(userId: string): Promise<schema.Map[]> {
-  const prepared = db
-    .select()
-    .from(schema.maps)
-    .where(eq(schema.maps.userId, sql.placeholder("id")))
-    .prepare("maps");
-  const res = await prepared.execute({ id: userId });
-  return res;
-}
+const mapModelDrizzle = new MapModelDrizzle(db)
 
+// Not sure what this does right now -> only seems to be relevant for peers which
+// has will not be considered right now 
 export async function getUsersMaps(userId: string) {
   const res = await db.execute(sql`
   SELECT m.id, m.mapName, m.mapDescription
@@ -85,4 +107,22 @@ export async function getUsersMaps(userId: string) {
   WHERE up.userId = 'your_user_id';
 `);
   return res.rows;
+}
+
+//also only relevant as soon as we support peers in the frontend 
+//until then does not have to be considered
+export async function createSharedMap(
+  map: newMap,
+): Promise<newMap> {
+  const res = await db
+    .insert(maps)
+    .values({
+      userId: map.userId,
+      peerId: map.peerId,
+      mapName: map.mapName,
+      mapDescription: map.mapDescription,
+    })
+    .returning();
+
+  return res[0];
 }
