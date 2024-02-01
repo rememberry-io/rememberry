@@ -145,7 +145,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     >
       {cardType === "stack" && (
         <>
-          
           <div className={`p-4 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>

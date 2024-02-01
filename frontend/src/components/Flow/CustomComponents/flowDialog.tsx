@@ -1,8 +1,7 @@
-
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
-import { Button } from "@/components/ui/button";
 
 interface FlashcardDialogProps {
   nodeId: string;
@@ -55,7 +54,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   return (
     <div>
-      <Dialog open={isDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={handleSubmit}>
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>
@@ -85,11 +84,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                 onChange={handleChangeBack}
               />
             </div>
-            <Button
-              className="  mt-4"
-              variant="default"
-              onClick={handleSubmit}
-            >
+            <Button className="  mt-4" variant="default" onClick={handleSubmit}>
               Save
             </Button>
           </div>
