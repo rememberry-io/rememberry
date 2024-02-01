@@ -145,18 +145,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     >
       {cardType === "stack" && (
         <>
-          <div className="flex relative flex-row align-middle ml-2">
-            <FlashcardDialog
-              nodeId={id}
-              onSubmit={handleDialogSubmit}
-              flashcardParentName={parentName}
-              flashcardFrontText={frontText}
-              flashcardBackText={backText}
-              isDialogOpen={isDialogOpen}
-              cardType={cardType}
-              closeDialog={() => setIsDialogOpen(false)}
-            />
-          </div>
+          
           <div className={`p-4 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>
