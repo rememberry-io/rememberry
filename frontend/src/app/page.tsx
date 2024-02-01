@@ -77,7 +77,7 @@ function MapMenu() {
         </div>
         <div
           id="footer"
-          className="flex flex-row items-center justify-center space-x-4 fixed bottom-0 right-0 w-full h-16 bg-white"
+          className="flex flex-row items-center justify-center space-x-4 fixed bottom-0 right-0 w-full h-16 light:bg-white"
         >
           <Link href={"/map"}>
             <Button className="flex items-center ">
