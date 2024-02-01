@@ -65,7 +65,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               </>
 
               <textarea
-                className="bg-slate-50 dark:bg-dark-600 dark:text-white rounded-md h-fit p-2 outline-none resize-none w-full break-words "
+                className="bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
                 defaultValue={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
                 ref={frontTextAreaRef}

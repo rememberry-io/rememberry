@@ -1,18 +1,21 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
-import { Card } from "@/components/ui/card";
-import 'reactflow/dist/style.css';
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Box, Flex } from "@radix-ui/themes";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import "reactflow/dist/style.css";
 import { useStore } from "../components/Flow/stores/mapStore";
+import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 
 function MapMenu() {
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
   const { addMap, categories, removeMap } = useStore();
 
   const sortedMaps = categories.sort((a, b) => {
@@ -20,12 +23,13 @@ function MapMenu() {
   });
   const mapCards = sortedMaps.map((map) => (
     <>
-      <Card style={{ maxWidth: 240 }} key={map.id}>
+      <Card className="dark:bg-dark-600 max-w-xs" key={map.id}>
         <Flex gap="3" align="center">
           <Box>
             <Link href={"/map"}>
               <button>
-                <div className="p-3 rounded-lg m-10">{map.name}</div>
+                <div className="p-3  rounded-lg m-10">{map.name}</div>
+                <div className="p-3  rounded-lg m-10">{map.description}</div>
               </button>
             </Link>
           </Box>
@@ -34,27 +38,43 @@ function MapMenu() {
     </>
   ));
 
-  const [openDialog, setOpenDialog] = useState(false);
   const openNamingDialog = () => {
     setOpenDialog(true);
+  };
+
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  useAutosizeTextArea(descriptionRef.current, description);
+
+  const handleDescriptionChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const valFront = evt.target?.value;
+
+    setDescription(valFront);
   };
 
   return (
     <div className="relative">
       <FlowBackground />
       <div className="z-10 absolute top-0 left-0 w-full h-screen">
-        <Dialog open={openDialog}>
+        <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
           <DialogContent onAbort={() => setOpenDialog(false)}>
             <div>
               <div>
-                <h1 className="text-2xl font-medium max-w-xl text-blackberry">
+                <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?
                 </h1>
                 <input
-                  className=" rounded-md h-fit mt-4 my-2 bg-ashberry outline-none resize-none w-full break-words"
+                  className="mt-5 bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
                   placeholder="Map Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                />
+                <textarea
+                  className="mt-5 bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
+                  placeholder="Description"
+                  value={description}
+                  ref={descriptionRef}
+                  rows={1}
+                  onChange={handleDescriptionChange}
                 />
               </div>
 
