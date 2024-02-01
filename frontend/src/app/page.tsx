@@ -2,7 +2,7 @@
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import { Card } from "@/components/ui/card";
-
+import 'reactflow/dist/style.css';
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Box, Flex } from "@radix-ui/themes";

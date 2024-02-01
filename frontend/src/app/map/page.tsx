@@ -26,6 +26,7 @@ import "reactflow/dist/style.css";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
+import FlowBackground from "@/components/Flow/Background/flowBackground";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -144,7 +145,7 @@ function Map() {
         connectionLineType={ConnectionLineType.Straight}
         fitView
       >
-        <Background />
+        <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">

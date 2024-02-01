@@ -9,12 +9,8 @@ const RememberryBackground: React.FC = () => {
       className="flex flex-col justify-items-center"
     >
       <ReactFlow zoomOnPinch={false}>
-        <Background />
-        <Panel
-          position="bottom-center"
-          className="space-x-4"
-          children={undefined}
-        ></Panel>
+        <Background className="  bg-white dark:bg-dark-900"  />
+      
       </ReactFlow>
     </div>
   );
