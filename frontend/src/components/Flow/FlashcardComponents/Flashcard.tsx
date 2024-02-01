@@ -161,7 +161,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             <div className="inputWrapper">
               <div>
                 <FlowInput
-                  className={` h-fit   resize-none outline-none break-words flex items-center justify-between text-white  bg-primary  ${isFront ? " font-semibold " : " font-light "} `}
+                  className={` h-fit   resize-none outline-none break-words flex items-center justify-between text-white  bg-primary  `}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}

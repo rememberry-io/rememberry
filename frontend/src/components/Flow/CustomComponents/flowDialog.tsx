@@ -86,7 +86,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               />
             </div>
             <Button
-              className="    mt-4"
+              className="  mt-4"
               variant="default"
               onClick={handleSubmit}
             >
