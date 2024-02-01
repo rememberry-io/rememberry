@@ -75,17 +75,16 @@ function MapMenu() {
         <div id="body" className="flex content-start p-20">
           {mapCards}
         </div>
-        <div
-          id="footer"
-          className="flex flex-row items-center justify-center space-x-4 fixed bottom-0 right-0 w-full h-16 light:bg-white"
-        >
-          <Link href={"/map"}>
-            <Button className="flex items-center ">
-              <span>Go to Map</span>
-              <ArrowRight className="ml-2" />
-            </Button>
-          </Link>
-          <Button onClick={openNamingDialog}>Add Map</Button>
+        <div className="fixed inset-x-0 bottom-4 px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center space-x-4">
+            <Link href={"/map"}>
+              <Button className="flex items-center ">
+                <span>Go to Map</span>
+                <ArrowRight className="ml-2" />
+              </Button>
+            </Link>
+            <Button onClick={openNamingDialog}>Add Map</Button>
+          </div>
         </div>
       </div>
     </div>
