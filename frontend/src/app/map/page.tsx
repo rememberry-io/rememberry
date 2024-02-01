@@ -15,7 +15,7 @@ import ReactFlow, {
 import { shallow } from "zustand/shallow";
 
 // we have to import the React Flow styles for it to work
-import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
+import Flashcard from "@/components/Flow/FlashcardComponents/Card";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/stores/nodeStore";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import Stack from "@/components/Flow/StackComponents/Stack";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -38,7 +39,7 @@ const selector = (state: RFState) => ({
 
 const nodeTypes = {
   flashcard: Flashcard,
-  stack: Flashcard,
+  stack: Stack,
 };
 
 const edgeTypes = {

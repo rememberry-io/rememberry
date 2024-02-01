@@ -247,7 +247,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                 flashcardBackText={backText}
                 isDialogOpen={isDialogOpen}
                 closeDialog={() => setIsDialogOpen(false)}
-
+                
               />
             </div>
           </div>
