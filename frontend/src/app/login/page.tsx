@@ -27,13 +27,13 @@ export default function Login() {
           <Tabs.Root defaultValue="login" className="w-[400px] h-[480px] ">
             <Tabs.List className="dark:bg-dark-800 h-10 rounded-md bg-muted p-1 text-muted-foreground grid w-fit grid-cols-2">
               <Tabs.Trigger
-                className="  rounded-sm px-0.75 py-1.5 text-sm font-medium transition-all light:data-[state=active]:bg-background dark:data-[state=active]:bg-dark-500 light:data-[state=active]:text-foreground  dark:data-[state=active]:text-white dark:data-[state=inactive]:text-white/50 data-[state=active]:shadow-sm"
+                className="  rounded-sm px-0.75 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-dark-500 light:data-[state=active]:text-foreground  dark:data-[state=active]:text-white dark:data-[state=inactive]:text-white/50 data-[state=active]:shadow-sm"
                 value="login"
               >
                 Login
               </Tabs.Trigger>
               <Tabs.Trigger
-                className=" rounded-sm px-3 py-1.5 text-sm font-medium transition-all light:data-[state=active]:bg-background dark:data-[state=active]:bg-dark-500 light:data-[state=active]:text-foreground dark:data-[state=active]:text-white dark:data-[state=inactive]:text-white/50 data-[state=active]:shadow-sm"
+                className=" rounded-sm px-3 py-1.5 text-sm font-medium transition-all data-[state=active]:bg-background dark:data-[state=active]:bg-dark-500 light:data-[state=active]:text-foreground dark:data-[state=active]:text-white dark:data-[state=inactive]:text-white/50 data-[state=active]:shadow-sm"
                 value="register"
               >
                 Register
@@ -70,8 +70,9 @@ export default function Login() {
                           <p className="text-sm text-error">{errors.email}</p>
                         )}
 
-                        <div className="flex flex-col gap-1.5 ">
+                        <div className="flex flex-col gap-1.5">
                           <FormElement
+                          
                             id="email"
                             type="email"
                             placeholder="Your Email"
