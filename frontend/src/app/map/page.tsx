@@ -28,6 +28,7 @@ import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import Stack from "@/components/Flow/StackComponents/Stack";
+import Card from "@/components/Flow/FlashcardComponents/Card";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -38,8 +39,8 @@ const selector = (state: RFState) => ({
 });
 
 const nodeTypes = {
-  flashcard: Flashcard,
-  stack: Stack,
+  flashcard: Card,
+  stack: Card,
 };
 
 const edgeTypes = {
