@@ -67,6 +67,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   function onBlur() {
     setTimeout(setIsFocused, 0, false);
   }
+  
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
   const { updateNode } = useStore(
