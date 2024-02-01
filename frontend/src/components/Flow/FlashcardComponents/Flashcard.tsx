@@ -4,11 +4,12 @@ import { Maximize2, RotateCcw } from "lucide-react";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../stores/nodeStore";
-import { FlashcardDialog } from "./FlashcardDialog";
+
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
-import { FlowInput } from "@/components/customUI/flowInput";
 import { shallow } from "zustand/shallow";
+import { FlashcardDialog } from "../CustomComponents/flowDialog";
+import { FlowInput } from "../CustomComponents/flowInput";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
@@ -160,7 +161,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             <div className="inputWrapper">
               <div>
                 <FlowInput
-                  className={`${isFront ? "bg-primary font-semibold text-white" : "outline-none bg-primary font-semibold text-white"} `}
+                  className={` h-fit   resize-none outline-none break-words flex items-center justify-between text-white  bg-primary  ${isFront ? " font-semibold " : " font-light "} `}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
@@ -177,7 +178,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             <div className="inputWrapper">
               <div>
                 <FlowInput
-                  className={` ${isFront ? "dark:bg-dark-600 outline-none" : "outline-none dark:bg-dark-600"} `}
+                  className={`   dark:bg-dark-600  h-fit  bg-white  resize-none outline-none break-words flex items-center justify-between  `}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}

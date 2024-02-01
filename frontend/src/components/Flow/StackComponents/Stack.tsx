@@ -25,8 +25,6 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
     setFrontText(val);
   };
 
-  // todo: update frontText of all the child nodes
-
   return (
     <div>
       <div className="flex flex-row items-center">

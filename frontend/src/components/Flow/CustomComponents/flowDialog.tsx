@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button";
+
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
+import { Button } from "@/components/ui/button";
 
 interface FlashcardDialogProps {
   nodeId: string;
@@ -65,7 +66,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               </>
 
               <textarea
-                className=" rounded-md h-fit p-2 outline-none resize-none w-full break-words"
+                className=" rounded-md h-fit p-2 outline-none resize-none w-full break-words "
                 defaultValue={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
                 ref={frontTextAreaRef}
@@ -76,7 +77,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
             <hr className="m-2" />
             <div className="leading-6 text-justify">
               <textarea
-                className="rounded-md h-fit p-2 outline-none resize-none w-full break-words focus:outline-primary"
+                className="rounded-md h-fit p-2 outline-none resize-none w-full break-words "
                 defaultValue={backText === "New Back Text" ? "" : backText}
                 placeholder="Back Text"
                 ref={backTextAreaRef}
@@ -85,7 +86,8 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
               />
             </div>
             <Button
-              className="focus:outline dark:bg-primary dark:text-white focus:outline-primary  mt-4"
+              className="    mt-4"
+              variant="default"
               onClick={handleSubmit}
             >
               Save
