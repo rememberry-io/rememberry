@@ -72,7 +72,6 @@ export default function Login() {
 
                         <div className="flex flex-col gap-1.5">
                           <FormElement
-                          
                             id="email"
                             type="email"
                             placeholder="Your Email"
