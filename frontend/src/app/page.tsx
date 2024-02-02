@@ -1,6 +1,7 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -8,12 +9,11 @@ import { useUserStore } from "@/lib/services/authentication/userStore";
 import useCreateMap from "@/lib/services/maps/useCreateMap";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import { Box, Flex } from "@radix-ui/themes";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import "reactflow/dist/style.css";
-import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
-import { useRouter } from "next/navigation";
-import { ArrowRight } from "lucide-react";
 
 function MapMenu() {
   const router = useRouter();
@@ -42,8 +42,9 @@ function MapMenu() {
     setOpenDialog(true);
   };
 
-
-  const handleDescriptionChange = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = (
+    evt: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const valFront = evt.target?.value;
 
     setDescription(valFront);
@@ -114,7 +115,9 @@ function MapMenu() {
                     <Link href={"/map/" + map.id}>
                       <button>
                         <div className="p-3  rounded-lg m-10">{map.name}</div>
-                        <div className="p-3  rounded-lg m-10">{map.description}</div>
+                        <div className="p-3  rounded-lg m-10">
+                          {map.description}
+                        </div>
                       </button>
                     </Link>
                   </Box>

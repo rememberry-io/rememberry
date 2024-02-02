@@ -1,6 +1,5 @@
 "use client";
 import ReactFlow, {
-  Background,
   ConnectionLineType,
   Controls,
   Node,
@@ -15,7 +14,6 @@ import ReactFlow, {
 import { shallow } from "zustand/shallow";
 
 // we have to import the React Flow styles for it to work
-import Flashcard from "@/components/Flow/FlashcardComponents/Card";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/stores/nodeStore";
 import { Button } from "@/components/ui/button";
@@ -23,12 +21,11 @@ import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
+import FlowBackground from "@/components/Flow/Background/flowBackground";
+import Card from "@/components/Flow/FlashcardComponents/Card";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
-import FlowBackground from "@/components/Flow/Background/flowBackground";
-import Stack from "@/components/Flow/StackComponents/Stack";
-import Card from "@/components/Flow/FlashcardComponents/Card";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
