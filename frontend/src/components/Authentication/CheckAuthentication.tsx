@@ -26,7 +26,7 @@ export default function FetchUser({ user, children }: FetchUserProps) {
       userStore.actions.setUser(user);
     }
     setIsLoading(false);
-  }, [user, router, userStore.actions]);
+  }, [user, router, userStore.actions, isLoading]);
 
   if (isLoading) return <Loading />;
 

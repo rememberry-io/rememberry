@@ -12,6 +12,7 @@ export async function userLoader(session?: string) {
   const host = getHost();
   const url = host + "/api/auth/user?session=" + session;
   const response = await fetch(url);
+
   const user: FetchedUser = await response.json();
 
   if (response.status === 400 || !user.user) return null;

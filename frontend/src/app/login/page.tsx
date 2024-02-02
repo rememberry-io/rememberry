@@ -55,7 +55,7 @@ export default function Login() {
                   if (error) {
                     setFieldError("email", error);
                   } else {
-                    router.push("/map");
+                    router.push("/");
                   }
                 }}
               >
@@ -116,7 +116,7 @@ export default function Login() {
                   if (error) {
                     setFieldError("email", error);
                   } else {
-                    router.push("/map");
+                    router.push("/");
                   }
                 }}
               >

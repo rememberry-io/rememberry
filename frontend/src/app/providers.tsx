@@ -4,6 +4,7 @@ import { httpBatchLink } from "@trpc/client";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes/dist/types";
 import { useState } from "react";
+import superjson from "superjson";
 import { getBackendUrl, rqTrpc } from "../lib/services/trpc/client";
 
 export default function Providers({ children, ...props }: ThemeProviderProps) {
@@ -19,6 +20,7 @@ export default function Providers({ children, ...props }: ThemeProviderProps) {
   );
   const [trpcClient] = useState(() =>
     rqTrpc.createClient({
+      transformer: superjson,
       links: [
         httpBatchLink({
           url: getBackendUrl(),
