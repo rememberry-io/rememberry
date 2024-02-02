@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { TRPC_ERROR_CODE_KEY } from "@trpc/server/rpc";
+import { DatabaseError } from "pg";
 
 /**
  * if message and error are undefined returns an Internal server error without a message
@@ -18,4 +19,10 @@ export const getTRPCError = (
 export const hasOnlyOneEntry = (content: any[]) => {
   if (content.length === 1) return true;
   return false;
+};
+
+export const getModelDefaultError = (error: unknown) => {
+  if (error instanceof DatabaseError)
+    return getTRPCError("Error with the DB: " + JSON.stringify(e));
+  return getTRPCError(JSON.stringify(error));
 };

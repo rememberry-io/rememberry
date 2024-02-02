@@ -1,82 +1,130 @@
-import { TRPCError } from "@trpc/server";
 import { and, eq, isNull, sql } from "drizzle-orm";
-import { db } from "../../db/db";
-import * as schema from "../../db/schema";
-import * as types from "./types";
+import { db, dbConnection } from "../../db/db";
+import { NewStack, Stack, stacks } from "../../db/schema";
+import {
+  getModelDefaultError,
+  getTRPCError,
+  hasOnlyOneEntry,
+} from "../../utils";
+import { TRPCStatus } from "../auth/types";
 
-const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-
-export async function createStack(stack: schema.NewStack, date: Date) {
-  const res = await db
-    .insert(schema.stacks)
-    .values({
-      stack_name: stack.stack_name,
-      number_of_learned_cards: stack.number_of_learned_cards,
-      number_of_unlearned_cards: stack.number_of_unlearned_cards,
-      created_at: date,
-      mapId: stack.mapId,
-      stack_description: stack.stack_description,
-      positioning: stack.positioning,
-      parent_stack_id: stack.parent_stack_id,
-    })
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
-  }
-  return [null, res] as const;
+interface StackModel {
+  createStack: (input: NewStack) => Promise<TRPCStatus<Stack>>;
+  getStackById: (stackId: string) => Promise<TRPCStatus<Stack[]>>;
+  getStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack>>;
+  getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
+  getDirectChildrenStacksFromParentStack: (
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack[]>>;
+  getAllChildrenStacksFromParentStack: (
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack[]>>;
+  updateStackById: (stack: Stack) => Promise<TRPCStatus<Stack>>;
+  changeParentStack: (
+    parentId: string,
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack>>;
+  deleteParentStackRelation: (
+    parentId: string,
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack>>;
+  deleteMiddleOrderStackAndMoveChildrenUp: (
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack[]>>;
+  deleteStackAndChildren: (stackId: string) => Promise<TRPCStatus<Stack[]>>;
 }
 
-export async function getStacksFromMap(mapId: string) {
-  try {
-    const prep = db
-      .select()
-      .from(schema.stacks)
-      .where(eq(schema.stacks.mapId, sql.placeholder("id")))
-      .prepare("stacks");
-    const res = await prep.execute({ id: mapId });
-    return [null, res] as const;
-  } catch (error) {
-    return [error, null] as const;
+class StackModelDrizzle implements StackModel {
+  db: dbConnection;
+  constructor(db: dbConnection) {
+    this.db = db;
   }
-}
 
-export async function getHighestOrderParentStacks(mapId: string) {
-  try {
-    const prep = db
-      .select()
-      .from(schema.stacks)
-      .where(
-        and(
-          eq(schema.stacks.mapId, sql.placeholder("id")),
-          isNull(schema.stacks.parent_stack_id),
-        ),
-      )
-      .prepare("highestOrderStacks");
-    const res = await prep.execute({ id: mapId });
-    return [null, res] as const;
-  } catch (error) {
-    return [error, null] as const;
+  async createStack(input: NewStack) {
+    try {
+      const stack = await this.db.insert(stacks).values(input).returning();
+
+      if (!hasOnlyOneEntry(stack)) getTRPCError();
+      return [null, stack[0]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-}
 
-export async function getDirectChildsFromParent(parentStackId: string) {
-  try {
-    const prep = db
-      .select()
-      .from(schema.stacks)
-      .where(eq(schema.stacks.parent_stack_id, sql.placeholder("id")))
-      .prepare("childStacks");
-    const res = await prep.execute({ id: parentStackId });
-    return [null, res] as const;
-  } catch (error) {
-    return [error, null] as const;
+  async getStackById(stackId: string) {
+    try {
+      const prep = this.db
+        .select()
+        .from(stacks)
+        .where(eq(stacks.id, sql.placeholder("id")))
+        .prepare("stack");
+      const stack = await prep.execute({ id: stackId });
+
+      if (!hasOnlyOneEntry(stack)) return getTRPCError();
+
+      return [null, stack] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-}
 
-export async function getAllChildsFromParent(stackId: string) {
-  try {
-    const res = await db.execute(sql`
-    WITH RECURSIVE cte_substacks AS (
+  async getStacksByMapId(mapId: string) {
+    try {
+      const prep = this.db
+        .select()
+        .from(stacks)
+        .where(eq(stacks.mapId, sql.placeholder("id")))
+        .prepare("stacks");
+      const map = await prep.execute({ id: mapId });
+
+      if (!hasOnlyOneEntry(map)) getTRPCError();
+
+      return [null, map[0]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
+  }
+
+  /**
+   * Get all top Level Stacks (that have no other stack)
+   */
+  async getTopLevelStacksByMapId(mapId: string) {
+    try {
+      const prep = this.db
+        .select()
+        .from(stacks)
+        .where(
+          and(
+            eq(stacks.mapId, sql.placeholder("id")),
+            isNull(stacks.parentStackId),
+          ),
+        )
+        .prepare("highestOrderStacks");
+      const returnedStacks = await prep.execute({ id: mapId });
+      return [null, returnedStacks] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
+  }
+
+  async getDirectChildrenStacksFromParentStack(stackId: string) {
+    try {
+      const prep = this.db
+        .select()
+        .from(stacks)
+        .where(eq(stacks.parentStackId, sql.placeholder("id")))
+        .prepare("childStacks");
+      const returnedStacks = await prep.execute({ id: stackId });
+      return [null, returnedStacks] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
+  }
+
+  async getAllChildrenStacksFromParentStack(stackId: string) {
+    try {
+      const returnedStacks = await this.db.execute(sql`
+        WITH RECURSIVE cte_substacks AS (
         
         SELECT * FROM stacks WHERE stack_id=${stackId}
     
@@ -88,83 +136,89 @@ export async function getAllChildsFromParent(stackId: string) {
         )
         SELECT * 
         FROM cte_substacks
-    `);
-    return [null, res.rows] as const;
-  } catch (error) {
-    return [error, null] as const;
+      `);
+      return [null, returnedStacks.rows as Stack[]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-}
 
-export async function getStackById(stackId: string) {
-  try {
-    const prep = db
-      .select()
-      .from(schema.stacks)
-      .where(eq(schema.stacks.id, sql.placeholder("id")))
-      .prepare("stack");
-    const res = await prep.execute({ id: stackId });
-    return [null, res] as const;
-  } catch (error) {
-    return [error, null] as const;
+  async updateStackById(stack: Stack) {
+    try {
+      const updatedStack = await this.db
+        .update(stacks)
+        .set(stack)
+        .where(eq(stacks.id, stack.id))
+        .returning();
+      if (!hasOnlyOneEntry(updatedStack)) return getTRPCError();
+      return [null, updatedStack[0]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-}
 
-export async function changeParentStack(
-  parentAndChild: types.ParentAndChildId,
-) {
-  const res = await db
-    .update(schema.stacks)
-    .set({ parent_stack_id: parentAndChild.new_parent_id })
-    .where(eq(schema.stacks.id, parentAndChild.child_id))
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+  async changeParentStack(parentId: string, stackId: string) {
+    try {
+      const stack = await this.db
+        .update(stacks)
+        .set({ parentStackId: parentId })
+        .where(eq(stacks.id, stackId))
+        .returning();
+
+      if (!hasOnlyOneEntry(stack)) getTRPCError();
+
+      return [null, stack[0]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-  return [null, res[0]] as const;
-}
 
-export async function deleteParentStackRelation(childStackId: string) {
-  const res = await db
-    .update(schema.stacks)
-    .set({ parent_stack_id: null })
-    .where(eq(schema.stacks.id, childStackId))
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+  async deleteParentStackRelation(childStackId: string) {
+    try {
+      const stack = await this.db
+        .update(stacks)
+        .set({ parentStackId: null })
+        .where(eq(stacks.id, childStackId))
+        .returning();
+
+      if (!hasOnlyOneEntry(stack)) getTRPCError();
+      return [null, stack[0]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-  return [null, res[0]] as const;
-}
 
-export async function deleteMiddleOrderStackAndMoveChildsUp(stackId: string) {
-  const res = await db.transaction(async (tx) => {
-    const stackToDelete = await tx
-      .select({ parentId: schema.stacks.parent_stack_id })
-      .from(schema.stacks)
-      .where(eq(schema.stacks.id, stackId));
-    const newParentId = stackToDelete[0].parentId;
+  async deleteMiddleOrderStackAndMoveChildrenUp(stackId: string) {
+    try {
+      const returnedStacks = await this.db.transaction(async (tx) => {
+        const stackToDelete = await tx
+          .select({ parentId: stacks.parentStackId })
+          .from(stacks)
+          .where(eq(stacks.id, stackId));
+        const newParentId = stackToDelete[0].parentId;
 
-    const updatedStacks = await tx
-      .update(schema.stacks)
-      .set({
-        parent_stack_id: newParentId,
-      })
-      .where(eq(schema.stacks.parent_stack_id, stackId))
-      .returning();
+        const updatedStacks = await tx
+          .update(stacks)
+          .set({
+            parentStackId: newParentId,
+          })
+          .where(eq(stacks.parentStackId, stackId))
+          .returning();
 
-    const stackDeletion = await tx
-      .delete(schema.stacks)
-      .where(eq(schema.stacks.id, stackId));
-    return updatedStacks;
-  });
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+        //delete the middle stack
+        await tx.delete(stacks).where(eq(stacks.id, stackId));
+
+        return updatedStacks;
+      });
+      return [null, returnedStacks] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
-  return [null, res] as const;
-}
-export async function deleteStackAndChildren(stackId: string) {
-  try {
-    const res = await db.execute(sql`
-      WITH RECURSIVE stacks_to_delete AS(
+  async deleteStackAndChildren(stackId: string) {
+    try {
+      const res = await this.db.execute(sql`
+        WITH RECURSIVE stacks_to_delete AS(
         SELECT id FROM stacks
         WHERE id =${stackId}
   
@@ -173,12 +227,15 @@ export async function deleteStackAndChildren(stackId: string) {
         SELECT stacks.id
         FROM stacks
         JOIN stacks_to_delete ON stacks.parent_stack_id = stacks_to_delete.id
-      )
-      DELETE FROM stacks
-      WHERE id IN(SELECT id FROM stacks_to_delete)
-    `);
-    return [null, res.rows];
-  } catch (error) {
-    return [error, null];
+        )
+        DELETE FROM stacks
+        WHERE id IN(SELECT id FROM stacks_to_delete)
+      `);
+      return [null, res.rows as Stack[]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
   }
 }
+
+const stackModelDrizzle = new StackModelDrizzle(db)

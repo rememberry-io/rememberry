@@ -1,9 +1,12 @@
 import dayjs from "dayjs";
 import { eq, sql } from "drizzle-orm";
-import { DatabaseError } from "pg";
 import { db, dbConnection } from "../../db/db";
 import { Map, maps, newMap } from "../../db/schema";
-import { getTRPCError, hasOnlyOneEntry } from "../../utils";
+import {
+  getModelDefaultError,
+  getTRPCError,
+  hasOnlyOneEntry,
+} from "../../utils";
 import { TRPCStatus } from "../auth/types";
 
 export interface MapModel {
@@ -26,9 +29,7 @@ class MapModelDrizzle implements MapModel {
 
       return [null, map[0]] as const;
     } catch (e) {
-      if (e instanceof DatabaseError)
-        return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e));
+      return getModelDefaultError(e);
     }
   }
   async getMapsByUserId(userId: string) {
@@ -42,9 +43,7 @@ class MapModelDrizzle implements MapModel {
 
       return [null, userMaps] as const;
     } catch (e) {
-      if (e instanceof DatabaseError)
-        return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e));
+      return getModelDefaultError(e);
     }
   }
   async updateMapById(input: Map) {
@@ -64,9 +63,7 @@ class MapModelDrizzle implements MapModel {
 
       return [null, updatedMap[0]] as const;
     } catch (e) {
-      if (e instanceof DatabaseError)
-        return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e));
+      return getModelDefaultError(e);
     }
   }
   async deleteMapById(mapId: string) {
@@ -80,9 +77,7 @@ class MapModelDrizzle implements MapModel {
 
       return [null, true] as const;
     } catch (e) {
-      if (e instanceof DatabaseError)
-        return getTRPCError("Error with the DB: " + JSON.stringify(e));
-      return getTRPCError(JSON.stringify(e));
+      return getModelDefaultError(e);
     }
   }
 }

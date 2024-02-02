@@ -82,22 +82,24 @@ export type newMap = typeof maps.$inferInsert;
 
 export const stacks = pgTable("stacks", {
   id: uuid("id").defaultRandom().primaryKey(),
-  mapId: uuid("map_id").references(() => maps.id, { onDelete: "cascade" }),
-  stack_name: varchar("stack_name"),
-  stack_description: varchar("stack_description"),
-  number_of_learned_cards: integer("number_of_learned_cards"),
-  number_of_unlearned_cards: integer("number_of_unlearned_cards"),
-  positioning: varchar("positioning"),
-  parent_stack_id: uuid("parent_stack_id").references(
+  mapId: uuid("map_id")
+    .references(() => maps.id, { onDelete: "cascade" })
+    .notNull(),
+  name: varchar("stack_name").notNull(),
+  description: varchar("stack_description").notNull(),
+  numberOfLearnedCards: integer("number_of_learned_cards"),
+  numberOfUnlearnedCards: integer("number_of_unlearned_cards"),
+  positioning: varchar("positioning").notNull(),
+  parentStackId: uuid("parent_stack_id").references(
     (): AnyPgColumn => stacks.id,
   ),
-  created_at: timestamp("created_at", {
+  createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
   })
     .notNull()
     .defaultNow(),
-  updated_at: timestamp("updated_at", {
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
   })
