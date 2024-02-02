@@ -23,6 +23,6 @@ export const hasOnlyOneEntry = (content: any[]) => {
 
 export const getModelDefaultError = (error: unknown) => {
   if (error instanceof DatabaseError)
-    return getTRPCError("Error with the DB: " + JSON.stringify(e));
+    return getTRPCError("Error with the DB: " + JSON.stringify(error));
   return getTRPCError(JSON.stringify(error));
 };
