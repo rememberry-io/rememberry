@@ -8,10 +8,10 @@ import {
 } from "../../utils";
 import { TRPCStatus } from "../auth/types";
 
-interface StackModel {
+export interface StackModel {
   createStack: (input: NewStack) => Promise<TRPCStatus<Stack>>;
-  getStackById: (stackId: string) => Promise<TRPCStatus<Stack[]>>;
-  getStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack>>;
+  getStackById: (stackId: string) => Promise<TRPCStatus<Stack>>;
+  getStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
   getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
   getDirectChildrenStacksFromParentStack: (
     stackId: string,
@@ -24,10 +24,7 @@ interface StackModel {
     parentId: string,
     stackId: string,
   ) => Promise<TRPCStatus<Stack>>;
-  deleteParentStackRelation: (
-    parentId: string,
-    stackId: string,
-  ) => Promise<TRPCStatus<Stack>>;
+  deleteParentStackRelation: (stackId: string) => Promise<TRPCStatus<Stack>>;
   deleteMiddleOrderStackAndMoveChildrenUp: (
     stackId: string,
   ) => Promise<TRPCStatus<Stack[]>>;
@@ -62,7 +59,7 @@ class StackModelDrizzle implements StackModel {
 
       if (!hasOnlyOneEntry(stack)) return getTRPCError();
 
-      return [null, stack] as const;
+      return [null, stack[0]] as const;
     } catch (e) {
       return getModelDefaultError(e);
     }
@@ -77,9 +74,7 @@ class StackModelDrizzle implements StackModel {
         .prepare("stacks");
       const map = await prep.execute({ id: mapId });
 
-      if (!hasOnlyOneEntry(map)) getTRPCError();
-
-      return [null, map[0]] as const;
+      return [null, map] as const;
     } catch (e) {
       return getModelDefaultError(e);
     }
@@ -173,12 +168,12 @@ class StackModelDrizzle implements StackModel {
     }
   }
 
-  async deleteParentStackRelation(childStackId: string) {
+  async deleteParentStackRelation(stackId: string) {
     try {
       const stack = await this.db
         .update(stacks)
         .set({ parentStackId: null })
-        .where(eq(stacks.id, childStackId))
+        .where(eq(stacks.id, stackId))
         .returning();
 
       if (!hasOnlyOneEntry(stack)) getTRPCError();
@@ -238,4 +233,4 @@ class StackModelDrizzle implements StackModel {
   }
 }
 
-const stackModelDrizzle = new StackModelDrizzle(db)
+export const stackModelDrizzle = new StackModelDrizzle(db);

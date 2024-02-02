@@ -1,18 +1,17 @@
-export type ParentAndChildId = {
-  child_id: string;
-  new_parent_id: string;
-};
+//import { Stack } from "../../db/schema";
 
-export type Stack = {
+//export type StackWithChildren = Stack & { children?: StackWithChildren[] }
+
+export type StackWithChildren = {
   id: string;
-  stack_name: string | null;
-  number_of_learned_cards: number | null;
-  number_of_unlearned_cards: number | null;
-  created_at: Date;
-  updated_at: Date;
-  mapId: string | null;
-  stack_description: string | null;
-  positioning: string | null;
-  parent_stack_id: string | null;
-  children?: Stack[];
+  name: string;
+  numberOfLearnedCards: number | null;
+  numberOfUnlearnedCards: number | null;
+  createdAt: Date;
+  updatedAt: Date;
+  mapId: string;
+  description: string;
+  positioning: string;
+  parentStackId: string | null;
+  children?: StackWithChildren[];
 };

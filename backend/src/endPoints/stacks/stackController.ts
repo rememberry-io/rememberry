@@ -1,147 +1,176 @@
-import * as schema from "../../db/schema";
 //import * as cacheModel from "../cache/cacheModel";
 
-import * as stackModel from "./stackModels";
-import * as types from "./types";
+import { NewStack, Stack } from "../../db/schema";
+import { getTRPCError } from "../../utils";
+import { TRPCStatus } from "../auth/types";
+import { StackModel, stackModelDrizzle } from "./stackModels";
+import { StackWithChildren } from "./types";
 
-export async function controlCreateStack(stack: schema.NewStack) {
-  const date = new Date();
-  const [errorCheck, res] = await stackModel.createStack(stack, date);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
+interface StackController {
+  createStack: (stack: NewStack) => Promise<TRPCStatus<Stack>>;
+  getStackById: (stackId: string) => Promise<TRPCStatus<Stack>>;
+  getStacksByMapId: (mapId: string) => Promise<TRPCStatus<StackWithChildren[]>>;
+  getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
+  getDirectChildrenStacksFromParentStack: (
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack[]>>;
+  getAllChildrenStacksFromParentStack: (
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack[]>>;
+  updateStackById: (stack: Stack) => Promise<TRPCStatus<Stack>>;
+  changeParentStack: (
+    parentId: string,
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack>>;
+  deleteParentStackRelation: (stackId: string) => Promise<TRPCStatus<Stack>>;
+  deleteMiddleOrderStackAndMoveChildrenUp: (
+    stackId: string,
+  ) => Promise<TRPCStatus<Stack[]>>;
+  deleteStackAndChildren: (stackId: string) => Promise<TRPCStatus<Stack[]>>;
 }
 
-export async function controlGetStackById(stackId: string) {
-  const [errorCheck, res] = await stackModel.getStackById(stackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
+class StackControllerDrizzle implements StackController {
+  stackModel: StackModel;
+  constructor(stackModel: StackModel) {
+    this.stackModel = stackModel;
   }
-  return [null, res] as const;
-}
 
-export async function controlGetAllStacksFromMap(mapId: string) {
-  //const cacheResult = await cacheModel.readCache(mapId);
-  //if (cacheResult) {
-  //  return [null, cacheResult] as const;
-  //}
-  let [errorCheck, stacks] = await stackModel.getStacksFromMap(mapId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
+  async createStack(newStack: NewStack) {
+    const [err, stack] = await this.stackModel.createStack(newStack);
+    if (err) return getTRPCError(err.message, err.code);
+    return [null, stack] as const;
   }
-  if (isObject(stacks)) {
-    stacks = transformToHierarchy(stacks);
+
+  async getStackById(stackId: string) {
+    const [err, stack] = await this.stackModel.getStackById(stackId);
+    if (err) return [err, null] as const;
+
+    return [null, stack] as const;
+  }
+
+  async getStacksByMapId(mapId: string) {
+    //const cacheResult = await cacheModel.readCache(mapId);
+    //if (cacheResult) {
+    //  return [null, cacheResult] as const;
+    //}
+    const [err, stacks] = await this.stackModel.getStacksByMapId(mapId);
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    const stackWithChildren = this.transformToHierarchy(stacks);
     //  cacheModel.cacheValue(mapId, stacks);
-  }
-  return [null, stacks] as const;
-}
 
-export async function controlGetAllChildsFromParent(parentStackId: string) {
-  //const cacheResult = await cacheModel.readCache(parentStackId);
-  // if (cacheResult) {
-  //   return [null, cacheResult] as const;
-  // }
-  const [errorCheck, res] =
-    await stackModel.getAllChildsFromParent(parentStackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
+    return [null, stackWithChildren] as const;
   }
-  if (isObject(res)) {
+
+  private transformToHierarchy(data: StackWithChildren[]): StackWithChildren[] {
+    const lookup: { [key: string]: StackWithChildren } = {};
+
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      lookup[item.id] = item;
+      item.children = [];
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      const parent_id = item.parentStackId;
+      if (parent_id && lookup[parent_id]) {
+        lookup[parent_id].children!.push(item);
+      }
+    }
+
+    const result: StackWithChildren[] = [];
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      if (!item.parentStackId) {
+        result.push(item);
+      }
+    }
+
+    return result;
+  }
+
+  async getAllChildrenStacksFromParentStack(stackId: string) {
+    //const cacheResult = await cacheModel.readCache(parentStackId);
+    // if (cacheResult) {
+    //   return [null, cacheResult] as const;
+    // }
+
+    const [err, stacks] =
+      await this.stackModel.getAllChildrenStacksFromParentStack(stackId);
+
+    if (err) return getTRPCError(err.message, err.code);
+
     //cacheModel.cacheValue(parentStackId, res);
+
+    return [null, stacks] as const;
   }
-  return [null, res] as const;
+
+  async getTopLevelStacksByMapId(mapId: string) {
+    const [err, stacks] = await this.stackModel.getTopLevelStacksByMapId(mapId);
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, stacks] as const;
+  }
+  async getDirectChildrenStacksFromParentStack(parentStackId: string) {
+    const [err, stacks] =
+      await this.stackModel.getDirectChildrenStacksFromParentStack(
+        parentStackId,
+      );
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, stacks] as const;
+  }
+
+  async updateStackById(stack: Stack) {
+    const [err, updatedStack] = await this.stackModel.updateStackById(stack);
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, updatedStack] as const;
+  }
+
+  async changeParentStack(parentId: string, childId: string) {
+    const [err, stack] = await this.stackModel.changeParentStack(
+      parentId,
+      childId,
+    );
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, stack] as const;
+  }
+
+  async deleteParentStackRelation(stackId: string) {
+    const [err, stack] =
+      await this.stackModel.deleteParentStackRelation(stackId);
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, stack] as const;
+  }
+
+  async deleteMiddleOrderStackAndMoveChildrenUp(stackId: string) {
+    const [err, stacks] =
+      await this.stackModel.deleteMiddleOrderStackAndMoveChildrenUp(stackId);
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, stacks] as const;
+  }
+
+  async deleteStackAndChildren(stackId: string) {
+    const [err, stacks] = await this.stackModel.deleteStackAndChildren(stackId);
+
+    if (err) return getTRPCError(err.message, err.code);
+
+    return [null, stacks] as const;
+  }
 }
 
-const transformToHierarchy = (data: types.Stack[]): types.Stack[] => {
-  const lookup: { [key: string]: types.Stack } = {};
-
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-    lookup[item.id] = item;
-    item.children = [];
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-    const parent_id = item.parent_stack_id;
-    if (parent_id && lookup[parent_id]) {
-      lookup[parent_id].children!.push(item);
-    }
-  }
-
-  const result: types.Stack[] = [];
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-    if (!item.parent_stack_id) {
-      result.push(item);
-    }
-  }
-
-  return result;
-};
-
-export async function controlGetHighestOrderStacks(mapId: string) {
-  const [errorCheck, res] = await stackModel.getHighestOrderParentStacks(mapId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
-
-export async function controlGetDirectChildsFromParent(parentStackId: string) {
-  const [errorCheck, res] =
-    await stackModel.getDirectChildsFromParent(parentStackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
-
-function isObject(value: any): value is object {
-  return typeof value === "object" && value !== null;
-}
-
-export async function controlGetParentFromStack(stackId: string) {
-  const [errorCheck, res] = await stackModel.getStackById(stackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
-
-export async function controlChangeParentStack(
-  parentAndChild: types.ParentAndChildId,
-) {
-  const [errorCheck, res] = await stackModel.changeParentStack(parentAndChild);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
-
-export async function controlDeleteParentStackRelation(childStackId: string) {
-  const [errorCheck, res] =
-    await stackModel.deleteParentStackRelation(childStackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
-
-export async function controlStackDeletionAndChildMoveUp(stackId: string) {
-  const [errorCheck, res] =
-    await stackModel.deleteMiddleOrderStackAndMoveChildsUp(stackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
-
-export async function controlStackAndChildDeletion(stackId: string) {
-  const [errorCheck, res] = await stackModel.deleteStackAndChildren(stackId);
-  if (errorCheck) {
-    return [errorCheck, null] as const;
-  }
-  return [null, res] as const;
-}
+export const stackControllerDrizzle = new StackControllerDrizzle(
+  stackModelDrizzle,
+);
