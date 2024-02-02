@@ -1,141 +1,160 @@
-import { config } from "dotenv";
 import z from "zod";
 import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
-import * as stackController from "./stackController";
+import { stackControllerDrizzle } from "./stack.controller";
 
-config();
+const newStackInput = z.object({
+  id: z.string().optional(),
+  name: z.string(),
+  numberOfLearnedCards: z.number().optional(),
+  numberOfUnlearnedCards: z.number().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
+  mapId: z.string(),
+  description: z.string(),
+  positioning: z.string(),
+  parentStackId: z.string().optional(),
+});
 
 const stackInput = z.object({
-  stack_id: z.string().optional(),
-  stack_name: z.string(),
-  number_of_learned_cards: z.number().optional(),
-  number_of_unlearned_cards: z.number().optional(),
-  created_at: z.date().optional(),
-  map_id: z.string(),
-  stack_description: z.string(),
-  positioning: z.string().optional(),
-  parent_stack_id: z.string().optional(),
+  id: z.string(),
+  name: z.string(),
+  numberOfLearnedCards: z.number().nullable(),
+  numberOfUnlearnedCards: z.number().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  mapId: z.string(),
+  description: z.string(),
+  positioning: z.string(),
+  parentStackId: z.string().nullable(),
 });
 
 const changeParentStackInput = z.object({
-  child_id: z.string(),
-  new_parent_id: z.string(),
+  childId: z.string(),
+  parentId: z.string(),
 });
 
 export const stackRouter = router({
-  create: privateProcedure.input(stackInput).mutation(async (opts) => {
-    const [errorCheck, res] = await stackController.controlCreateStack(
-      opts.input,
-    );
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
+  create: privateProcedure.input(newStackInput).mutation(async (opts) => {
+    const [err, stack] = await stackControllerDrizzle.createStack(opts.input);
+
+    if (err) throw err;
+
+    return stack;
   }),
 
   getById: privateProcedure.input(z.string()).query(async (opts) => {
-    const [errorCheck, res] = await stackController.controlGetStackById(
-      opts.input,
-    );
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
+    const [err, stack] = await stackControllerDrizzle.getStackById(opts.input);
+
+    if (err) throw err;
+
+    return stack;
   }),
 
-  getOldestParentsFromMap: privateProcedure
+  getTopLevelStacksByMapId: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await stackController.controlGetHighestOrderStacks(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, stacks] =
+        await stackControllerDrizzle.getTopLevelStacksByMapId(opts.input);
+
+      if (err) throw err;
+
+      return stacks;
     }),
 
-  getDirectChilds: privateProcedure.input(z.string()).query(async (opts) => {
-    const [errorCheck, res] =
-      await stackController.controlGetDirectChildsFromParent(opts.input);
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
-  }),
+  getDirectChildrenStacksFromParentStack: privateProcedure
+    .input(z.string())
+    .query(async (opts) => {
+      const [err, stacks] =
+        await stackControllerDrizzle.getDirectChildrenStacksFromParentStack(
+          opts.input,
+        );
 
-  getAllChildren: privateProcedure.input(z.string()).query(async (opts) => {
-    const [errorCheck, res] =
-      await stackController.controlGetAllChildsFromParent(opts.input);
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
-  }),
+      if (err) throw err;
+
+      return stacks;
+    }),
+
+  getAllChildrenStacksFromParent: privateProcedure
+    .input(z.string())
+    .query(async (opts) => {
+      const [err, stacks] =
+        await stackControllerDrizzle.getAllChildrenStacksFromParentStack(
+          opts.input,
+        );
+
+      if (err) throw err;
+
+      return stacks;
+    }),
 
   getAll: privateProcedure.input(z.string()).query(async (opts) => {
-    const [errorCheck, res] = await stackController.controlGetAllStacksFromMap(
+    const [err, stacks] = await stackControllerDrizzle.getStacksByMapId(
       opts.input,
     );
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
+
+    if (err) throw err;
+
+    return stacks;
   }),
 
-  getParent: privateProcedure.input(z.string()).query(async (opts) => {
-    const [errorCheck, res] = await stackController.controlGetParentFromStack(
+  updateStackById: privateProcedure.input(stackInput).mutation(async (opts) => {
+    const [err, stack] = await stackControllerDrizzle.updateStackById(
       opts.input,
     );
-    if (errorCheck) {
-      throw errorCheck;
-    }
-    return res;
+
+    if (err) throw err;
+
+    return stack;
   }),
 
   changeParent: privateProcedure
     .input(changeParentStackInput)
     .mutation(async (opts) => {
-      const [errorCheck, res] = await stackController.controlChangeParentStack(
-        opts.input,
+      const [err, stack] = await stackControllerDrizzle.changeParentStack(
+        opts.input.parentId,
+        opts.input.childId,
       );
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+
+      if (err) throw err;
+
+      return stack;
     }),
 
   deleteParentRelation: privateProcedure
     .input(z.string())
     .mutation(async (opts) => {
-      const [errorCheck, res] =
-        await stackController.controlDeleteParentStackRelation(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, stack] =
+        await stackControllerDrizzle.deleteParentStackRelation(opts.input);
+
+      if (err) throw err;
+
+      return stack;
     }),
 
   deleteAndMoveChildsUp: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await stackController.controlStackDeletionAndChildMoveUp(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, stacks] =
+        await stackControllerDrizzle.deleteMiddleOrderStackAndMoveChildrenUp(
+          opts.input,
+        );
+
+      if (err) throw err;
+
+      return stacks;
     }),
 
-  deleteWithAllChilds: privateProcedure
+  deleteWithAllChildren: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await stackController.controlStackAndChildDeletion(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, stacks] = await stackControllerDrizzle.deleteStackAndChildren(
+        opts.input,
+      );
+
+      if (err) throw err;
+
+      return stacks;
     }),
 });
 

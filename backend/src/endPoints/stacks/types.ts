@@ -1,7 +1,3 @@
-//import { Stack } from "../../db/schema";
-
-//export type StackWithChildren = Stack & { children?: StackWithChildren[] }
-
 export type StackWithChildren = {
   id: string;
   name: string;

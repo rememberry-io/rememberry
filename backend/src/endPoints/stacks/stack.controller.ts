@@ -3,7 +3,7 @@
 import { NewStack, Stack } from "../../db/schema";
 import { getTRPCError } from "../../utils";
 import { TRPCStatus } from "../auth/types";
-import { StackModel, stackModelDrizzle } from "./stackModels";
+import { StackModel, stackModelDrizzle } from "./stack.model";
 import { StackWithChildren } from "./types";
 
 interface StackController {
