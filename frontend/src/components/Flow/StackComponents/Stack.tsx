@@ -72,7 +72,7 @@ export const Stack: React.FC<StackProps> = ({ data }) => {
                 <Button
                   variant="secondary"
                   size="icon"
-                  onClick={() => setIsDialogOpen(true)}
+                  onClick={() => setInputOpen(true)}
                 >
                   <Maximize2 />
                 </Button>

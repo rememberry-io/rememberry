@@ -5,46 +5,53 @@ import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useUserStore } from "@/lib/services/authentication/userStore";
+import useCreateMap from "@/lib/services/maps/useCreateMap";
+import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import { Box, Flex } from "@radix-ui/themes";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import "reactflow/dist/style.css";
+<<<<<<< HEAD
 import { useStore } from "../components/Flow/stores/mapStore";
+=======
+>>>>>>> b262a61067f4f810bd93b3d040703a64a4e31052
 
 function MapMenu() {
+  const router = useRouter();
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
-  const { addMap, categories, removeMap } = useStore();
+  const [description, setDescription] = useState("");
+  const { isLoading, maps } = useGetMapByUserId();
+  const createMap = useCreateMap();
+  const userId = useUserStore((state) => {
+    if (state.user) {
+      return state.user.id;
+    }
+    return null;
+  });
 
-  const sortedMaps = categories.sort((a, b) => {
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  useAutosizeTextArea(descriptionRef.current, description);
+
+  if (isLoading) return null;
+
+  const sortedMaps = maps.sort((a, b) => {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
-  const mapCards = sortedMaps.map((map) => (
-    <>
-      <Card className="dark:bg-dark-600 max-w-xs" key={map.id}>
-        <Flex gap="3" align="center">
-          <Box>
-            <Link href={"/map"}>
-              <button>
-                <div className="p-3  rounded-lg m-10">{map.name}</div>
-                <div className="p-3  rounded-lg m-10">{map.description}</div>
-              </button>
-            </Link>
-          </Box>
-        </Flex>
-      </Card>
-    </>
-  ));
 
   const openNamingDialog = () => {
     setOpenDialog(true);
   };
 
+<<<<<<< HEAD
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   useAutosizeTextArea(descriptionRef.current, description);
 
+=======
+>>>>>>> b262a61067f4f810bd93b3d040703a64a4e31052
   const handleDescriptionChange = (
     evt: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -83,9 +90,24 @@ function MapMenu() {
               <div className="leading-6 text-justify"></div>
               <Button
                 className="mt-4"
-                onClick={() => {
-                  addMap(name);
-                  setOpenDialog(false);
+                onClick={async () => {
+                  if (userId) {
+                    const [_err, map] = await createMap({
+                      map: {
+                        name,
+                        description,
+                        userId: userId,
+                      },
+                    });
+
+                    setOpenDialog(false);
+
+                    if (map) {
+                      router.push("/map/" + map.id);
+                    }
+                  } else {
+                    console.error("no user");
+                  }
                 }}
               >
                 Save
@@ -95,7 +117,24 @@ function MapMenu() {
         </Dialog>
         <div id="header"></div>
         <div id="body" className="flex content-start p-20">
-          {mapCards}
+          {sortedMaps.map((map) => (
+            <>
+              <Card className="dark:bg-dark-600 max-w-xs" key={map.id}>
+                <Flex gap="3" align="center">
+                  <Box>
+                    <Link href={"/map/" + map.id}>
+                      <button>
+                        <div className="p-3  rounded-lg m-10">{map.name}</div>
+                        <div className="p-3  rounded-lg m-10">
+                          {map.description}
+                        </div>
+                      </button>
+                    </Link>
+                  </Box>
+                </Flex>
+              </Card>
+            </>
+          ))}
         </div>
         <div className="fixed inset-x-0 bottom-4 px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center space-x-4">

@@ -2,6 +2,7 @@ import { env } from "@/lib/env";
 import { AppRouter } from "@backend/routers/_app";
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
 import { NextRequest } from "next/server";
+import superjson from "superjson";
 
 export async function GET(req: NextRequest) {
   const session = req.nextUrl.searchParams.get("session");
@@ -43,6 +44,7 @@ function getTrpcClient(session: string) {
   };
 
   const regTrpc = createTRPCProxyClient<AppRouter>({
+    transformer: superjson,
     links: [
       httpBatchLink({
         url: getBackendUrll(),
