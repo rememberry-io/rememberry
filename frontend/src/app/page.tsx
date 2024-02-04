@@ -1,6 +1,7 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import { FlowInput } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -14,10 +15,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import "reactflow/dist/style.css";
-<<<<<<< HEAD
-import { useStore } from "../components/Flow/stores/mapStore";
-=======
->>>>>>> b262a61067f4f810bd93b3d040703a64a4e31052
 
 function MapMenu() {
   const router = useRouter();
@@ -33,9 +30,6 @@ function MapMenu() {
     return null;
   });
 
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-  useAutosizeTextArea(descriptionRef.current, description);
-
   if (isLoading) return null;
 
   const sortedMaps = maps.sort((a, b) => {
@@ -46,12 +40,9 @@ function MapMenu() {
     setOpenDialog(true);
   };
 
-<<<<<<< HEAD
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   useAutosizeTextArea(descriptionRef.current, description);
 
-=======
->>>>>>> b262a61067f4f810bd93b3d040703a64a4e31052
   const handleDescriptionChange = (
     evt: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -71,19 +62,27 @@ function MapMenu() {
                 <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?
                 </h1>
-                <input
-                  className="mt-5 bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
-                  placeholder="Map Name"
+                <FlowInput
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <textarea
-                  className="mt-5 bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
-                  placeholder="Description"
-                  value={description}
-                  ref={descriptionRef}
+                  textAreaRef={descriptionRef}
+                  placeholder={"Map Name"}
+                  className=""
                   rows={1}
-                  onChange={handleDescriptionChange}
+                  changes={(value: string) => setName(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
+                />
+                <FlowInput
+                  value={description}
+                  textAreaRef={descriptionRef}
+                  placeholder={"Map Name"}
+                  className=""
+                  rows={1}
+                  changes={(value: string) => setDescription(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
                 />
               </div>
 
