@@ -1,6 +1,7 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowTextArea } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
@@ -137,8 +138,8 @@ function MapMenu() {
             </>
           ))}
         </div>
-        <div className="fixed inset-x-0 bottom-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center space-x-4">
+        <FlowFooter>
+          <>
             <Link href={"/map"}>
               <Button className="flex items-center ">
                 <span>Go to Map</span>
@@ -146,8 +147,8 @@ function MapMenu() {
               </Button>
             </Link>
             <Button onClick={openNamingDialog}>Add Map</Button>
-          </div>
-        </div>
+          </>
+        </FlowFooter>
       </div>
     </div>
   );

@@ -21,6 +21,7 @@ import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import Card from "@/components/Flow/FlashcardComponents/Card";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
@@ -146,17 +147,15 @@ function Map() {
         <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
-        <div className="fixed inset-x-0 bottom-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center space-x-4">
-            <Button
-              variant="default"
-              className="border-2 border-white dark:border-dark-900"
-              onClick={addStack}
-            >
-              Add Stack
-            </Button>
-          </div>
-        </div>
+        <FlowFooter>
+          <Button
+            variant="default"
+            className="border-2 border-white dark:border-dark-900"
+            onClick={addStack}
+          >
+            Add Stack
+          </Button>
+        </FlowFooter>
       </ReactFlow>
     </div>
   );
