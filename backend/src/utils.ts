@@ -26,3 +26,33 @@ export const getModelDefaultError = (error: unknown) => {
     return getTRPCError("Error with the DB: " + JSON.stringify(error));
   return getTRPCError(JSON.stringify(error));
 };
+
+export type TRPCStatus<T> = Readonly<[TRPCError, null] | [null, T]>;
+
+export type AsyncFunction<T> = () => Promise<T>;
+
+export const catchDrizzleErrorOneEntry = async <T>(
+  query: AsyncFunction<T[]>,
+): Promise<TRPCStatus<T>> => {
+  try {
+    const res = await query();
+
+    if (!hasOnlyOneEntry(res)) return getTRPCError();
+
+    return [null, res[0]];
+  } catch (err) {
+    return getModelDefaultError(err);
+  }
+};
+
+export const catchDrizzleErrorManyEntries = async <T extends any[]>(
+  query: AsyncFunction<T>,
+): Promise<TRPCStatus<T>> => {
+  try {
+    const res = await query();
+
+    return [null, res];
+  } catch (err) {
+    return getModelDefaultError(err);
+  }
+};

@@ -1,222 +1,206 @@
-import { TRPCError } from "@trpc/server";
+import dayjs from "dayjs";
 import { and, eq, sql } from "drizzle-orm";
-import { db } from "../../db/db";
-import * as schema from "../../db/schema";
-import * as types from "./types";
+import { db, dbConnection } from "../../db/db";
+import {
+  Flashcard,
+  LearningData,
+  Media,
+  NewFlashcard,
+  NewMedia,
+  flashcards,
+  learningData,
+  media,
+} from "../../db/schema";
+import {
+  TRPCStatus,
+  catchDrizzleErrorManyEntries,
+  catchDrizzleErrorOneEntry,
+  getModelDefaultError,
+} from "../../utils";
+import { LearningStatus } from "./types";
 
-const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+export type FlashcardAndMedia = {
+  flashcard: Flashcard;
+  media: Media | null;
+};
 
-export async function createBasicFlashcard(flashcard: types.Flashcards) {
-  const prep = db
-    .insert(schema.flashcards)
-    .values({
-      id: sql.placeholder("stack_id"),
-      frontside_text: sql.placeholder("frontside_text"),
-      backside_text: sql.placeholder("backside_text"),
-    })
-    .returning()
-    .prepare("createFlashcardQuery");
-  const res = await prep.execute({
-    stack_id: flashcard.stack_id,
-    frontside_text: flashcard.frontside_text,
-    backside_text: flashcard.backside_text,
-  });
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
-  }
-  return [null, res[0]] as const;
+export type FlashcardMediaAndLearning = {
+  flashcard: Flashcard;
+  media: Media;
+  learningData: LearningData;
+};
+
+export interface FlashcardModel {
+  createFlashcard: (input: NewFlashcard) => Promise<TRPCStatus<Flashcard>>;
+  createMedia: (input: NewMedia) => Promise<TRPCStatus<Media>>;
+  getAllFlashcardsByStackId: (
+    stackId: string,
+  ) => Promise<TRPCStatus<FlashcardAndMedia[]>>;
+  getAllFlashcardsFromStackAndChildrenStacks: (
+    stackId: string,
+  ) => Promise<TRPCStatus<FlashcardAndMedia[]>>;
+  getLearnableFlashcardsFromStackAndChildren: (
+    stackId: string,
+  ) => Promise<TRPCStatus<FlashcardAndMedia[]>>;
+  updateFlashcardById: (
+    input: FlashcardAndMedia,
+  ) => Promise<TRPCStatus<Flashcard>>;
+  deleteFlashcardById: (id: string) => Promise<TRPCStatus<Flashcard>>;
 }
 
-export async function createMedia(media: schema.NewMedia) {
-  const res = await db
-    .insert(schema.Media)
-    .values({
-      id: media.id,
-      frontside_media_link: media.frontside_media_link,
-      frontside_media_positioning: media.frontside_media_positioning,
-      backside_media_link: media.backside_media_link,
-      backside_media_positioning: media.backside_media_positioning,
-    })
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null] as const;
+class FlashcardModelDrizzle implements FlashcardModel {
+  db: dbConnection;
+  constructor(db: dbConnection) {
+    this.db = db;
   }
-  return [null, res] as const;
-}
-
-export async function updateFlashcard(flashcard: types.Flashcards) {
-  const res = await db.transaction(async (tx) => {
-    const Basicflashcard = await tx
-      .update(schema.flashcards)
-      .set({
-        frontside_text: flashcard.frontside_text,
-        backside_text: flashcard.backside_text,
-        stackId: flashcard.stack_id,
+  async createFlashcard(input: NewFlashcard) {
+    const prep = this.db
+      .insert(flashcards)
+      .values({
+        stackId: sql.placeholder("stackId"),
+        frontside: sql.placeholder("frontside"),
+        backside: sql.placeholder("backside"),
+        xPosition: sql.placeholder("xPosition"),
+        yPosition: sql.placeholder("yPosition"),
       })
-      .where(eq(schema.flashcards.id, flashcard.id))
-      .returning();
+      .returning()
+      .prepare("createFlashcardQuery");
 
-    await tx
-      .update(schema.Media)
-      .set({
-        backside_media_link: flashcard.backside_media_link,
-        backside_media_positioning: flashcard.backside_media_positioning,
-        frontside_media_link: flashcard.frontside_media_link,
-        frontside_media_positioning: flashcard.frontside_media_positioning,
-      })
-      .where(eq(schema.flashcards.id, flashcard.id));
-
-    return Basicflashcard;
-  });
-  if (res.length < 1) {
-    return [internalServerError, null];
+    return await catchDrizzleErrorOneEntry(() => prep.execute(input));
   }
-  return [null, res[0]];
-}
 
-export async function deleteFlashcard(flashcardId: string) {
-  const res = await db
-    .delete(schema.flashcards)
-    .where(eq(schema.flashcards.id, flashcardId))
-    .returning();
-  if (res.length < 1) {
-    return [internalServerError, null];
+  async createMedia(input: NewMedia) {
+    return await catchDrizzleErrorOneEntry(() =>
+      this.db.insert(media).values(input).returning(),
+    );
   }
-  return [null, res[0]];
-}
 
-export async function getAllFlashcardsFromStack(stackId: string) {
-  try {
-    const prep = db
+  async getAllFlashcardsByStackId(stackId: string) {
+    const prep = this.db
       .select({
-        id: schema.flashcards.id,
-        frontside: schema.flashcards.frontside_text,
-        frontside_media: schema.Media.frontside_media_link,
-        frontside_media_positioning: schema.Media.frontside_media_positioning,
-        backside: schema.flashcards.backside_text,
-        backside_media: schema.Media.backside_media_link,
-        backside_media_positioning: schema.Media.backside_media_positioning,
+        flashcard: flashcards,
+        media: media,
       })
-      .from(schema.flashcards)
-      .leftJoin(
-        schema.Media,
-        eq(schema.flashcards.id, schema.Media.flashcardId),
-      )
-      .where(eq(schema.flashcards.stackId, sql.placeholder("stackId")))
+      .from(flashcards)
+      .leftJoin(media, eq(flashcards.id, media.flashcardId))
+      .where(eq(flashcards.stackId, sql.placeholder("stackId")))
       .prepare("getAllFlashcardsFromStack");
 
-    const res = await prep.execute({ stackId: stackId });
-    return [null, res];
-  } catch (error) {
-    return [error, null];
+    return await catchDrizzleErrorManyEntries(() =>
+      prep.execute({ stackId: stackId }),
+    );
   }
-}
-
-export async function getLearnableFlashcardsFromStack(stackId: string) {
-  try {
-    const prep = db
+  async getLearnableFlashcardsFromStack(stackId: string) {
+    const prep = this.db
       .select({
-        flashcard_id: schema.flashcards.id,
-        frontside: schema.flashcards.frontside_text,
-        frontside_media: schema.Media.frontside_media_link,
-        frontside_media_positioning: schema.Media.frontside_media_positioning,
-        backside: schema.flashcards.backside_text,
-        backside_media: schema.Media.backside_media_link,
-        backside_media_positioning: schema.Media.backside_media_positioning,
-        learning_status: schema.session_data.learning_status,
+        flashcard: flashcards,
+        media: media,
+        session: learningData,
       })
-      .from(schema.flashcards)
-      .leftJoin(
-        schema.Media,
-        eq(schema.flashcards.id, schema.Media.flashcardId),
-      )
-      .innerJoin(
-        schema.session_data,
-        eq(schema.flashcards.id, schema.session_data.flashcardId),
-      )
+      .from(flashcards)
+      .leftJoin(media, eq(flashcards.id, media.flashcardId))
+      .innerJoin(learningData, eq(flashcards.id, learningData.flashcardId))
       .where(
         and(
-          eq(schema.flashcards.stackId, sql.placeholder("stack_id")),
-          eq(
-            schema.session_data.learning_status,
-            types.LearningStatus.learnable,
-          ),
+          eq(flashcards.stackId, sql.placeholder("stackId")),
+          eq(learningData.learningStatus, LearningStatus.learnable),
         ),
       )
       .prepare("getLearnableFlashcardsFromStack");
-    const res = await prep.execute({ stack_id: stackId });
-    return [null, res];
-  } catch (error) {
-    return [error, null];
+
+    return await catchDrizzleErrorManyEntries(() =>
+      prep.execute({ stackId: stackId }),
+    );
+  }
+  async getAllFlashcardsFromStackAndChildrenStacks(stackId: string) {
+    try {
+      const res = await this.db.execute(sql`
+        WITH RECURSIVE cte_stacks AS (
+            SELECT stackId
+            FROM stacks
+            WHERE stackId=${stackId}
+  
+            UNION ALL
+  
+            SELECT stacks.stackId
+            FROM stacks
+            JOIN cte_stacks ON stacks.parentStackId = cte_stacks.stackId
+        )
+  
+        SELECT
+            flashcards,
+            media
+        FROM cte_stacks
+        JOIN flashcards ON cte_stacks.stackId = flashcards.stackId
+        LEFT JOIN media ON flashcards.flashcardId = media.flashcardId
+      `);
+      return [null, res.rows as FlashcardAndMedia[]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
+  }
+
+  async getLearnableFlashcardsFromStackAndChildren(stackId: string) {
+    try {
+      const res = await this.db.execute(sql`
+        WITH RECURSIVE cte_stacks AS(
+            SELECT stack_id 
+            FROM stacks
+            WHERE stack_id=${stackId}
+  
+            UNION ALL
+  
+        SELECT stacks.stack_id
+        FROM STACKS
+        JOIN cte_stacks ON stacks.parent_stack_id = cte_stacks.stack_id
+        )
+  
+        SELECT
+            flashcards,
+            media
+        FROM cte_stacks
+        JOIN flashcards ON flashcards.stack_id = cte_stacks.stack_id
+        JOIN session_data ON flashcards.flashcard_id = session_data.flashcard_id
+        LEFT JOIN Media ON flashcards.flashcard_id = Media.flashcard_id
+        WHERE session_data.learning_status=1;
+      `);
+      return [null, res.rows as FlashcardAndMedia[]] as const;
+    } catch (e) {
+      return getModelDefaultError(e);
+    }
+  }
+
+  //async updateMedia() {}
+
+  async updateFlashcardById(input: FlashcardAndMedia) {
+    return await catchDrizzleErrorOneEntry(() =>
+      this.db.transaction(async (tx) => {
+        const flashcard = await tx
+          .update(flashcards)
+          .set({
+            ...input.flashcard,
+            updatedAt: dayjs().toDate(),
+          })
+          .where(eq(flashcards.id, input.flashcard.id))
+          .returning();
+
+        await tx
+          .update(media)
+          .set({
+            ...input.media,
+            updatedAt: dayjs().toDate(),
+          })
+          .where(eq(media.flashcardId, input.flashcard.id));
+
+        return flashcard;
+      }),
+    );
+  }
+  async deleteFlashcardById(id: string) {
+    return await catchDrizzleErrorOneEntry(() =>
+      this.db.delete(flashcards).where(eq(flashcards.id, id)).returning(),
+    );
   }
 }
 
-export async function getAllFlashcardsFromStackAndChildStacks(stackId: string) {
-  try {
-    const res = await db.execute(sql`
-      WITH RECURSIVE cte_stacks AS (
-          SELECT stack_iD
-          FROM stacks
-          WHERE stack_id=${stackId}
-  
-          UNION ALL
-  
-          SELECT stacks.stack_id
-          FROM stacks
-          JOIN cte_stacks ON stacks.parent_stack_id = cte_stacks.stack_id
-      )
-  
-      SELECT
-          flashcards.flashcard_id,
-          flashcards.frontside_text,
-          flashcards.backside_text,
-          Media.frontside_media_link,
-          Media.frontside_media_positioning,
-          Media.backside_media_link,
-          Media.backside_media_positioning
-      FROM cte_stacks
-      JOIN flashcards ON cte_stacks.stack_id = flashcards.stack_id
-      LEFT JOIN Media ON flashcards.flashcard_id = Media.flashcard_id
-      `);
-    return [null, res.rows];
-  } catch (error) {
-    return [error, null];
-  }
-}
-
-export async function getLearnableFlashcardsFromStackAndChilds(
-  stackId: string,
-) {
-  try {
-    const res = await db.execute(sql`
-    WITH RECURSIVE cte_stacks AS(
-          SELECT stack_id 
-          FROM stacks
-          WHERE stack_id=${stackId}
-  
-          UNION ALL
-  
-      SELECT stacks.stack_id
-      FROM STACKS
-      JOIN cte_stacks ON stacks.parent_stack_id = cte_stacks.stack_id
-      )
-  
-      SELECT
-          flashcards.flashcard_id,
-          flashcards.frontside_text,
-          flashcards.backside_text,
-          Media.frontside_media_link,
-          Media.frontside_media_positioning,
-          Media.backside_media_link,
-          Media.backside_media_positioning
-      FROM cte_stacks
-      JOIN flashcards ON flashcards.stack_id = cte_stacks.stack_id
-      JOIN session_data ON flashcards.flashcard_id = session_data.flashcard_id
-      LEFT JOIN Media ON flashcards.flashcard_id = Media.flashcard_id
-      WHERE session_data.learning_status=1;
-      `);
-    return [null, res.rows];
-  } catch (error) {
-    return [error, null];
-  }
-}
+export const flashcardModelDrizzle = new FlashcardModelDrizzle(db);

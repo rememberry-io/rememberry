@@ -57,9 +57,23 @@ type Stack = {
   node: Node;
   name: string;
   description: string;
-
+  parentStackId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  mapId: string;
 }
 
-interface StackStore {
-  stacks: Stack[]
+type Flashcard = {
+  node: Node;
+  name: string;
+  description: string;
+  parentStackId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type CardNode = Stack | Flashcard;
+
+interface CardNodeStore {
+  nodes: CardNode[]
 }

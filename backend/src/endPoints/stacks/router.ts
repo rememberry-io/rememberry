@@ -6,13 +6,12 @@ import { stackControllerDrizzle } from "./stack.controller";
 const newStackInput = z.object({
   id: z.string().optional(),
   name: z.string(),
-  numberOfLearnedCards: z.number().optional(),
-  numberOfUnlearnedCards: z.number().optional(),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
   mapId: z.string(),
   description: z.string(),
-  positioning: z.string(),
+  xPosition: z.number(),
+  yPosition: z.number(),
   parentStackId: z.string().optional(),
 });
 
@@ -25,7 +24,8 @@ const stackInput = z.object({
   updatedAt: z.date(),
   mapId: z.string(),
   description: z.string(),
-  positioning: z.string(),
+  xPosition: z.number(),
+  yPosition: z.number(),
   parentStackId: z.string().nullable(),
 });
 

@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import * as http from "http";
 import { User } from "lucia";
 import z from "zod";
@@ -13,8 +12,6 @@ export const RegisterRouteInput = z.object({
   email: z.string(),
   password: z.string(),
 });
-
-export type TRPCStatus<T> = readonly [TRPCError, null] | readonly [null, T];
 
 export type AuthOutput = {
   user: User;
