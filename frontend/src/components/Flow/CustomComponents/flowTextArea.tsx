@@ -29,7 +29,7 @@ export const FlowInput = ({
 
   return (
     <textarea
-      className={` outline-none rounded-md h-fit resize-none break-words flex items-center justify-between mt-5rounded-md  p-2 w-full ${stackProps} ${inputProps}  `}
+      className={` outline-none rounded-md h-fit resize-none break-words flex items-center p-2 justify-between w-full ${stackProps} ${inputProps}  `}
       value={value}
       ref={textAreaRef}
       placeholder={placeholder}
