@@ -36,8 +36,6 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
   };
 
   const discardChanges = () => {
-    setFrontText("");
-    setBackText("");
     closeDialog();
   };
 
