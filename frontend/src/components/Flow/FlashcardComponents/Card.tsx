@@ -4,10 +4,12 @@ import { Maximize2, RotateCcw } from "lucide-react";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../stores/nodeStore";
-import { FlashcardDialog } from "./FlashcardDialog";
+
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
+import { FlashcardDialog } from "../CustomComponents/flowDialog";
+import { FlowInput } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
@@ -67,6 +69,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   function onBlur() {
     setTimeout(setIsFocused, 0, false);
   }
+
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
   const { updateNode } = useStore(
@@ -142,40 +145,23 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     >
       {cardType === "stack" && (
         <>
-          <div className="flex relative flex-row align-middle ml-2">
-            <FlashcardDialog
-              nodeId={id}
-              onSubmit={handleDialogSubmit}
-              flashcardParentName={parentName}
-              flashcardFrontText={frontText}
-              flashcardBackText={backText}
-              isDialogOpen={isDialogOpen}
-              cardType={cardType}
-              closeDialog={() => setIsDialogOpen(false)}
-            />
-          </div>
-          <div className={`p-4 bg-primary rounded-lg ${borderClasses} `}>
+          <div className="flex relative flex-row align-middle ml-2"></div>
+          <div className={`p-2 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>
-                <div className="flex bg-primaryitems-center justify-between">
-                  {isFront ? (
-                    <textarea
-                      className="h-fit bg-primary font-semibold text-white outline-none resize-none break-words"
-                      value={frontText}
-                      ref={frontTextAreaRef}
-                      rows={1}
-                      readOnly
-                    />
-                  ) : (
-                    <textarea
-                      className="h-fit outline-none bg-primary font-semibold text-white resize-none break-words"
-                      value={backText}
-                      ref={backTextAreaRef}
-                      rows={1}
-                      readOnly
-                    />
-                  )}
-                </div>
+                <FlowInput
+                  isStack={true}
+                  value={isFront ? frontText : backText}
+                  textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
+                  rows={1}
+                  readOnly
+                  className={"bg-primary text-white"}
+                  placeholder={""}
+                  changes={function (value: string): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  isInput={false}
+                />
               </div>
             </div>
           </div>
@@ -183,30 +169,22 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-          <div className={`p-4 rounded-lg ${borderClasses}`}>
+          <div className={`p-2 rounded-lg ${borderClasses}`}>
             <div className="inputWrapper">
               <div>
-                <div className="flex items-center justify-between">
-                  {isFront ? (
-                    <>
-                      <textarea
-                        className="h-fit dark:bg-dark-600 outline-none resize-none break-words"
-                        value={frontText}
-                        ref={frontTextAreaRef}
-                        rows={1}
-                        readOnly
-                      />
-                    </>
-                  ) : (
-                    <textarea
-                      className="h-fit outline-none dark:bg-dark-600  resize-none break-words"
-                      value={backText}
-                      ref={backTextAreaRef}
-                      rows={1}
-                      readOnly
-                    />
-                  )}
-                </div>
+                <FlowInput
+                  isStack={false}
+                  className={""}
+                  value={isFront ? frontText : backText}
+                  textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
+                  rows={1}
+                  readOnly
+                  placeholder={""}
+                  changes={function (value: string): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  isInput={false}
+                />
               </div>
             </div>
           </div>

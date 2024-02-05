@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
+import { FlowInput } from "./flowTextArea";
 
 interface FlashcardDialogProps {
   nodeId: string;
@@ -54,7 +55,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   return (
     <div>
-      <Dialog open={isDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={handleSubmit}>
         <DialogContent onAbort={handleSubmit}>
           <div>
             <div>
@@ -64,30 +65,33 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                 </div>
               </>
 
-              <textarea
-                className=" rounded-md h-fit p-2 outline-none resize-none w-full break-words"
-                defaultValue={frontText === "New Front Text" ? "" : frontText}
+              <FlowInput
+                className=" "
+                value={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
-                ref={frontTextAreaRef}
+                textAreaRef={frontTextAreaRef}
                 rows={1}
-                onChange={handleChangeFront}
+                changes={(value: string) => setFrontText(value)}
+                readOnly={false}
+                isStack={false}
+                isInput={true}
               />
             </div>
             <hr className="m-2" />
             <div className="leading-6 text-justify">
-              <textarea
-                className="rounded-md h-fit p-2 outline-none resize-none w-full break-words focus:outline-primary"
-                defaultValue={backText === "New Back Text" ? "" : backText}
+              <FlowInput
+                className=" "
+                value={backText === "New Back Text" ? "" : backText}
                 placeholder="Back Text"
-                ref={backTextAreaRef}
+                textAreaRef={backTextAreaRef}
                 rows={1}
-                onChange={handleChangeBack}
+                changes={(value: string) => setBackText(value)}
+                readOnly={false}
+                isStack={false}
+                isInput={true}
               />
             </div>
-            <Button
-              className="focus:outline dark:bg-primary dark:text-white focus:outline-primary  mt-4"
-              onClick={handleSubmit}
-            >
+            <Button className="  mt-4" variant="default" onClick={handleSubmit}>
               Save
             </Button>
           </div>

@@ -1,6 +1,5 @@
 "use client";
 import ReactFlow, {
-  Background,
   ConnectionLineType,
   Controls,
   Node,
@@ -15,7 +14,6 @@ import ReactFlow, {
 import { shallow } from "zustand/shallow";
 
 // we have to import the React Flow styles for it to work
-import Flashcard from "@/components/Flow/FlashcardComponents/Flashcard";
 import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/stores/nodeStore";
 import { Button } from "@/components/ui/button";
@@ -23,6 +21,8 @@ import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
+import FlowBackground from "@/components/Flow/Background/flowBackground";
+import Card from "@/components/Flow/FlashcardComponents/Card";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
@@ -36,8 +36,8 @@ const selector = (state: RFState) => ({
 });
 
 const nodeTypes = {
-  flashcard: Flashcard,
-  stack: Flashcard,
+  flashcard: Card,
+  stack: Card,
 };
 
 const edgeTypes = {
@@ -144,7 +144,7 @@ function Map() {
         connectionLineType={ConnectionLineType.Straight}
         fitView
       >
-        <Background />
+        <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
         <Panel position="bottom-center" className="space-x-4">
