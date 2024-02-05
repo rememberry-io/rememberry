@@ -56,45 +56,47 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
   return (
     <div>
       <Dialog open={isDialogOpen} onOpenChange={handleSubmit}>
-        <DialogContent onAbort={handleSubmit}>
-          <div>
+        <DialogContent onAbort={closeDialog}>
+          <form onSubmit={handleSubmit}>
             <div>
-              <>
-                <div className="font-medium text-primary dark:text-white leading-10">
-                  {parentName}
-                </div>
-              </>
+              <div>
+                <>
+                  <div className="font-medium text-primary dark:text-white leading-10">
+                    {parentName}
+                  </div>
+                </>
 
-              <FlowTextArea
-                className=" "
-                value={frontText === "New Front Text" ? "" : frontText}
-                placeholder="Front Text"
-                textAreaRef={frontTextAreaRef}
-                rows={1}
-                changes={(value: string) => setFrontText(value)}
-                readOnly={false}
-                isStack={false}
-                isInput={true}
-              />
+                <FlowTextArea
+                  className=" "
+                  value={frontText === "New Front Text" ? "" : frontText}
+                  placeholder="Front Text"
+                  textAreaRef={frontTextAreaRef}
+                  rows={1}
+                  changes={(value: string) => setFrontText(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
+                />
+              </div>
+
+              <div className="leading-6 text-justify">
+                <FlowTextArea
+                  className=" "
+                  value={backText === "New Back Text" ? "" : backText}
+                  placeholder="Back Text"
+                  textAreaRef={backTextAreaRef}
+                  rows={1}
+                  changes={(value: string) => setBackText(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
+                />
+              </div>
+              <Button className="  mt-4" variant="default">
+                Save
+              </Button>
             </div>
-            <hr className="m-2" />
-            <div className="leading-6 text-justify">
-              <FlowTextArea
-                className=" "
-                value={backText === "New Back Text" ? "" : backText}
-                placeholder="Back Text"
-                textAreaRef={backTextAreaRef}
-                rows={1}
-                changes={(value: string) => setBackText(value)}
-                readOnly={false}
-                isStack={false}
-                isInput={true}
-              />
-            </div>
-            <Button className="  mt-4" variant="default" onClick={handleSubmit}>
-              Save
-            </Button>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

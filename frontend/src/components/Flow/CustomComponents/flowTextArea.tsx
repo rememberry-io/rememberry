@@ -24,7 +24,7 @@ export const FlowTextArea = ({
     ? "bg-primary text-white"
     : `dark:bg-dark-600  `;
   const inputProps = isInput
-    ? "outline focus:outline-primary bg-slate-50 mt-5 "
+    ? "outline focus:outline-primary bg-gray-100 mt-5 "
     : " outline-none";
 
   return (
