@@ -1,5 +1,7 @@
 // import { create } from "zustand";
 
+import { Node } from "reactflow"
+
 // export type Stack = {
 //   userId: string;
 //   username: string;
@@ -49,3 +51,15 @@
 //     },
 //   },
 // }));
+//
+
+type Stack = {
+  node: Node;
+  name: string;
+  description: string;
+
+}
+
+interface StackStore {
+  stacks: Stack[]
+}
