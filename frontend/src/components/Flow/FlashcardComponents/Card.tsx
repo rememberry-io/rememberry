@@ -182,7 +182,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                   placeholder={""}
                   changes={function (value: string): void {
                     throw new Error("Function not implemented.");
-                  }}isInput={false}
+                  }}
+                  isInput={false}
                 />
               </div>
             </div>

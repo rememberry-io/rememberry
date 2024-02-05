@@ -20,9 +20,7 @@ export const FlowInput = ({
 
   changes: (value: string) => void;
 }) => {
-  const stackProps = isStack
-    ? "bg-primary text-white"
-    : `dark:bg-dark-600  `;
+  const stackProps = isStack ? "bg-primary text-white" : `dark:bg-dark-600  `;
   const inputProps = isInput
     ? "outline focus:outline-primary bg-slate-50 mt-5 "
     : " outline-none";
