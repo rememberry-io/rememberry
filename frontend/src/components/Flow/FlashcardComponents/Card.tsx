@@ -9,7 +9,7 @@ import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
 import { FlashcardDialog } from "../CustomComponents/flowDialog";
-import { FlowInput } from "../CustomComponents/flowInput";
+import { FlowInput } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
@@ -146,15 +146,21 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       {cardType === "stack" && (
         <>
           <div className="flex relative flex-row align-middle ml-2"></div>
-          <div className={`p-4 bg-primary rounded-lg ${borderClasses} `}>
+          <div className={`p-2 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>
                 <FlowInput
-                  className={` h-fit   resize-none outline-none break-words flex items-center justify-between text-white  bg-primary  `}
+                  isStack={true}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
                   readOnly
+                  className={"bg-primary text-white"}
+                  placeholder={""}
+                  changes={function (value: string): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  isInput={false}
                 />
               </div>
             </div>
@@ -163,15 +169,21 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-          <div className={`p-4 rounded-lg ${borderClasses}`}>
+          <div className={`p-2 rounded-lg ${borderClasses}`}>
             <div className="inputWrapper">
               <div>
                 <FlowInput
-                  className={`   dark:bg-dark-600  h-fit  bg-white  resize-none outline-none break-words flex items-center justify-between  `}
+                  isStack={false}
+                  className={""}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
                   readOnly
+                  placeholder={""}
+                  changes={function (value: string): void {
+                    throw new Error("Function not implemented.");
+                  }}
+                  isInput={false}
                 />
               </div>
             </div>

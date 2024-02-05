@@ -1,6 +1,7 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import { FlowInput } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -28,7 +29,6 @@ function MapMenu() {
     }
     return null;
   });
-
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   useAutosizeTextArea(descriptionRef.current, description);
 
@@ -61,19 +61,27 @@ function MapMenu() {
                 <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?
                 </h1>
-                <input
-                  className="mt-5 bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
-                  placeholder="Map Name"
+                <FlowInput
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <textarea
-                  className="mt-5 bg-slate-50 dark:bg-dark-600  rounded-md h-fit p-2 outline-none resize-none w-full break-words "
-                  placeholder="Description"
-                  value={description}
-                  ref={descriptionRef}
+                  textAreaRef={descriptionRef}
+                  placeholder={"Map Name"}
+                  className=""
                   rows={1}
-                  onChange={handleDescriptionChange}
+                  changes={(value: string) => setName(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
+                />
+                <FlowInput
+                  value={description}
+                  textAreaRef={descriptionRef}
+                  placeholder={"Description"}
+                  className=""
+                  rows={1}
+                  changes={(value: string) => setDescription(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
                 />
               </div>
 

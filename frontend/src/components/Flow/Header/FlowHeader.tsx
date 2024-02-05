@@ -29,7 +29,7 @@ export const FlowHeader: React.FC<HeaderProps> = () => {
       style={{
         justifyContent: "space-between",
         width: "100%",
-        paddingTop: "20px",
+        paddingTop: "1rem",
       }}
     >
       <div className="flex flex-row items-center justify-around">
