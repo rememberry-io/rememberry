@@ -29,6 +29,8 @@ function MapMenu() {
     }
     return null;
   });
+  const descriptionRef = useRef<HTMLTextAreaElement>(null);
+  useAutosizeTextArea(descriptionRef.current, description);
 
   if (isLoading) return null;
 
@@ -39,9 +41,6 @@ function MapMenu() {
   const openNamingDialog = () => {
     setOpenDialog(true);
   };
-
-  const descriptionRef = useRef<HTMLTextAreaElement>(null);
-  useAutosizeTextArea(descriptionRef.current, description);
 
   const handleSubmit = () => {
     const handleDescriptionChange = (

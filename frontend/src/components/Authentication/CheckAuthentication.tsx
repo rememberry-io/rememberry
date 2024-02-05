@@ -1,6 +1,11 @@
 "use client";
-import { ReactNode } from "react";
-import { User } from "../../lib/services/authentication/userStore";
+import Loading from "@/app/loading";
+import { useRouter } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
+import {
+  User,
+  useUserStore,
+} from "../../lib/services/authentication/userStore";
 
 interface FetchUserProps {
   user: User | null;
@@ -8,22 +13,22 @@ interface FetchUserProps {
 }
 
 export default function FetchUser({ user, children }: FetchUserProps) {
-  // const router = useRouter();
-  // const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
-  // const userStore = useUserStore();
+  const userStore = useUserStore();
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     router.push("/login");
-  //     userStore.actions.deleteUser();
-  //   } else {
-  //     userStore.actions.setUser(user);
-  //   }
-  //   setIsLoading(false);
-  // }, [user, router, userStore.actions, isLoading]);
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+      userStore.actions.deleteUser();
+    } else {
+      userStore.actions.setUser(user);
+    }
+    setIsLoading(false);
+  }, [user, router, userStore.actions, isLoading]);
 
-  // if (isLoading) return <Loading />;
+  if (isLoading) return <Loading />;
 
   return <>{children}</>;
 }
