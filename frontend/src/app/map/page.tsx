@@ -6,7 +6,6 @@ import ReactFlow, {
   NodeOrigin,
   OnConnectEnd,
   OnConnectStart,
-  Panel,
   ReactFlowProvider,
   useReactFlow,
   useStoreApi,
@@ -147,15 +146,17 @@ function Map() {
         <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
-        <Panel position="bottom-center" className="space-x-4">
-          <Button
-            variant="default"
-            className="border-2 border-white dark:border-dark-900"
-            onClick={addStack}
-          >
-            Add Stack
-          </Button>
-        </Panel>
+        <div className="fixed inset-x-0 bottom-4 px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center space-x-4">
+            <Button
+              variant="default"
+              className="border-2 border-white dark:border-dark-900"
+              onClick={addStack}
+            >
+              Add Stack
+            </Button>
+          </div>
+        </div>
       </ReactFlow>
     </div>
   );
