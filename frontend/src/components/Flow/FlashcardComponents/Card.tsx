@@ -161,6 +161,9 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                     throw new Error("Function not implemented.");
                   }}
                   isInput={false}
+                  onSubmit={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </div>
             </div>
@@ -182,7 +185,11 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                   placeholder={""}
                   changes={function (value: string): void {
                     throw new Error("Function not implemented.");
-                  }}isInput={false}
+                  }}
+                  isInput={false}
+                  onSubmit={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </div>
             </div>

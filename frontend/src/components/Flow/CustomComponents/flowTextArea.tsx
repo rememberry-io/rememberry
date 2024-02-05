@@ -8,6 +8,7 @@ export const FlowTextArea = ({
   changes,
   isStack,
   isInput,
+  onSubmit,
 }: {
   className: string;
   value: string;
@@ -17,15 +18,20 @@ export const FlowTextArea = ({
   placeholder: string;
   isStack: boolean;
   isInput: boolean;
-
+  onSubmit: () => void;
   changes: (value: string) => void;
 }) => {
-  const stackProps = isStack
-    ? "bg-primary text-white"
-    : `dark:bg-dark-600  `;
+  const stackProps = isStack ? "bg-primary text-white" : `dark:bg-dark-600  `;
   const inputProps = isInput
     ? "outline focus:outline-primary bg-gray-100 mt-5 "
     : " outline-none";
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent the default action to avoid a newline being added
+      onSubmit(); 
+    }
+  };
 
   return (
     <textarea
@@ -36,6 +42,7 @@ export const FlowTextArea = ({
       rows={rows}
       readOnly={readOnly}
       onChange={(e) => changes(e.target.value)}
+      onKeyDown={handleKeyDown} 
     />
   );
 };

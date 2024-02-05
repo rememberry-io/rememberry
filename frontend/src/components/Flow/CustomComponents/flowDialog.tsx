@@ -35,6 +35,12 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
     closeDialog();
   };
 
+  const discardChanges = () => {
+    setFrontText("");
+    setBackText("");
+    closeDialog();
+  };
+
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -55,7 +61,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
 
   return (
     <div>
-      <Dialog open={isDialogOpen} onOpenChange={handleSubmit}>
+      <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
         <DialogContent onAbort={closeDialog}>
           <form onSubmit={handleSubmit}>
             <div>
@@ -76,6 +82,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
                   readOnly={false}
                   isStack={false}
                   isInput={true}
+                  onSubmit={handleSubmit}
                 />
               </div>
 
@@ -90,6 +97,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
                   readOnly={false}
                   isStack={false}
                   isInput={true}
+                  onSubmit={handleSubmit}
                 />
               </div>
               <Button className="  mt-4" variant="default">
