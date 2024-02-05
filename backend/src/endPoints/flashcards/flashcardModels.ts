@@ -3,10 +3,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { db, dbConnection } from "../../db/db";
 import {
   Flashcard,
-  LearningData,
-  Media,
   NewFlashcard,
-  NewMedia,
   flashcards,
   learningData,
   media,
@@ -17,23 +14,14 @@ import {
   catchDrizzleErrorOneEntry,
   getModelDefaultError,
 } from "../../utils";
-import { LearningStatus } from "./types";
-
-export type FlashcardAndMedia = {
-  flashcard: Flashcard;
-  media: Media | null;
-};
-
-export type FlashcardMediaAndLearning = {
-  flashcard: Flashcard;
-  media: Media;
-  learningData: LearningData;
-};
+import { FlashcardAndMedia, LearningStatus } from "./types";
 
 export interface FlashcardModel {
   createFlashcard: (input: NewFlashcard) => Promise<TRPCStatus<Flashcard>>;
-  createMedia: (input: NewMedia) => Promise<TRPCStatus<Media>>;
   getAllFlashcardsByStackId: (
+    stackId: string,
+  ) => Promise<TRPCStatus<FlashcardAndMedia[]>>;
+  getLearnableFlashcardsByStackId: (
     stackId: string,
   ) => Promise<TRPCStatus<FlashcardAndMedia[]>>;
   getAllFlashcardsFromStackAndChildrenStacks: (
@@ -69,12 +57,6 @@ class FlashcardModelDrizzle implements FlashcardModel {
     return await catchDrizzleErrorOneEntry(() => prep.execute(input));
   }
 
-  async createMedia(input: NewMedia) {
-    return await catchDrizzleErrorOneEntry(() =>
-      this.db.insert(media).values(input).returning(),
-    );
-  }
-
   async getAllFlashcardsByStackId(stackId: string) {
     const prep = this.db
       .select({
@@ -90,7 +72,7 @@ class FlashcardModelDrizzle implements FlashcardModel {
       prep.execute({ stackId: stackId }),
     );
   }
-  async getLearnableFlashcardsFromStack(stackId: string) {
+  async getLearnableFlashcardsByStackId(stackId: string) {
     const prep = this.db
       .select({
         flashcard: flashcards,

@@ -2,11 +2,11 @@ import { and, eq, isNull, sql } from "drizzle-orm";
 import { db, dbConnection } from "../../db/db";
 import { NewStack, Stack, stacks } from "../../db/schema";
 import {
+  TRPCStatus,
   getModelDefaultError,
   getTRPCError,
   hasOnlyOneEntry,
 } from "../../utils";
-import { TRPCStatus } from "../auth/types";
 
 export interface StackModel {
   createStack: (input: NewStack) => Promise<TRPCStatus<Stack>>;

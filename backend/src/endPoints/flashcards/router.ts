@@ -1,88 +1,82 @@
-import { config } from "dotenv";
 import z from "zod";
 import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
-import * as flashcardController from "./flashCardController";
-import * as types from "./types";
-
-config();
+import { flashcardControllerDrizzle } from "./flashCardController";
+import { CreateFlashcardMediaZodInput, FlashcardMediaZodInput } from "./types";
 
 export const flashcardRouter = router({
   createFlashcard: privateProcedure
-    .input(types.FlashcardsSchema)
+    .input(CreateFlashcardMediaZodInput)
     .mutation(async (opts) => {
-      const [errorCheck, res] =
-        await flashcardController.controlCreateFlashcard(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, flashcardRes] =
+        await flashcardControllerDrizzle.createFlashcard(opts.input);
+      if (err) throw err;
+
+      return flashcardRes;
     }),
 
   updateFlashcard: privateProcedure
-    .input(types.FlashcardsSchema)
+    .input(FlashcardMediaZodInput)
     .mutation(async (opts) => {
-      const [errorCheck, res] =
-        await flashcardController.controlUpdateFlashcard(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, flashcardRes] =
+        await flashcardControllerDrizzle.updateFlashcardById(opts.input);
+      if (err) throw err;
+
+      return flashcardRes;
     }),
 
   deleteFlashcard: privateProcedure.input(z.string()).mutation(async (opts) => {
-    const res = flashcardController.controlDeleteFlashcard(opts.input);
-    return res;
+    const [err, flashcardRes] =
+      await flashcardControllerDrizzle.deleteFlashcardById(opts.input);
+    if (err) throw err;
+
+    return flashcardRes;
   }),
 
   getAllCardsFromStack: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await flashcardController.controlGetAllFlashcardsFromStack(opts.input);
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      const [err, flashcardRes] =
+        await flashcardControllerDrizzle.getAllFlashcardsByStackId(opts.input);
+      if (err) throw err;
+
+      return flashcardRes;
     }),
 
   getLearnableCardsFromStack: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await flashcardController.controlGetLearnableFlashcardsFromStack(
+      const [err, flashcardRes] =
+        await flashcardControllerDrizzle.getLearnableFlashcardsByStackId(
           opts.input,
         );
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      if (err) throw err;
+
+      return flashcardRes;
     }),
 
   getAllCardsFromParentAndChilds: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await flashcardController.controlgetAllFlashcardsFromStackAndChildStacks(
+      const [err, flashcardRes] =
+        await flashcardControllerDrizzle.getAllFlashcardsFromStackAndChildrenStacks(
           opts.input,
         );
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      if (err) throw err;
+
+      return flashcardRes;
     }),
 
   getLearnableCardsFromParentAndChilds: privateProcedure
     .input(z.string())
     .query(async (opts) => {
-      const [errorCheck, res] =
-        await flashcardController.getLearnableFlashcardsFromStackAndChilds(
+      const [err, flashcardRes] =
+        await flashcardControllerDrizzle.getLearnableFlashcardsFromStackAndChildren(
           opts.input,
         );
-      if (errorCheck) {
-        throw errorCheck;
-      }
-      return res;
+      if (err) throw err;
+
+      return flashcardRes;
     }),
 });
 

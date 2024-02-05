@@ -1,8 +1,7 @@
 import { Lucia, Scrypt, User as luciaUser } from "lucia";
 import { lucia } from "../../auth/lucia";
 import { NewUser, User } from "../../db/schema";
-import { getTRPCError } from "../../utils";
-import { TRPCStatus } from "../auth/types";
+import { TRPCStatus, getTRPCError } from "../../utils";
 import { GetUserBySessionInput } from "./types";
 import { UserModel, userModelDrizzle } from "./user.model";
 

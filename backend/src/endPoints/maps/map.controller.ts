@@ -1,6 +1,5 @@
 import { Map, newMap } from "../../db/schema";
-import { getTRPCError } from "../../utils";
-import { TRPCStatus } from "../auth/types";
+import { TRPCStatus, getTRPCError } from "../../utils";
 import { MapModel, mapModelDrizzle } from "./map.model";
 
 export interface MapController {

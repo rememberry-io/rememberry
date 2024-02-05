@@ -1,15 +1,9 @@
 import { Lucia, Scrypt, User } from "lucia";
 import { lucia } from "../../auth/lucia";
 import { User as DBUser } from "../../db/schema";
-import { getTRPCError } from "../../utils";
+import { TRPCStatus, getTRPCError } from "../../utils";
 import { UserController, userController } from "../user/user.controller";
-import {
-  AuthOutput,
-  LoginInput,
-  LogoutInput,
-  RegisterInput,
-  TRPCStatus,
-} from "./types";
+import { AuthOutput, LoginInput, LogoutInput, RegisterInput } from "./types";
 
 export interface AuthenticationController {
   register(input: RegisterInput): Promise<TRPCStatus<AuthOutput>>;

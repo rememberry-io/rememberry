@@ -3,11 +3,11 @@ import { eq, sql } from "drizzle-orm";
 import { db, dbConnection } from "../../db/db";
 import { Map, maps, newMap } from "../../db/schema";
 import {
+  TRPCStatus,
   getModelDefaultError,
   getTRPCError,
   hasOnlyOneEntry,
 } from "../../utils";
-import { TRPCStatus } from "../auth/types";
 
 export interface MapModel {
   createMap: (input: newMap) => Promise<TRPCStatus<Map>>;

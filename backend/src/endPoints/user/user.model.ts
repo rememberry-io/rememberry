@@ -2,8 +2,7 @@ import { eq } from "drizzle-orm";
 import { DatabaseError } from "pg";
 import { db, dbConnection } from "../../db/db";
 import { NewUser, User, users } from "../../db/schema";
-import { getTRPCError, hasOnlyOneEntry } from "../../utils";
-import { TRPCStatus } from "../auth/types";
+import { TRPCStatus, getTRPCError, hasOnlyOneEntry } from "../../utils";
 
 export interface UserModel {
   createUser: (user: NewUser) => Promise<TRPCStatus<User>>;

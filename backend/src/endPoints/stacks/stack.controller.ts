@@ -1,8 +1,7 @@
 //import * as cacheModel from "../cache/cacheModel";
 
 import { NewStack, Stack } from "../../db/schema";
-import { getTRPCError } from "../../utils";
-import { TRPCStatus } from "../auth/types";
+import { TRPCStatus, getTRPCError } from "../../utils";
 import { StackModel, stackModelDrizzle } from "./stack.model";
 import { StackWithChildren } from "./types";
 

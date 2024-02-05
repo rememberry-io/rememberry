@@ -29,6 +29,8 @@ export const getModelDefaultError = (error: unknown) => {
 
 export type TRPCStatus<T> = Readonly<[TRPCError, null] | [null, T]>;
 
+export type PromiseTStatus<T> = Promise<TRPCStatus<T>>;
+
 export type AsyncFunction<T> = () => Promise<T>;
 
 export const catchDrizzleErrorOneEntry = async <T>(
