@@ -14,7 +14,7 @@ export default function FormElement({ id, placeholder, type }: FormElement) {
         <p className="text-sm font-medium dark:bg-dark-800">{placeholder}</p>
       </label>
       <Field
-        className="  bg-slate-100 dark:bg-dark-700 border-none dark:text-white dark:placeholder:text-white/50"
+        className="  bg-gray-100 dark:bg-dark-700 border-none dark:text-white dark:placeholder:text-white/50"
         as={Input}
         crossOrigin="anonymous"
         id={id}
