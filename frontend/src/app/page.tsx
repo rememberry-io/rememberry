@@ -76,7 +76,7 @@ function MapMenu() {
                 <FlowInput
                   value={description}
                   textAreaRef={descriptionRef}
-                  placeholder={"Map Name"}
+                  placeholder={"Description"}
                   className=""
                   rows={1}
                   changes={(value: string) => setDescription(value)}
