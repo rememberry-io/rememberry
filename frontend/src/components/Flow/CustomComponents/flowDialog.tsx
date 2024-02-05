@@ -36,6 +36,8 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
   };
 
   const discardChanges = () => {
+    setFrontText(flashcardFrontText);
+    setBackText(flashcardBackText);
     closeDialog();
   };
 

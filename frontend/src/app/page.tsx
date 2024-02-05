@@ -43,12 +43,13 @@ function MapMenu() {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   useAutosizeTextArea(descriptionRef.current, description);
 
-  const handleDescriptionChange = (
-    evt: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    const valFront = evt.target?.value;
-
-    setDescription(valFront);
+  const handleSubmit = () => {
+    const handleDescriptionChange = (
+      evt: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
+      const valFront = evt.target?.value;
+      setDescription(valFront);
+    };
   };
 
   return (
@@ -72,6 +73,7 @@ function MapMenu() {
                   readOnly={false}
                   isStack={false}
                   isInput={true}
+                  onSubmit={handleSubmit}
                 />
                 <FlowTextArea
                   value={description}
@@ -83,6 +85,7 @@ function MapMenu() {
                   readOnly={false}
                   isStack={false}
                   isInput={true}
+                  onSubmit={handleSubmit}
                 />
               </div>
 
