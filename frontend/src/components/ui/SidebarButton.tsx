@@ -12,7 +12,7 @@ export function SidebarButton({ isOpen, toggleSidebar }: SidebarButtonProps) {
     <Button
       variant="outline"
       size="icon"
-      className="bg-blue-700 text-white"
+      className="bg-primary  text-white"
       onClick={toggleSidebar}
     >
       {isOpen ? (
