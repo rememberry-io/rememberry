@@ -27,7 +27,6 @@ export const FlowHeader: React.FC<HeaderProps> = () => {
     <Panel
       position="top-center"
       style={{
-        
         justifyContent: "space-between",
         width: "90%",
         paddingTop: "1rem",

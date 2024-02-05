@@ -29,7 +29,7 @@ export const FlowTextArea = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevent the default action to avoid a newline being added
-      onSubmit(); 
+      onSubmit();
     }
   };
 
@@ -42,7 +42,7 @@ export const FlowTextArea = ({
       rows={rows}
       readOnly={readOnly}
       onChange={(e) => changes(e.target.value)}
-      onKeyDown={handleKeyDown} 
+      onKeyDown={handleKeyDown}
     />
   );
 };

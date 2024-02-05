@@ -1,11 +1,6 @@
 "use client";
-import Loading from "@/app/loading";
-import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
-import {
-  User,
-  useUserStore,
-} from "../../lib/services/authentication/userStore";
+import { ReactNode } from "react";
+import { User } from "../../lib/services/authentication/userStore";
 
 interface FetchUserProps {
   user: User | null;
