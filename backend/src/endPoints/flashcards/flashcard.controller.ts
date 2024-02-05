@@ -1,7 +1,7 @@
 import { Flashcard } from "../../db/schema";
 import { PromiseTStatus, getTRPCError } from "../../utils";
 import { MediaModel, mediaModelDrizzle } from "../media/media.model";
-import { FlashcardModel, flashcardModelDrizzle } from "./flashcardModels";
+import { FlashcardModel, flashcardModelDrizzle } from "./flashcard.model";
 import { CreateFlashcard, FlashcardAndMedia } from "./types";
 
 export interface FlashcardController {

@@ -1,7 +1,7 @@
 import z from "zod";
 import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
-import { flashcardControllerDrizzle } from "./flashCardController";
+import { flashcardControllerDrizzle } from "./flashcard.controller";
 import { CreateFlashcardMediaZodInput, FlashcardMediaZodInput } from "./types";
 
 export const flashcardRouter = router({
