@@ -8,7 +8,7 @@ import useStore, { RFState } from "../stores/nodeStore";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
-import { FlashcardDialog } from "../CustomComponents/flowDialog";
+import { FlowDialog } from "../CustomComponents/flowDialog";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
@@ -210,7 +210,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               >
                 <Maximize2 />
               </Button>
-              <FlashcardDialog
+              <FlowDialog
                 nodeId={id}
                 cardType={cardType}
                 onSubmit={handleDialogSubmit}
@@ -249,7 +249,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               >
                 <Maximize2 />
               </Button>
-              <FlashcardDialog
+              <FlowDialog
                 cardType={cardType}
                 nodeId={id}
                 onSubmit={handleDialogSubmit}

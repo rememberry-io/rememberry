@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { FlowTextArea } from "./flowTextArea";
 
-interface FlashcardDialogProps {
+interface FlowDialogProps {
   nodeId: string;
   flashcardParentName: string;
   flashcardFrontText: string;
@@ -15,7 +15,7 @@ interface FlashcardDialogProps {
   cardType: string;
 }
 
-export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
+export const FlowDialog: React.FC<FlowDialogProps> = ({
   nodeId,
   flashcardParentName,
   flashcardFrontText,
