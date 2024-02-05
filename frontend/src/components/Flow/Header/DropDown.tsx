@@ -11,7 +11,7 @@ import {
 export function DropDown() {
   return (
     <Select>
-      <SelectTrigger className="w-[180px]  dark:bg-dark-700">
+      <SelectTrigger className="w-[180px]  dark:bg-dark-700 hover:bg-gray-100">
         <SelectValue placeholder="Show difficulty" />
       </SelectTrigger>
       <SelectContent className="flex flex-col  dark:bg-dark-700 ">
