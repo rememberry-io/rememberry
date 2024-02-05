@@ -1,7 +1,7 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
-import { FlowInput } from "@/components/Flow/CustomComponents/flowTextArea";
+import { FlowTextArea } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -62,7 +62,7 @@ function MapMenu() {
                 <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?
                 </h1>
-                <FlowInput
+                <FlowTextArea
                   value={name}
                   textAreaRef={descriptionRef}
                   placeholder={"Map Name"}
@@ -73,7 +73,7 @@ function MapMenu() {
                   isStack={false}
                   isInput={true}
                 />
-                <FlowInput
+                <FlowTextArea
                   value={description}
                   textAreaRef={descriptionRef}
                   placeholder={"Description"}

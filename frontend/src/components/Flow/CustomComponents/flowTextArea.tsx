@@ -1,4 +1,4 @@
-export const FlowInput = ({
+export const FlowTextArea = ({
   className,
   value,
   textAreaRef,

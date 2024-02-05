@@ -9,7 +9,7 @@ import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
 import { FlashcardDialog } from "../CustomComponents/flowDialog";
-import { FlowInput } from "../CustomComponents/flowTextArea";
+import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
@@ -149,7 +149,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
           <div className={`p-2 bg-primary rounded-lg ${borderClasses} `}>
             <div className="inputWrapper">
               <div>
-                <FlowInput
+                <FlowTextArea
                   isStack={true}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
@@ -172,7 +172,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
           <div className={`p-2 rounded-lg ${borderClasses}`}>
             <div className="inputWrapper">
               <div>
-                <FlowInput
+                <FlowTextArea
                   isStack={false}
                   className={""}
                   value={isFront ? frontText : backText}

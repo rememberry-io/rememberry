@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
-import { FlowInput } from "./flowTextArea";
+import { FlowTextArea } from "./flowTextArea";
 
 interface FlashcardDialogProps {
   nodeId: string;
@@ -65,7 +65,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
                 </div>
               </>
 
-              <FlowInput
+              <FlowTextArea
                 className=" "
                 value={frontText === "New Front Text" ? "" : frontText}
                 placeholder="Front Text"
@@ -79,7 +79,7 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
             </div>
             <hr className="m-2" />
             <div className="leading-6 text-justify">
-              <FlowInput
+              <FlowTextArea
                 className=" "
                 value={backText === "New Back Text" ? "" : backText}
                 placeholder="Back Text"
