@@ -122,7 +122,7 @@ function MapMenu() {
         <div id="body" className="flex content-start p-20">
           {sortedMaps.map((map) => (
             <>
-              <Card className="dark:bg-dark-600 max-w-xs" key={map.id}>
+              <div className="dark:bg-dark-600 w-48" key={map.id}>
                 <Flex gap="3" align="center">
                   <Box>
                     <Link href={"/map/" + map.id}>
@@ -134,7 +134,7 @@ function MapMenu() {
                     </Link>
                   </Box>
                 </Flex>
-              </Card>
+              </div>
             </>
           ))}
         </div>
