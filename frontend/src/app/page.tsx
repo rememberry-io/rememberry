@@ -6,12 +6,11 @@ import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowTextArea } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useUserStore } from "@/lib/services/authentication/userStore";
 import useCreateMap from "@/lib/services/maps/useCreateMap";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
-import { Box, Flex } from "@radix-ui/themes";
+import { Box } from "@radix-ui/themes";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,7 +23,12 @@ function MapMenu() {
   const [openDialog, setOpenDialog] = useState(false);
   const [description, setDescription] = useState("");
   const { isLoading, maps } = useGetMapByUserId();
+  const [addMapActive, setAddMapActive] = useState(false);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const createMap = useCreateMap();
+
   const userId = useUserStore((state) => {
     if (state.user) {
       return state.user.id;
@@ -40,8 +44,21 @@ function MapMenu() {
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
   });
 
-  const openNamingDialog = () => {
+
+  const handleZoomDialog = () => {
     setOpenDialog(true);
+    setAddMapActive(false);
+    setIsDialogOpen(true);
+  };
+  const openAddDialog = () => {
+    setOpenDialog(true);
+    setAddMapActive(true);
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setOpenDialog(false);
+    setAddMapActive(false);
   };
 
   const handleSubmit = () => {
@@ -50,6 +67,7 @@ function MapMenu() {
     ) => {
       const valFront = evt.target?.value;
       setDescription(valFront);
+      setAddMapActive(false);
     };
   };
 
@@ -57,13 +75,15 @@ function MapMenu() {
     <div className="relative">
       <FlowBackground />
       <div className="z-10 absolute top-0 left-0 w-full h-screen">
-        <Dialog open={openDialog} onOpenChange={() => setOpenDialog(false)}>
-          <DialogContent onAbort={() => setOpenDialog(false)}>
+        <Dialog open={openDialog || addMapActive} onOpenChange={closeDialog}>
+          <DialogContent onAbort={closeDialog}>
             <div>
               <div>
-                <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
-                  What do you want to call it?
-                </h1>
+                {addMapActive && (
+                  <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
+                    What do you want to call it?
+                  </h1>
+                )}
                 <FlowTextArea
                   value={name}
                   textAreaRef={descriptionRef}
@@ -123,16 +143,17 @@ function MapMenu() {
           {sortedMaps.map((map) => (
             <>
               <div className="dark:bg-dark-600 mx-5" key={map.id}>
-                  <Box>
-                    <Link href={"/map/" + map.id}>
-                     <MapCard map={{
-                        name: map.name,
-                        description: map.description,
-                      }}  />
-                    
-                    </Link>
-                  </Box>
-
+                <Box>
+                  <MapCard
+                    key={map.id}
+                    map={{
+                      id: map.id,
+                      name: map.name,
+                      description: map.description,
+                    }}
+                    handleToggleDialog={handleZoomDialog}
+                  />
+                </Box>
               </div>
             </>
           ))}
@@ -145,7 +166,7 @@ function MapMenu() {
                 <ArrowRight className="ml-2" />
               </Button>
             </Link>
-            <Button onClick={openNamingDialog}>Add Map</Button>
+            <Button onClick={openAddDialog}>Add Map</Button>
           </>
         </FlowFooter>
       </div>
