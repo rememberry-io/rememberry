@@ -28,7 +28,7 @@ export const FlowHeader: React.FC<HeaderProps> = () => {
       position="top-center"
       style={{
         justifyContent: "space-between",
-        width: "100%",
+        width: "90%",
         paddingTop: "1rem",
       }}
     >

@@ -6,7 +6,6 @@ import ReactFlow, {
   NodeOrigin,
   OnConnectEnd,
   OnConnectStart,
-  Panel,
   ReactFlowProvider,
   useReactFlow,
   useStoreApi,
@@ -22,6 +21,7 @@ import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import Card from "@/components/Flow/FlashcardComponents/Card";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
@@ -147,7 +147,7 @@ function Map() {
         <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
-        <Panel position="bottom-center" className="space-x-4">
+        <FlowFooter>
           <Button
             variant="default"
             className="border-2 border-white dark:border-dark-900"
@@ -155,7 +155,7 @@ function Map() {
           >
             Add Stack
           </Button>
-        </Panel>
+        </FlowFooter>
       </ReactFlow>
     </div>
   );

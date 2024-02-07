@@ -1,7 +1,8 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
-import { FlowInput } from "@/components/Flow/CustomComponents/flowTextArea";
+import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
+import { FlowTextArea } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -42,12 +43,13 @@ function MapMenu() {
     setOpenDialog(true);
   };
 
-  const handleDescriptionChange = (
-    evt: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    const valFront = evt.target?.value;
-
-    setDescription(valFront);
+  const handleSubmit = () => {
+    const handleDescriptionChange = (
+      evt: React.ChangeEvent<HTMLTextAreaElement>,
+    ) => {
+      const valFront = evt.target?.value;
+      setDescription(valFront);
+    };
   };
 
   return (
@@ -61,7 +63,7 @@ function MapMenu() {
                 <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?
                 </h1>
-                <FlowInput
+                <FlowTextArea
                   value={name}
                   textAreaRef={descriptionRef}
                   placeholder={"Map Name"}
@@ -71,8 +73,9 @@ function MapMenu() {
                   readOnly={false}
                   isStack={false}
                   isInput={true}
+                  onSubmit={handleSubmit}
                 />
-                <FlowInput
+                <FlowTextArea
                   value={description}
                   textAreaRef={descriptionRef}
                   placeholder={"Description"}
@@ -82,6 +85,7 @@ function MapMenu() {
                   readOnly={false}
                   isStack={false}
                   isInput={true}
+                  onSubmit={handleSubmit}
                 />
               </div>
 
@@ -134,8 +138,8 @@ function MapMenu() {
             </>
           ))}
         </div>
-        <div className="fixed inset-x-0 bottom-4 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center space-x-4">
+        <FlowFooter>
+          <>
             <Link href={"/map"}>
               <Button className="flex items-center ">
                 <span>Go to Map</span>
@@ -143,8 +147,8 @@ function MapMenu() {
               </Button>
             </Link>
             <Button onClick={openNamingDialog}>Add Map</Button>
-          </div>
-        </div>
+          </>
+        </FlowFooter>
       </div>
     </div>
   );

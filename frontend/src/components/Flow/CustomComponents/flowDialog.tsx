@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
-import { FlowInput } from "./flowTextArea";
+import { FlowTextArea } from "./flowTextArea";
 
-interface FlashcardDialogProps {
+interface FlowDialogProps {
   nodeId: string;
   flashcardParentName: string;
   flashcardFrontText: string;
@@ -15,7 +15,7 @@ interface FlashcardDialogProps {
   cardType: string;
 }
 
-export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
+export const FlowDialog: React.FC<FlowDialogProps> = ({
   nodeId,
   flashcardParentName,
   flashcardFrontText,
@@ -32,6 +32,12 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   const handleSubmit = () => {
     onSubmit(frontText, backText, parentName);
+    closeDialog();
+  };
+
+  const discardChanges = () => {
+    setFrontText(flashcardFrontText);
+    setBackText(flashcardBackText);
     closeDialog();
   };
 
@@ -55,46 +61,50 @@ export const FlashcardDialog: React.FC<FlashcardDialogProps> = ({
 
   return (
     <div>
-      <Dialog open={isDialogOpen} onOpenChange={handleSubmit}>
-        <DialogContent onAbort={handleSubmit}>
-          <div>
+      <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
+        <DialogContent onAbort={closeDialog}>
+          <form onSubmit={handleSubmit}>
             <div>
-              <>
-                <div className="font-medium text-primary dark:text-white leading-10">
-                  {parentName}
-                </div>
-              </>
+              <div>
+                <>
+                  <div className="font-medium text-primary dark:text-white leading-10">
+                    {parentName}
+                  </div>
+                </>
 
-              <FlowInput
-                className=" "
-                value={frontText === "New Front Text" ? "" : frontText}
-                placeholder="Front Text"
-                textAreaRef={frontTextAreaRef}
-                rows={1}
-                changes={(value: string) => setFrontText(value)}
-                readOnly={false}
-                isStack={false}
-                isInput={true}
-              />
+                <FlowTextArea
+                  className=" "
+                  value={frontText === "New Front Text" ? "" : frontText}
+                  placeholder="Front Text"
+                  textAreaRef={frontTextAreaRef}
+                  rows={1}
+                  changes={(value: string) => setFrontText(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
+                  onSubmit={handleSubmit}
+                />
+              </div>
+
+              <div className="leading-6 text-justify">
+                <FlowTextArea
+                  className=" "
+                  value={backText === "New Back Text" ? "" : backText}
+                  placeholder="Back Text"
+                  textAreaRef={backTextAreaRef}
+                  rows={1}
+                  changes={(value: string) => setBackText(value)}
+                  readOnly={false}
+                  isStack={false}
+                  isInput={true}
+                  onSubmit={handleSubmit}
+                />
+              </div>
+              <Button className="  mt-4" variant="default">
+                Save
+              </Button>
             </div>
-            <hr className="m-2" />
-            <div className="leading-6 text-justify">
-              <FlowInput
-                className=" "
-                value={backText === "New Back Text" ? "" : backText}
-                placeholder="Back Text"
-                textAreaRef={backTextAreaRef}
-                rows={1}
-                changes={(value: string) => setBackText(value)}
-                readOnly={false}
-                isStack={false}
-                isInput={true}
-              />
-            </div>
-            <Button className="  mt-4" variant="default" onClick={handleSubmit}>
-              Save
-            </Button>
-          </div>
+          </form>
         </DialogContent>
       </Dialog>
     </div>
