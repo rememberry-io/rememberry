@@ -1,6 +1,7 @@
 // root page
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import MapCard from "@/components/Flow/CardComponents/MapCard";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowTextArea } from "@/components/Flow/CustomComponents/flowTextArea";
 import useAutosizeTextArea from "@/components/Flow/hooks/useAutosizeTextArea";
@@ -125,12 +126,11 @@ function MapMenu() {
                 <Flex gap="3" align="center">
                   <Box>
                     <Link href={"/map/" + map.id}>
-                      <button>
-                        <div className="p-3  rounded-lg m-10">{map.name}</div>
-                        <div className="p-3  rounded-lg m-10">
-                          {map.description}
-                        </div>
-                      </button>
+                     <MapCard map={{
+                        name: map.name,
+                        description: map.description,
+                      }}  />
+                    
                     </Link>
                   </Box>
                 </Flex>

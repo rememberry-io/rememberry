@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Maximize2, RotateCcw } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
-import { CustomHandle } from "../FlashcardComponents/CustomHandle";
+import { CustomHandle } from "../CardComponents/CustomHandle";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 
 interface StackProps {
