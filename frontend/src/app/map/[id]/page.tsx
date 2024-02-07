@@ -31,7 +31,6 @@ type MapProps = {
   params: { id: string };
 };
 
-
 const selector = (state: RFState) => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -59,7 +58,7 @@ function Map() {
     shallow,
   );
   const { screenToFlowPosition } = useReactFlow();
-  const connectingNodeId = useRef < string | null > (null);
+  const connectingNodeId = useRef<string | null>(null);
   const [isFront, setIsFront] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);

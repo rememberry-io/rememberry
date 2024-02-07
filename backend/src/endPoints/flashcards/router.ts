@@ -5,7 +5,7 @@ import { flashcardControllerDrizzle } from "./flashcard.controller";
 import { CreateFlashcardMediaZodInput, FlashcardMediaZodInput } from "./types";
 
 export const flashcardRouter = router({
-  createFlashcard: privateProcedure
+  create: privateProcedure
     .input(CreateFlashcardMediaZodInput)
     .mutation(async (opts) => {
       const [err, flashcardRes] =

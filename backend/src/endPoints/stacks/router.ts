@@ -88,7 +88,7 @@ export const stackRouter = router({
       return stacks;
     }),
 
-  getAll: privateProcedure.input(z.string()).query(async (opts) => {
+  getAllByMapId: privateProcedure.input(z.string()).query(async (opts) => {
     const [err, stacks] = await stackControllerDrizzle.getStacksByMapId(
       opts.input,
     );
