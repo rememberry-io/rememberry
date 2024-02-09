@@ -139,10 +139,10 @@ function MapMenu() {
           </DialogContent>
         </Dialog>
         <div id="header"></div>
-        <div id="body" className="flex content-start p-20">
+        <div id="body" className="flex content-start p-20 w-screen flex-wrap">
           {sortedMaps.map((map) => (
             <>
-              <div className="dark:bg-dark-600 mx-5" key={map.id}>
+              <div className="dark:bg-dark-600 mx-5 my-5" key={map.id}>
                 <Box>
                   <MapCard
                     key={map.id}
