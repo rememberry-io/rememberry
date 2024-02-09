@@ -79,7 +79,6 @@ export const MapDialog: React.FC<MapDialogProps> = ({
     }
   }, [isEditingActive, mapName, mapDescription]);
 
-
   //TODO: passing the props when zoomed and then making it edtiable when clicked
   //TODO: updating the map, when edited
   return (

@@ -49,8 +49,6 @@ function MapMenu() {
     setAddMapActive(false);
   };
 
-  
-
   const handleEditDialog = (map: { id: any; name: any; description: any }) => {
     setName(map.name);
     setDescription(map.description);
