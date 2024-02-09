@@ -8,7 +8,7 @@ import useStore, { RFState } from "../stores/nodeStore";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
-import { FlowDialog } from "../CustomComponents/flowDialog";
+import { FlowDialog } from "../CustomComponents/cardDialog";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";

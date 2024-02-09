@@ -9,34 +9,47 @@ interface MapCardProps {
     description: string;
     id: string;
   };
-  handleToggleDialog: (open: boolean) => void; // Added the missing property
+  handleZoomDialog: (open: boolean) => void;
+  handleToggleDialog: (open: boolean) => void;
+  handleMapId: (id: string) => void;
+  handleEditDialog: (open: boolean) => void;
 }
 
-const MapCard: React.FC<MapCardProps> = ({ map, handleToggleDialog }) => {
+const MapCard: React.FC<MapCardProps> = ({
+  map,
+  handleToggleDialog,
+  handleZoomDialog,
+  handleMapId,
+  handleEditDialog,
+}) => {
   const [name, setName] = useState(map.name);
   const [description, setDescription] = useState(map.description);
 
-  const [menuZoom, setMenuZoom] = useState(false);
+  const [menuZoom, setMenuZoomr] = useState(false);
 
   const openZoomDialog = () => {
-    handleToggleDialog(true); // This opens the dialog
+    handleToggleDialog(true);
+    console.log("zoom");
+  };
+  const editDialog = () => {
+    handleToggleDialog(true);
+    handleEditDialog(true);
+    console.log("edit");
   };
 
   const closeZoomDialog = () => {
-    handleToggleDialog(false); // This closes the dialog
+    handleToggleDialog(false);
   };
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   useAutosizeTextArea(descriptionRef.current, description);
 
   return (
-    //TODO: Logic for zooming,  renaming dialog not adding & deleting the dialog
-
     <div className="flex flex-col gap-4 rounded-lg border bg-card text-card-foreground shadow-sm p-3 w-72">
       <div className="flex gap-1">
         <button className="bg-red-500 rounded-full p-1">
           <X size="12" strokeWidth="3" color="#7E0508" />
         </button>
-        <button className="bg-yellow-500 rounded-full p-1">
+        <button className="bg-yellow-500 rounded-full p-1" onClick={editDialog}>
           <PenLine size="12" strokeWidth="3" color="#985712" />
         </button>
         <button
