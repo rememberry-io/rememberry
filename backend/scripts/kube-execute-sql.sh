@@ -1,7 +1,7 @@
 #!/bin/sh
 
 DIRECTORY=/tmp/drizzle
-POSTGRES_DB=remproduction
+POSTGRES_DB=remstaging
 
 for file in "$DIRECTORY"/*
 do
@@ -9,7 +9,7 @@ do
     case "$file" in
       *.sql)
         echo "Executing $file..."
-        psql -U postgres -d $POSTGRES_DB -f "$file"
+        PGPASSWORD=$POSTGRES_PASSWORD psql -U postgres -d $POSTGRES_DB -f "$file"
     esac
   fi
 done
