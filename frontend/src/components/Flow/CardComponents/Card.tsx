@@ -79,7 +79,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   useEffect(() => {
     if (isNew) {
       setIsDialogOpen(true);
-      // Update isNew to false so that the dialog doesn't open automatically again
       setIsNew(false);
     }
   }, [isNew]);
@@ -110,8 +109,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
-  const clickTimeout = useRef<number | undefined>(undefined);
 
   const toggleCard = () => {
     setIsFront(!isFront);
@@ -119,10 +116,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const openDialog = () => {
     setIsDialogOpen(true);
-  };
-
-  const handleClick = () => {
-    setClickCount((prevCount) => prevCount + 1);
   };
 
   const closeDialog = () => setIsDialogOpen(false);
