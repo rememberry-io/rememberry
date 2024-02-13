@@ -24,6 +24,8 @@ function MapMenu() {
   const [addMapActive, setAddMapActive] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditingActive, setEditingActive] = useState(false);
+  const [isZoomActive, setZoomActive] = useState(false);
+
   const userId = useUserStore((state) => state.user?.id || null);
   const { actions } = useMapsStore();
 
@@ -36,19 +38,23 @@ function MapMenu() {
     setIsDialogOpen(open);
   };
 
-  const handleZoomDialog = (map: {
-    id: string;
-    name: string;
-    description: string;
-  }) => {
+  const handleZoomDialog = (map: { id: any; name: any; description: any }) => {
     setName(map.name);
     setDescription(map.description);
     setMapId(map.id);
     setIsDialogOpen(true);
+    setZoomActive(true);
     setEditingActive(false);
     setAddMapActive(false);
+    console.log("zoom:", map.name, map.description);
   };
 
+  const toggleEditMode = () => {
+    if (isZoomActive) {
+      setEditingActive(true);
+      setZoomActive(false) 
+    }
+  }
   const handleEditDialog = (map: { id: any; name: any; description: any }) => {
     setName(map.name);
     setDescription(map.description);
@@ -71,6 +77,8 @@ function MapMenu() {
     setName("");
     setDescription("");
   };
+
+  
 
   const handleSubmit = () => {
     const handleDescriptionChange = (
@@ -100,14 +108,14 @@ function MapMenu() {
           onSubmit={handleSubmit}
           isAddingactive={addMapActive}
           isEditingActive={isEditingActive}
+          isZoomActive={isZoomActive}
+          toggleEditMode={toggleEditMode}
         />
         <div
           id="header"
           className="flex flex-col justify-center items-center mt-16 text-2xl text-primary font-medium"
         >
-          <h1 className="">
-            Which map do you want to learn today?
-          </h1>
+          <h1 className="">Which map do you want to learn today?</h1>
         </div>
         <div id="body" className="flex content-start p-20 w-screen flex-wrap">
           {sortedMaps.map(

@@ -29,6 +29,7 @@ const MapCard: React.FC<MapCardProps> = ({
 
   const openZoomDialog = () => {
     handleToggleDialog(true);
+    handleZoomDialog(true);
     console.log("zoom");
   };
   const editDialog = () => {

@@ -16,6 +16,8 @@ interface MapDialogProps {
   onSubmit: (name: string, description: string) => void;
   isAddingactive: boolean;
   isEditingActive: boolean;
+  isZoomActive: boolean;
+  toggleEditMode: (open: boolean) => void;
 }
 
 export const MapDialog: React.FC<MapDialogProps> = ({
@@ -28,14 +30,13 @@ export const MapDialog: React.FC<MapDialogProps> = ({
   onSubmit,
   isAddingactive,
   isEditingActive,
+  isZoomActive,
+  toggleEditMode,
 }) => {
   const [userId, setUserId] = useState(userID);
   const [mapId, setMapId] = useState(mapID);
   const [name, setName] = useState(mapName);
   const [description, setDescription] = useState(mapDescription);
-
-  console.log("name:", name);
-  console.log("description:", description);
 
   const createMap = useCreateMap();
   const router = useRouter();
@@ -70,17 +71,12 @@ export const MapDialog: React.FC<MapDialogProps> = ({
   };
 
   useEffect(() => {
-    if (isEditingActive) {
+    if (isZoomActive) {
       setName(mapName);
       setDescription(mapDescription);
-    } else {
-      setName("");
-      setDescription("");
     }
-  }, [isEditingActive, mapName, mapDescription]);
+  }, [isZoomActive, mapName, mapDescription]);
 
-  //TODO: passing the props when zoomed and then making it edtiable when clicked
-  //TODO: updating the map, when edited
   return (
     <div>
       <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
@@ -97,31 +93,36 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   Make your changes:
                 </h1>
               )}
-
-              <FlowTextArea
-                value={name}
-                textAreaRef={nameAreaRef}
-                placeholder={"Map Name"}
-                className=""
-                rows={1}
-                changes={(value: string) => setName(value)}
-                readOnly={false}
-                isStack={false}
-                isInput={true}
-                onSubmit={handleSubmit}
-              />
-              <FlowTextArea
-                value={description}
-                textAreaRef={descriptionAreaRef}
-                placeholder={"Description"}
-                className=""
-                rows={1}
-                changes={(value: string) => setDescription(value)}
-                readOnly={false}
-                isStack={false}
-                isInput={true}
-                onSubmit={handleSubmit}
-              />
+              <div
+                onClick={() => {
+                  if (isZoomActive) toggleEditMode(true);
+                }}
+              >
+                <FlowTextArea
+                  value={name}
+                  textAreaRef={nameAreaRef}
+                  placeholder={"Map Name"}
+                  className=""
+                  rows={1}
+                  changes={(value: string) => setName(value)}
+                  readOnly={!isEditingActive}
+                  isStack={false}
+                  isInput={true}
+                  onSubmit={handleSubmit}
+                />
+                <FlowTextArea
+                  value={description}
+                  textAreaRef={descriptionAreaRef}
+                  placeholder={"Description"}
+                  className=""
+                  rows={1}
+                  changes={(value: string) => setDescription(value)}
+                  readOnly={!isEditingActive}
+                  isStack={false}
+                  isInput={true}
+                  onSubmit={handleSubmit}
+                />
+              </div>
             </div>
 
             <div className="leading-6 text-justify"></div>
