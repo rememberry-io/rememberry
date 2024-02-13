@@ -52,9 +52,9 @@ function MapMenu() {
   const toggleEditMode = () => {
     if (isZoomActive) {
       setEditingActive(true);
-      setZoomActive(false) 
+      setZoomActive(false);
     }
-  }
+  };
   const handleEditDialog = (map: { id: any; name: any; description: any }) => {
     setName(map.name);
     setDescription(map.description);
@@ -77,8 +77,6 @@ function MapMenu() {
     setName("");
     setDescription("");
   };
-
-  
 
   const handleSubmit = () => {
     const handleDescriptionChange = (
