@@ -29,7 +29,7 @@ function MapMenu() {
   const userId = useUserStore((state) => state.user?.id || null);
   const { actions } = useMapsStore();
 
-  if (isLoading) return null; // Make sure to return early to avoid conditional hook calls.
+  if (isLoading) return null;
 
   const sortedMaps = maps.sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),

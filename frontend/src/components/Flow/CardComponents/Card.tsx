@@ -137,7 +137,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
-      onClick={toggleCard}
       className={`dragHandle  min-w-48 relative border-none dark:bg-dark-600 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -146,7 +145,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       {cardType === "stack" && (
         <>
           <div className="flex relative flex-row align-middle ml-2"></div>
-          <div className={`p-2 bg-primary rounded-lg ${borderClasses} `}>
+          <div
+            onClick={toggleCard}
+            className={`p-2 bg-primary rounded-lg ${borderClasses} `}
+          >
             <div className="inputWrapper">
               <div>
                 <FlowTextArea
@@ -172,7 +174,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-          <div className={`p-2 rounded-lg ${borderClasses}`}>
+          <div
+            onClick={toggleCard}
+            className={`p-2 rounded-lg ${borderClasses}`}
+          >
             <div className="inputWrapper">
               <div>
                 <FlowTextArea
