@@ -103,9 +103,9 @@ function MapMenu() {
         />
         <div
           id="header"
-          className="flex flex-col justify-center items-center mt-10 text-2xl text-primary font-medium"
+          className="flex flex-col justify-center items-center mt-16 text-2xl text-primary font-medium"
         >
-          <h1 className=" bg-white rounded-md p-5">
+          <h1 className="">
             Which map do you want to learn today?
           </h1>
         </div>
