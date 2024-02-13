@@ -60,17 +60,19 @@ const MapCard: React.FC<MapCardProps> = ({
         </button>
       </div>
       <Link href={"/map/" + map.id}>
-        <div className="flex flex-col  justify-center  m-4 -mt-1">
+        <div className="flex flex-col   justify-center items-center m-4">
           <div
             title={map.name}
-            className=" text-primary text-xl font-semibold overflow-ellipsis line-clamp-1 title={map.name} "
+            className=" text-primary text-xl font-semibold overflow-ellipsis line-clamp-1 "
           >
             {map.name}
           </div>
-          <hr className="m-2" />
-          <textarea className=" line-clamp-2 linebreak overflow-ellipsis resize-none text-center ">
-            {map.description}
-          </textarea>
+
+          <div title={map.description}>
+            <textarea className=" line-clamp-2  mt-2 linebreak overflow-ellipsis resize-none text-center ">
+              {map.description}
+            </textarea>
+          </div>
         </div>
       </Link>
     </div>
