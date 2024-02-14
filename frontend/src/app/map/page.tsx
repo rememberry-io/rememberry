@@ -60,6 +60,8 @@ function Map() {
   const [isOpen, setIsOpen] = useState(false);
   const [openDialogForNode, setOpenDialogForNode] = useState(null);
 
+  const [focusedNodeId, setFocusedNodeId] = useState(null);
+
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };

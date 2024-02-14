@@ -103,8 +103,10 @@ const useStore = create<RFState>((set, get) => ({
     borderColor: string,
     isNew: boolean,
   ) => {
+    
     set({
       nodes: get().nodes.map((node) => {
+        
         if (node.id === nodeId) {
           return {
             ...node,

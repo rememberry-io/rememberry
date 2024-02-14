@@ -13,6 +13,8 @@ import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
+import useFlashcardFocusStore from "../stores/cardFocusStore";
+
 const selector = (state: RFState) => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -61,14 +63,25 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   // zoom so that the tools and trafficlights are still visible when zoomed out
   const { zoom } = useViewport();
 
-  const [isFocused, setIsFocused] = useState(false);
+  const { focusedId, setFocusedId } = useFlashcardFocusStore();
+  const isFocused = id === focusedId;
 
-  function onFocus() {
-    setTimeout(setIsFocused, 0, true);
-  }
-  function onBlur() {
-    setTimeout(setIsFocused, 0, false);
-  }
+  const onFocus = () => {
+    setFocusedId(id);
+  };
+  const onBlur = () => {
+    if (isFocused) {
+      setFocusedId(null); // This will allow no card to be focused when the current focused card loses focus
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (isFocused) {
+        setFocusedId(null);
+      }
+    };
+  }, [isFocused, setFocusedId]);
 
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
