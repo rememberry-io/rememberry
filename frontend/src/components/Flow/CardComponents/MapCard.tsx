@@ -70,7 +70,7 @@ const MapCard: React.FC<MapCardProps> = ({
           </div>
 
           <div title={map.description}>
-            <textarea className=" line-clamp-2  mt-2 linebreak overflow-ellipsis resize-none text-center ">
+            <textarea className="border-none focus:hidden line-clamp-2  mt-2 linebreak overflow-ellipsis resize-none text-center ">
               {map.description}
             </textarea>
           </div>

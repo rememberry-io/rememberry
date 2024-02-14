@@ -138,6 +138,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       onFocus={onFocus}
       onBlur={onBlur}
       onClick={toggleCard}
+      //TODO: traffic light multifocus bug => flashcard id in zustand store
       className={`dragHandle  min-w-48 relative border-none dark:bg-dark-600 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
