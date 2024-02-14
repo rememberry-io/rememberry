@@ -71,7 +71,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   };
   const onBlur = () => {
     if (isFocused) {
-      setFocusedId(null); // This will allow no card to be focused when the current focused card loses focus
+      setFocusedId(null);
     }
   };
 

@@ -41,6 +41,7 @@ const useStore = create<RFState>((set, get) => ({
         backText: "New Back Text",
         parentName: "",
         mainStackID: "",
+        borderColors: [],
       },
     },
   ],
@@ -58,6 +59,7 @@ const useStore = create<RFState>((set, get) => ({
       edges: applyEdgeChanges(changes, get().edges),
     });
   },
+
   addChildNode: (parentNode: Node, position: XYPosition) => {
     const newNode = {
       id: nanoid(),
@@ -103,10 +105,8 @@ const useStore = create<RFState>((set, get) => ({
     borderColor: string,
     isNew: boolean,
   ) => {
-    
     set({
       nodes: get().nodes.map((node) => {
-        
         if (node.id === nodeId) {
           return {
             ...node,
@@ -124,6 +124,7 @@ const useStore = create<RFState>((set, get) => ({
       }),
     });
   },
+
   updateNodeType: (nodeId: string, newNodeType: string) => {
     set({
       nodes: get().nodes.map((node) => {
