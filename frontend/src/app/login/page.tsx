@@ -61,7 +61,7 @@ export default function Login() {
               >
                 {({ errors }) => (
                   <Form className="">
-                    <Card className="dark:bg-dark-800 dark:border-dark-700">
+                    <Card className="dark:bg-dark-800 dark:border-dark-700 p-4">
                       <CardHeader>
                         <CardTitle>Welcome back to rememberry :)</CardTitle>
                       </CardHeader>
@@ -121,7 +121,7 @@ export default function Login() {
               >
                 {({ errors }) => (
                   <Form>
-                    <Card className="dark:bg-dark-800 dark:border-dark-700">
+                    <Card className="dark:bg-dark-800 dark:border-dark-700 p-4">
                       <CardHeader>
                         <CardTitle>
                           Ready to start a new learning journey?

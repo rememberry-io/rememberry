@@ -13,7 +13,7 @@ import ReactFlow, {
 import { shallow } from "zustand/shallow";
 
 // we have to import the React Flow styles for it to work
-import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
+import FlashcardEdge from "@/components/Flow/CardComponents/FlashcardEdge";
 import useStore, { RFState } from "@/components/Flow/stores/nodeStore";
 import { Button } from "@/components/ui/button";
 import { useCallback, useRef, useState } from "react";
@@ -21,8 +21,8 @@ import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import FlowBackground from "@/components/Flow/Background/flowBackground";
+import Card from "@/components/Flow/CardComponents/Card";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
-import Card from "@/components/Flow/FlashcardComponents/Card";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
@@ -59,6 +59,8 @@ function Map() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [openDialogForNode, setOpenDialogForNode] = useState(null);
+
+  const [focusedNodeId, setFocusedNodeId] = useState(null);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
