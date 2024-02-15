@@ -36,7 +36,9 @@ export default function Settings() {
                 <Form>
                   <Card className="dark:bg-dark-800 dark:border-dark-700 p-4">
                     <CardHeader>
-                      <CardTitle>Do you want to do some juicy changes? 🫐</CardTitle>
+                      <CardTitle>
+                        Do you want to do some juicy changes? 🫐
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-col gap-1.5">
@@ -58,7 +60,7 @@ export default function Settings() {
                           key={initialValues.password}
                           placeholder="New Password"
                         />
-                         <FormElement
+                        <FormElement
                           id="passwordCheck"
                           type="password"
                           key={""}

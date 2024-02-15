@@ -10,12 +10,12 @@ export default function NotFound() {
       <div className="z-10 absolute top-0 left-0 w-full h-full  flex items-center justify-center">
         <div className="z-10 relative flex flex-col items-center justify-center min-h-screenrounded-md  gap-5">
           <h1 className=" text-2xl font-semibold  text-primary">
-            Did you not REMEMBERRY your page? 🫣
+            Did you not REMEMBERRY your link? 🫣
           </h1>
-          <p className="">Don't worry, we'll guide you back 🫐</p>
+          <p className="">No worries we got your back 🫐</p>
           <div>
             <Button>
-              <Link href="/">Jump to home screen</Link>
+              <Link href="/">Jump back to home screen</Link>
             </Button>
           </div>
         </div>
