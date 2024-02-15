@@ -107,17 +107,20 @@ jobs:
         with:
           method: service-account
           k8s-url: ${{ secrets.KUBE_SERVER_URL }}
-          k8s-secret: ${{ secrets.KUBE_SERVICE_ACC_SECRET }}
+          k8s-secret: ${{ secrets.KUBE_SERVICE_ACC_ENCODED }}
       - uses: actions/checkout@v4
         name: checkout deployments
         with:
           sparse-checkout: |
             ./deployments
-      - name: deploy to the kubernetes cluster
-        uses: azure/k8s-deploy@v4
-        with:
-          namespace: rememberry
-          manifests: |
-            deployments/staging-frontend-deployment.yml
-          images: |
-            notemann27/rememberry-frontend:${{ github.sha }}
+      - name: set new kustomize image tag
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        working-directory: "deployments/frontend/base"
+        run: |
+          kustomize edit set image rem-backend-image=notemann27/rememberry-frontend:$GITHUB_SHA
+
+      - name: apply new config to deploy in cluster
+        working-directory: "deployments/frontend"
+        run: |
+          kubectl apply -k staging

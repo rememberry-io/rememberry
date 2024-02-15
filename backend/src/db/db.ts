@@ -4,11 +4,11 @@ import env from "../env";
 import * as schema from "./schema";
 
 export const dbCredentials = {
-  host: env.PG_HOST,
-  port: env.PG_PORT,
-  user: env.PG_USERNAME,
-  password: env.PG_PASSWORD,
-  database: env.PG_DATABASE_NAME,
+  host: env.POSTGRES_HOST,
+  port: env.POSTGRES_PORT,
+  user: env.POSTGRES_USER,
+  password: env.POSTGRES_PASSWORD,
+  database: env.POSTGRES_DB,
 };
 
 export const pool = new Pool(dbCredentials);

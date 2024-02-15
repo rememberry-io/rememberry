@@ -5,11 +5,11 @@ services:
       context: backend
       dockerfile: Dockerfile
     environment:
-      PG_PORT: ${PG_PORT}
-      PG_USERNAME: ${PG_USERNAME}
-      PG_DATABASE_NAME: ${PG_DATABASE_NAME}
-      PG_PASSWORD: ${PG_PASSWORD}
-      PG_HOST: ${PG_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
       NODE_ENV: ${NODE_ENV}
       PORT: ${PORT}
       REDIS_PORT: ${REDIS_PORT}

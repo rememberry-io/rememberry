@@ -27,11 +27,17 @@ jobs:
       id: install
     - name: Run migrations
       env:
-        KUBECONFIG_DATA: ${{ secrets.KUBECONFIG_DATA }}
+        KUBE_SERVICE_ACC: ${{ secrets.KUBE_SERVICE_ACC }}
+        KUBE_SERVICE_ACC_CA_CERT: ${{ secrets.KUBE_SERVICE_ACC_CA_CERT }}
+        KUBE_SERVER_URL: ${{ secrets.KUBE_SERVER_URL }}
+        POSTGRES_PASSWORD: ${{ secrets.STAGING_POSTGRES_PASSWORD }}
       run: |
-        mkdir ~/.kube
-
-        echo "$KUBECONFIG_DATA" | base64 -d > ~/.kube/config
+        echo "$KUBE_SERVICE_ACC_CA_CERT" > /home/runner/work/rememberry/rememberry/.ca.cert
+        
+        kubectl config set-cluster hetzner --server=$KUBE_SERVER_URL --certificate-authority=/home/runner/work/rememberry/rememberry/.ca.cert --embed-certs=true
+        kubectl config set-credentials gha-user --token=$KUBE_SERVICE_ACC
+        kubectl config set-context hetzner-gha --cluster=hetzner --user=gha-user --namespace=rememberry
+        kubectl config use-context hetzner-gha
 
         sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migrations.sh
         ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migrations.sh
