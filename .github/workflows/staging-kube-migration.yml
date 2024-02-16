@@ -14,13 +14,10 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      name: checkout deployments
       with:
-        sparse-checkout: | 
-          ./backend/drizzle
-          ./backend/scripts/kube-execute-sql.sh
-          ./backend/scripts/staging-run-kube-migrations.sh
+        submodules: "recursive"
     - uses: azure/setup-kubectl@v3
       with:
         version: v1.28.0
@@ -30,7 +27,6 @@ jobs:
         KUBE_SERVICE_ACC: ${{ secrets.KUBE_SERVICE_ACC }}
         KUBE_SERVICE_ACC_CA_CERT: ${{ secrets.KUBE_SERVICE_ACC_CA_CERT }}
         KUBE_SERVER_URL: ${{ secrets.KUBE_SERVER_URL }}
-        POSTGRES_PASSWORD: ${{ secrets.STAGING_POSTGRES_PASSWORD }}
       run: |
         echo "$KUBE_SERVICE_ACC_CA_CERT" > /home/runner/work/rememberry/rememberry/.ca.cert
         
@@ -39,6 +35,12 @@ jobs:
         kubectl config set-context hetzner-gha --cluster=hetzner --user=gha-user --namespace=rememberry
         kubectl config use-context hetzner-gha
 
-        sudo chmod +x ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migrations.sh
-        ~/work/rememberry/rememberry/backend/scripts/staging-run-kube-migrations.sh
+        kubectl create configmap -n rememberry migration --from-file=/home/runner/work/rememberry/rememberry/deployments/database-migration/apply-migration.sh
 
+        kubectl create configmap -n rememberry migration --from-file=/home/runner/work/rememberry/rememberry/backend/drizzle
+
+        kubectl apply -f /home/runner/work/rememberry/rememberry/deployments/database-migration/staging-migration.yaml
+
+        sleep 10
+
+        kubectl delete -f /home/runner/work/rememberry/rememberry/deployments/database-migration/staging-migration.yaml

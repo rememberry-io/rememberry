@@ -4,14 +4,14 @@ set -o allexport
 source .env set
 set +o allexport
 
-echo "Start $PG_HOST docker container:"
+echo "Start $POSTGRES_HOST docker container:"
 docker compose up -d $PG_HOST
 
 sleep 2
 
-echo "Apply migration to $PG_HOST container..."
+echo "Apply migration to $POSTGRES_HOST container..."
 
-docker exec $PG_HOST /bin/sh ./execute_sql_migration.sh
+docker exec $POSTGRES_HOST /bin/sh ./execute_sql_migration.sh
 
 echo "Finished migration"
 
