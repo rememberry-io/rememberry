@@ -37,10 +37,14 @@ jobs:
 
         kubectl create configmap -n rememberry migration --from-file=/home/runner/work/rememberry/rememberry/deployments/database-migration/apply-migration.sh
 
-        kubectl create configmap -n rememberry migration --from-file=/home/runner/work/rememberry/rememberry/backend/drizzle
+        kubectl create configmap -n rememberry drizzle --from-file=/home/runner/work/rememberry/rememberry/backend/drizzle
 
         kubectl apply -f /home/runner/work/rememberry/rememberry/deployments/database-migration/staging-migration.yaml
-
-        sleep 10
+        
+        echo "Waiting for 30 seconds..."
+        sleep 30
+        echo "Resuming operations..."
 
         kubectl delete -f /home/runner/work/rememberry/rememberry/deployments/database-migration/staging-migration.yaml
+        kubectl delete configmap -n rememberry migration
+        kubectl delete configmap -n rememberry drizzle
