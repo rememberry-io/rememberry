@@ -8,10 +8,12 @@ import useStore, { RFState } from "../stores/nodeStore";
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
-import { FlashcardDialog } from "../CustomComponents/flowDialog";
-import { FlowInput } from "../CustomComponents/flowTextArea";
+import { FlowDialog } from "../CustomComponents/cardDialog";
+import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
+
+import useFlashcardFocusStore from "../stores/cardFocusStore";
 
 const selector = (state: RFState) => ({
   nodes: state.nodes,
@@ -61,14 +63,25 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   // zoom so that the tools and trafficlights are still visible when zoomed out
   const { zoom } = useViewport();
 
-  const [isFocused, setIsFocused] = useState(false);
+  const { focusedId, setFocusedId } = useFlashcardFocusStore();
+  const isFocused = id === focusedId;
 
-  function onFocus() {
-    setTimeout(setIsFocused, 0, true);
-  }
-  function onBlur() {
-    setTimeout(setIsFocused, 0, false);
-  }
+  const onFocus = () => {
+    setFocusedId(id);
+  };
+  const onBlur = () => {
+    if (isFocused) {
+      setFocusedId(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (isFocused) {
+        setFocusedId(null);
+      }
+    };
+  }, [isFocused, setFocusedId]);
 
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
@@ -79,7 +92,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   useEffect(() => {
     if (isNew) {
       setIsDialogOpen(true);
-      // Update isNew to false so that the dialog doesn't open automatically again
       setIsNew(false);
     }
   }, [isNew]);
@@ -110,8 +122,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [clickCount, setClickCount] = useState(0);
-  const clickTimeout = useRef<number | undefined>(undefined);
 
   const toggleCard = () => {
     setIsFront(!isFront);
@@ -119,10 +129,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const openDialog = () => {
     setIsDialogOpen(true);
-  };
-
-  const handleClick = () => {
-    setClickCount((prevCount) => prevCount + 1);
   };
 
   const closeDialog = () => setIsDialogOpen(false);
@@ -137,7 +143,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
-      onClick={toggleCard}
       className={`dragHandle  min-w-48 relative border-none dark:bg-dark-600 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -146,10 +151,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       {cardType === "stack" && (
         <>
           <div className="flex relative flex-row align-middle ml-2"></div>
-          <div className={`p-2 bg-primary rounded-lg ${borderClasses} `}>
+          <div
+            onClick={toggleCard}
+            className={`p-2 bg-primary rounded-lg ${borderClasses} `}
+          >
             <div className="inputWrapper">
               <div>
-                <FlowInput
+                <FlowTextArea
                   isStack={true}
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
@@ -161,6 +169,9 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                     throw new Error("Function not implemented.");
                   }}
                   isInput={false}
+                  onSubmit={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </div>
             </div>
@@ -169,10 +180,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       )}
       {cardType === "flashcard" && (
         <>
-          <div className={`p-2 rounded-lg ${borderClasses}`}>
+          <div
+            onClick={toggleCard}
+            className={`p-2 rounded-lg ${borderClasses}`}
+          >
             <div className="inputWrapper">
               <div>
-                <FlowInput
+                <FlowTextArea
                   isStack={false}
                   className={""}
                   value={isFront ? frontText : backText}
@@ -184,6 +198,9 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                     throw new Error("Function not implemented.");
                   }}
                   isInput={false}
+                  onSubmit={function (): void {
+                    throw new Error("Function not implemented.");
+                  }}
                 />
               </div>
             </div>
@@ -211,7 +228,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               >
                 <Maximize2 />
               </Button>
-              <FlashcardDialog
+              <FlowDialog
                 nodeId={id}
                 cardType={cardType}
                 onSubmit={handleDialogSubmit}
@@ -250,7 +267,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               >
                 <Maximize2 />
               </Button>
-              <FlashcardDialog
+              <FlowDialog
                 cardType={cardType}
                 nodeId={id}
                 onSubmit={handleDialogSubmit}

@@ -30,7 +30,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
-      POSTGRES_DB: ${PG_DATABASE_NAME}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres:/data/postgres
       - ./backend/drizzle:/drizzle

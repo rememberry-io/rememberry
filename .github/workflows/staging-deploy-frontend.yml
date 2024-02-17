@@ -96,7 +96,7 @@ jobs:
 
 
 
-  staging:
+  push-staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging frontend
       # if: github.ref == 'refs/heads/master'
@@ -111,13 +111,15 @@ jobs:
       - uses: actions/checkout@v4
         name: checkout deployments
         with:
-          sparse-checkout: |
-            ./deployments
-      - name: deploy to the kubernetes cluster
-        uses: azure/k8s-deploy@v4
-        with:
-          namespace: rememberry
-          manifests: |
-            deployments/staging-frontend-deployment.yml
-          images: |
-            notemann27/rememberry-frontend:${{ github.sha }}
+          submodules: "recursive"
+      - name: set new kustomize image tag
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        working-directory: "deployments/frontend/base"
+        run: |
+          kustomize edit set image rem-backend-image=notemann27/rememberry-frontend:$GITHUB_SHA
+
+      - name: apply new config to deploy in cluster
+        working-directory: "deployments/frontend"
+        run: |
+          kubectl apply -k staging

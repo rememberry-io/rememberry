@@ -32,7 +32,7 @@ function parseEnv(env: { [key: string]: string }) {
   return {
     ...env,
     REDIS_PORT: parseInt(env.REDIS_PORT),
-    PG_PORT: parseInt(env.PG_PORT),
+    POSTGRES_PORT: parseInt(env.POSTGRES_PORT),
     PORT: parseInt(env.PORT),
     NODE_ENV: env.NODE_ENV,
     IS_PROD: env.NODE_ENV === "production",

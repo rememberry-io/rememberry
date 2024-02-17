@@ -1,6 +1,7 @@
-name: Staging Deployment Backend 
+name: Staging Deployment Backend
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - "backend/**"
@@ -90,10 +91,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  staging:
+  push-staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging
-    if: github.ref == 'refs/heads/master'
+      #if: github.ref == 'refs/heads/master'
     needs: build-image
     steps:
       - name: set the kubernetes context
@@ -105,16 +106,15 @@ jobs:
       - uses: actions/checkout@v4
         name: checkout deployments
         with:
-          sparse-checkout: |
-            ./deployments
-      - name: deploy to the kubernetes cluster
-        uses: azure/k8s-deploy@v4
-        with:
-          action: deploy
-          force: true
-          strategy: basic
-          namespace: rememberry
-          manifests: |
-            deployments/staging-backend-deployment.yaml
-          images: |
-            notemann27/rememberry-backend:${{ github.sha }}
+          submodules: "recursive"
+      - name: set new kustomize image tag
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        working-directory: "deployments/backend/base"
+        run: |
+          kustomize edit set image rem-backend-image=notemann27/rememberry-backend:$GITHUB_SHA
+
+      - name: apply new config to deploy in cluster
+        working-directory: "deployments/backend"
+        run: |
+          kubectl apply -k staging
