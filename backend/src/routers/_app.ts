@@ -1,8 +1,8 @@
-import { authRouter } from "../endPoints/auth/auth.router";
-import { flashcardRouter } from "../endPoints/flashcards/router";
-import { mapRouter } from "../endPoints/maps/router";
-import { stackRouter } from "../endPoints/stacks/router";
-import { userRouter } from "../endPoints/user/user.router";
+import { authRouter } from "../resources/auth/auth.router";
+import { flashcardRouter } from "../resources/flashcards/router";
+import { mapRouter } from "../resources/maps/router";
+import { stackRouter } from "../resources/stacks/router";
+import { userRouter } from "../resources/user/user.router";
 import { router } from "../trpc";
 
 export const appRouter = router({
