@@ -91,10 +91,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  staging:
+  push-staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging
-    if: github.ref == 'refs/heads/master'
+      #if: github.ref == 'refs/heads/master'
     needs: build-image
     steps:
       - name: set the kubernetes context

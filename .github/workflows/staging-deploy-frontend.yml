@@ -96,7 +96,7 @@ jobs:
 
 
 
-  staging:
+  push-staging:
     runs-on: ubuntu-22.04
     name: deploy changes on staging frontend
       # if: github.ref == 'refs/heads/master'
@@ -107,12 +107,11 @@ jobs:
         with:
           method: service-account
           k8s-url: ${{ secrets.KUBE_SERVER_URL }}
-          k8s-secret: ${{ secrets.KUBE_SERVICE_ACC_ENCODED }}
+          k8s-secret: ${{ secrets.KUBE_SERVICE_ACC_SECRET }}
       - uses: actions/checkout@v4
         name: checkout deployments
         with:
-          sparse-checkout: |
-            ./deployments
+          submodules: "recursive"
       - name: set new kustomize image tag
         env:
           GITHUB_SHA: ${{ github.sha }}
