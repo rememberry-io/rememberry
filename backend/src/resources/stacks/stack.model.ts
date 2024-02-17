@@ -1,6 +1,6 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { db, dbConnection } from "../../db/db";
-import { NewStack, Stack, stacks } from "../../db/schema";
+import { NewNode, Node, nodes } from "../../db/schema";
 import {
   TRPCStatus,
   getModelDefaultError,
@@ -9,26 +9,26 @@ import {
 } from "../../utils";
 
 export interface StackModel {
-  createStack: (input: NewStack) => Promise<TRPCStatus<Stack>>;
-  getStackById: (stackId: string) => Promise<TRPCStatus<Stack>>;
-  getStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
-  getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
+  createStack: (input: NewNode) => Promise<TRPCStatus<Node>>;
+  getStackById: (stackId: string) => Promise<TRPCStatus<Node>>;
+  getStacksByMapId: (mapId: string) => Promise<TRPCStatus<Node[]>>;
+  getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Node[]>>;
   getDirectChildrenStacksFromParentStack: (
     stackId: string,
-  ) => Promise<TRPCStatus<Stack[]>>;
+  ) => Promise<TRPCStatus<Node[]>>;
   getAllChildrenStacksFromParentStack: (
     stackId: string,
-  ) => Promise<TRPCStatus<Stack[]>>;
-  updateStackById: (stack: Stack) => Promise<TRPCStatus<Stack>>;
+  ) => Promise<TRPCStatus<Node[]>>;
+  updateStackById: (stack: Node) => Promise<TRPCStatus<Node>>;
   changeParentStack: (
     parentId: string,
     stackId: string,
-  ) => Promise<TRPCStatus<Stack>>;
-  deleteParentStackRelation: (stackId: string) => Promise<TRPCStatus<Stack>>;
+  ) => Promise<TRPCStatus<Node>>;
+  deleteParentStackRelation: (stackId: string) => Promise<TRPCStatus<Node>>;
   deleteMiddleOrderStackAndMoveChildrenUp: (
     stackId: string,
-  ) => Promise<TRPCStatus<Stack[]>>;
-  deleteStackAndChildren: (stackId: string) => Promise<TRPCStatus<Stack[]>>;
+  ) => Promise<TRPCStatus<Node[]>>;
+  deleteStackAndChildren: (stackId: string) => Promise<TRPCStatus<Node[]>>;
 }
 
 class StackModelDrizzle implements StackModel {
@@ -37,9 +37,9 @@ class StackModelDrizzle implements StackModel {
     this.db = db;
   }
 
-  async createStack(input: NewStack) {
+  async createStack(input: NewNode) {
     try {
-      const stack = await this.db.insert(stacks).values(input).returning();
+      const stack = await this.db.insert(nodes).values(input).returning();
 
       if (!hasOnlyOneEntry(stack)) getTRPCError();
       return [null, stack[0]] as const;
@@ -52,8 +52,8 @@ class StackModelDrizzle implements StackModel {
     try {
       const prep = this.db
         .select()
-        .from(stacks)
-        .where(eq(stacks.id, sql.placeholder("id")))
+        .from(nodes)
+        .where(eq(nodes.id, sql.placeholder("id")))
         .prepare("stack");
       const stack = await prep.execute({ id: stackId });
 
@@ -69,8 +69,8 @@ class StackModelDrizzle implements StackModel {
     try {
       const prep = this.db
         .select()
-        .from(stacks)
-        .where(eq(stacks.mapId, sql.placeholder("id")))
+        .from(nodes)
+        .where(eq(nodes.mapId, sql.placeholder("id")))
         .prepare("stacks");
       const map = await prep.execute({ id: mapId });
 
@@ -87,11 +87,11 @@ class StackModelDrizzle implements StackModel {
     try {
       const prep = this.db
         .select()
-        .from(stacks)
+        .from(nodes)
         .where(
           and(
-            eq(stacks.mapId, sql.placeholder("id")),
-            isNull(stacks.parentStackId),
+            eq(nodes.mapId, sql.placeholder("id")),
+            isNull(nodes.parentNodeId),
           ),
         )
         .prepare("highestOrderStacks");
@@ -106,8 +106,8 @@ class StackModelDrizzle implements StackModel {
     try {
       const prep = this.db
         .select()
-        .from(stacks)
-        .where(eq(stacks.parentStackId, sql.placeholder("id")))
+        .from(nodes)
+        .where(eq(nodes.parentNodeId, sql.placeholder("id")))
         .prepare("childStacks");
       const returnedStacks = await prep.execute({ id: stackId });
       return [null, returnedStacks] as const;
@@ -132,18 +132,18 @@ class StackModelDrizzle implements StackModel {
         SELECT * 
         FROM cte_substacks
       `);
-      return [null, returnedStacks.rows as Stack[]] as const;
+      return [null, returnedStacks.rows as Node[]] as const;
     } catch (e) {
       return getModelDefaultError(e);
     }
   }
 
-  async updateStackById(stack: Stack) {
+  async updateStackById(stack: Node) {
     try {
       const updatedStack = await this.db
-        .update(stacks)
+        .update(nodes)
         .set(stack)
-        .where(eq(stacks.id, stack.id))
+        .where(eq(nodes.id, stack.id))
         .returning();
       if (!hasOnlyOneEntry(updatedStack)) return getTRPCError();
       return [null, updatedStack[0]] as const;
@@ -155,9 +155,9 @@ class StackModelDrizzle implements StackModel {
   async changeParentStack(parentId: string, stackId: string) {
     try {
       const stack = await this.db
-        .update(stacks)
-        .set({ parentStackId: parentId })
-        .where(eq(stacks.id, stackId))
+        .update(nodes)
+        .set({ parentNodeId: parentId })
+        .where(eq(nodes.id, stackId))
         .returning();
 
       if (!hasOnlyOneEntry(stack)) getTRPCError();
@@ -171,9 +171,9 @@ class StackModelDrizzle implements StackModel {
   async deleteParentStackRelation(stackId: string) {
     try {
       const stack = await this.db
-        .update(stacks)
-        .set({ parentStackId: null })
-        .where(eq(stacks.id, stackId))
+        .update(nodes)
+        .set({ parentNodeId: null })
+        .where(eq(nodes.id, stackId))
         .returning();
 
       if (!hasOnlyOneEntry(stack)) getTRPCError();
@@ -187,21 +187,21 @@ class StackModelDrizzle implements StackModel {
     try {
       const returnedStacks = await this.db.transaction(async (tx) => {
         const stackToDelete = await tx
-          .select({ parentId: stacks.parentStackId })
-          .from(stacks)
-          .where(eq(stacks.id, stackId));
+          .select({ parentId: nodes.parentNodeId })
+          .from(nodes)
+          .where(eq(nodes.id, stackId));
         const newParentId = stackToDelete[0].parentId;
 
         const updatedStacks = await tx
-          .update(stacks)
+          .update(nodes)
           .set({
-            parentStackId: newParentId,
+            parentNodeId: newParentId,
           })
-          .where(eq(stacks.parentStackId, stackId))
+          .where(eq(nodes.parentNodeId, stackId))
           .returning();
 
         //delete the middle stack
-        await tx.delete(stacks).where(eq(stacks.id, stackId));
+        await tx.delete(nodes).where(eq(nodes.id, stackId));
 
         return updatedStacks;
       });
@@ -226,7 +226,7 @@ class StackModelDrizzle implements StackModel {
         DELETE FROM stacks
         WHERE id IN(SELECT id FROM stacks_to_delete)
       `);
-      return [null, res.rows as Stack[]] as const;
+      return [null, res.rows as Node[]] as const;
     } catch (e) {
       return getModelDefaultError(e);
     }

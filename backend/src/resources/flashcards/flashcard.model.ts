@@ -81,7 +81,7 @@ class FlashcardModelDrizzle implements FlashcardModel {
       })
       .from(flashcards)
       .leftJoin(media, eq(flashcards.id, media.flashcardId))
-      .innerJoin(learningData, eq(flashcards.id, learningData.flashcardId))
+      .innerJoin(learningData, eq(flashcards.id, learningData.nodeId))
       .where(
         and(
           eq(flashcards.stackId, sql.placeholder("stackId")),

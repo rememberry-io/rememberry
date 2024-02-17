@@ -7,7 +7,7 @@ const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
 export async function createPeer(peerName: string) {
   const prep = db
-    .insert(schema.Peers)
+    .insert(schema.peers)
     .values({
       name: sql.placeholder("name"),
     })
@@ -23,7 +23,7 @@ export async function createPeer(peerName: string) {
 
 export async function createUsersPeersRelation(peerId: string, userId: string) {
   const res = await db
-    .insert(schema.Users_Peers)
+    .insert(schema.usersPeers)
     .values({
       userId: userId,
       peerId: peerId,
@@ -37,7 +37,7 @@ export async function createUsersPeersRelation(peerId: string, userId: string) {
 
 export async function createAdminPeerrelation(peerId: string, userId: string) {
   const res = await db
-    .insert(schema.Users_Peers)
+    .insert(schema.usersPeers)
     .values({
       userId: userId,
       peerId: peerId,
@@ -52,7 +52,7 @@ export async function createAdminPeerrelation(peerId: string, userId: string) {
 
 export async function updatePeerName(newPeerName: string, peerId: string) {
   const res = await db
-    .update(schema.Peers)
+    .update(schema.peers)
     .set({ name: newPeerName })
     .returning();
   if (res.length < 1) {
@@ -64,12 +64,12 @@ export async function updatePeerName(newPeerName: string, peerId: string) {
 export async function getAdminStatus(userId: string, peerId: string) {
   try {
     const adminStatus = await db
-      .select({ isAdmin: schema.Users_Peers.isPeerAdmin })
-      .from(schema.Users_Peers)
+      .select({ isAdmin: schema.usersPeers.isPeerAdmin })
+      .from(schema.usersPeers)
       .where(
         and(
-          eq(schema.Users_Peers.userId, userId),
-          eq(schema.Users_Peers.peerId, peerId),
+          eq(schema.usersPeers.userId, userId),
+          eq(schema.usersPeers.peerId, peerId),
         ),
       );
     return [null, adminStatus[0].isAdmin] as const;
@@ -80,12 +80,12 @@ export async function getAdminStatus(userId: string, peerId: string) {
 
 export async function removeAdminStatus(userId: string, peerId: string) {
   const res = await db
-    .update(schema.Users_Peers)
+    .update(schema.usersPeers)
     .set({ isPeerAdmin: false })
     .where(
       and(
-        eq(schema.Users_Peers.peerId, peerId),
-        eq(schema.Users_Peers.userId, userId),
+        eq(schema.usersPeers.peerId, peerId),
+        eq(schema.usersPeers.userId, userId),
       ),
     )
     .returning();
@@ -97,12 +97,12 @@ export async function removeAdminStatus(userId: string, peerId: string) {
 
 export async function addAdminStatus(userId: string, peerId: string) {
   const res = await db
-    .update(schema.Users_Peers)
+    .update(schema.usersPeers)
     .set({ isPeerAdmin: true })
     .where(
       and(
-        eq(schema.Users_Peers.peerId, peerId),
-        eq(schema.Users_Peers.userId, userId),
+        eq(schema.usersPeers.peerId, peerId),
+        eq(schema.usersPeers.userId, userId),
       ),
     )
     .returning();
@@ -114,11 +114,11 @@ export async function addAdminStatus(userId: string, peerId: string) {
 
 export async function kickMember(kickedUserId: string, peerId: string) {
   const res = await db
-    .delete(schema.Users_Peers)
+    .delete(schema.usersPeers)
     .where(
       and(
-        eq(schema.Users_Peers.userId, kickedUserId),
-        eq(schema.Users_Peers.peerId, peerId),
+        eq(schema.usersPeers.userId, kickedUserId),
+        eq(schema.usersPeers.peerId, peerId),
       ),
     )
     .returning();

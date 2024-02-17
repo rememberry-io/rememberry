@@ -6,7 +6,7 @@ export async function controlPeerCreation(userId: string, peerName: string) {
   if (errorCheck) {
     return [errorCheck, null] as const;
   }
-  const peerId = peer.peer_id;
+  const peerId = peer.id;
   const [secondErrorCheck, relation] =
     await peersModels.createAdminPeerrelation(peerId, userId);
   if (secondErrorCheck) {

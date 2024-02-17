@@ -1,31 +1,31 @@
 //import * as cacheModel from "../cache/cacheModel";
 
-import { NewStack, Stack } from "../../db/schema";
+import { NewNode, Node } from "../../db/schema";
 import { TRPCStatus, getTRPCError } from "../../utils";
 import { StackModel, stackModelDrizzle } from "./stack.model";
 import { StackWithChildren } from "./types";
 
 interface StackController {
-  createStack: (stack: NewStack) => Promise<TRPCStatus<Stack>>;
-  getStackById: (stackId: string) => Promise<TRPCStatus<Stack>>;
+  createStack: (stack: NewNode) => Promise<TRPCStatus<Node>>;
+  getStackById: (stackId: string) => Promise<TRPCStatus<Node>>;
   getStacksByMapId: (mapId: string) => Promise<TRPCStatus<StackWithChildren[]>>;
-  getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Stack[]>>;
+  getTopLevelStacksByMapId: (mapId: string) => Promise<TRPCStatus<Node[]>>;
   getDirectChildrenStacksFromParentStack: (
     stackId: string,
-  ) => Promise<TRPCStatus<Stack[]>>;
+  ) => Promise<TRPCStatus<Node[]>>;
   getAllChildrenStacksFromParentStack: (
     stackId: string,
-  ) => Promise<TRPCStatus<Stack[]>>;
-  updateStackById: (stack: Stack) => Promise<TRPCStatus<Stack>>;
+  ) => Promise<TRPCStatus<Node[]>>;
+  updateStackById: (stack: Node) => Promise<TRPCStatus<Node>>;
   changeParentStack: (
     parentId: string,
     stackId: string,
-  ) => Promise<TRPCStatus<Stack>>;
-  deleteParentStackRelation: (stackId: string) => Promise<TRPCStatus<Stack>>;
+  ) => Promise<TRPCStatus<Node>>;
+  deleteParentStackRelation: (stackId: string) => Promise<TRPCStatus<Node>>;
   deleteMiddleOrderStackAndMoveChildrenUp: (
     stackId: string,
-  ) => Promise<TRPCStatus<Stack[]>>;
-  deleteStackAndChildren: (stackId: string) => Promise<TRPCStatus<Stack[]>>;
+  ) => Promise<TRPCStatus<Node[]>>;
+  deleteStackAndChildren: (stackId: string) => Promise<TRPCStatus<Node[]>>;
 }
 
 class StackControllerDrizzle implements StackController {
@@ -34,7 +34,7 @@ class StackControllerDrizzle implements StackController {
     this.stackModel = stackModel;
   }
 
-  async createStack(newStack: NewStack) {
+  async createStack(newStack: NewNode) {
     const [err, stack] = await this.stackModel.createStack(newStack);
     if (err) return getTRPCError(err.message, err.code);
     return [null, stack] as const;
@@ -124,7 +124,7 @@ class StackControllerDrizzle implements StackController {
     return [null, stacks] as const;
   }
 
-  async updateStackById(stack: Stack) {
+  async updateStackById(stack: Node) {
     const [err, updatedStack] = await this.stackModel.updateStackById(stack);
 
     if (err) return getTRPCError(err.message, err.code);
