@@ -3,10 +3,7 @@ import { db } from "../../db/db";
 import * as schema from "../../db/schema";
 
 export async function createInvite(invite: schema.NewInvite) {
-  const res = db
-    .insert(schema.invites)
-    .values(invite)
-    .returning();
+  const res = db.insert(schema.invites).values(invite).returning();
 }
 
 export async function getById(inviteId: string): Promise<schema.Invite> {
@@ -23,9 +20,7 @@ export async function acceptInvite(invite: schema.Invite) {
       userId: invite.receiverId,
       peerId: invite.peerId,
     });
-    await tx
-      .delete(schema.invites)
-      .where(eq(schema.invites.id, invite.id!));
+    await tx.delete(schema.invites).where(eq(schema.invites.id, invite.id!));
   });
   return res;
 }

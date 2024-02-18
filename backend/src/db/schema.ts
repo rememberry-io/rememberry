@@ -89,9 +89,7 @@ export const nodes = pgTable("nodes", {
   backside: varchar("backside").notNull(),
   xPosition: integer("x_position").notNull(),
   yPosition: integer("y_position").notNull(),
-  parentNodeId: uuid("parent_node_id").references(
-    (): AnyPgColumn => nodes.id,
-  ),
+  parentNodeId: uuid("parent_node_id").references((): AnyPgColumn => nodes.id),
   nodeType: varchar("node_type").notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
