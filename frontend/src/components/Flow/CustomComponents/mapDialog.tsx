@@ -71,11 +71,11 @@ export const MapDialog: React.FC<MapDialogProps> = ({
   };
 
   useEffect(() => {
-    if (isZoomActive) {
+    if (isEditingActive || isZoomActive) {
       setName(mapName);
       setDescription(mapDescription);
     }
-  }, [isZoomActive, mapName, mapDescription]);
+  }, [isZoomActive, isEditingActive, mapName, mapDescription]);
 
   return (
     <div>
