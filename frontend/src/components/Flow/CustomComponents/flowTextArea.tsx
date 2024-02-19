@@ -35,6 +35,8 @@ export const FlowTextArea = ({
     ? "outline focus:outline-primary bg-gray-100 mt-5 "
     : " outline-none";
 
+  const focusProps = readOnly ? " outline-none focus-visible:hidden focus:ring-0 focus:ring-offset-0 focus:hidden " : "outline-none focus:bg-primary";
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevent the default action to avoid a newline being added
@@ -44,7 +46,7 @@ export const FlowTextArea = ({
 
   return (
     <textarea
-      className={` outline-none  rounded-md h-fit resize-none break-words flex items-center p-2 justify-between w-full  ${stackProps} ${inputProps}  `}
+      className={`${focusProps}  rounded-md h-fit resize-none break-words flex items-center p-2 justify-between w-full  ${stackProps} ${inputProps}  `}
       value={value}
       ref={textAreaRef}
       placeholder={placeholder}

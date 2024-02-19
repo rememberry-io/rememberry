@@ -110,6 +110,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   isInput={true}
                   onSubmit={handleSubmit}
                 />
+                <hr className="mt-4"/>
                 <FlowTextArea
                   value={description}
                   textAreaRef={descriptionAreaRef}
