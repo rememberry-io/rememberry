@@ -105,7 +105,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   className=""
                   rows={1}
                   changes={(value: string) => setName(value)}
-                  readOnly={!isEditingActive}
+                  readOnly={!isEditingActive && !isAddingactive}
                   isStack={false}
                   isInput={true}
                   onSubmit={handleSubmit}
@@ -117,7 +117,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   className=""
                   rows={1}
                   changes={(value: string) => setDescription(value)}
-                  readOnly={!isEditingActive}
+                  readOnly={!isEditingActive && !isAddingactive}
                   isStack={false}
                   isInput={true}
                   onSubmit={handleSubmit}
