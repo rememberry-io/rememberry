@@ -38,7 +38,7 @@ function MapMenu() {
     setIsDialogOpen(open);
   };
 
-  const handleZoomDialog = (map: { id: any; name: any; description: any }) => {
+  const handleZoomDialog = (map: { id: string; name: string; description: string }) => {
     setName(map.name);
     setDescription(map.description);
     setMapId(map.id);
@@ -55,7 +55,7 @@ function MapMenu() {
       setZoomActive(false);
     }
   };
-  const handleEditDialog = (map: { id: any; name: any; description: any }) => {
+  const handleEditDialog = (map: { id: string; name: string; description: string }) => {
     setName(map.name);
     setDescription(map.description);
     setMapId(map.id);
