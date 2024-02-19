@@ -62,6 +62,7 @@ function MapMenu() {
     setIsDialogOpen(true);
     setEditingActive(true);
     setAddMapActive(false);
+    console.log("edit:", map.name, map.description);
   };
 
   const openAddDialog = () => {
