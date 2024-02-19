@@ -71,11 +71,11 @@ export const MapDialog: React.FC<MapDialogProps> = ({
   };
 
   useEffect(() => {
-    if (isZoomActive) {
+    if (isEditingActive || isZoomActive) {
       setName(mapName);
       setDescription(mapDescription);
     }
-  }, [isZoomActive, mapName, mapDescription]);
+  }, [isZoomActive, isEditingActive, mapName, mapDescription]);
 
   return (
     <div>
@@ -105,11 +105,12 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   className=""
                   rows={1}
                   changes={(value: string) => setName(value)}
-                  readOnly={!isEditingActive}
+                  readOnly={!isEditingActive && !isAddingactive}
                   isStack={false}
                   isInput={true}
                   onSubmit={handleSubmit}
                 />
+                <hr className="mt-4" />
                 <FlowTextArea
                   value={description}
                   textAreaRef={descriptionAreaRef}
@@ -117,7 +118,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   className=""
                   rows={1}
                   changes={(value: string) => setDescription(value)}
-                  readOnly={!isEditingActive}
+                  readOnly={!isEditingActive && !isAddingactive}
                   isStack={false}
                   isInput={true}
                   onSubmit={handleSubmit}
