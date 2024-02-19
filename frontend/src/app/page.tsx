@@ -120,7 +120,7 @@ function MapMenu() {
           {sortedMaps.map(
             (map: { id: string; name: string; description: string }) => (
               <>
-                <div className="dark:bg-dark-600 mx-5 my-5" key={map.id}>
+                <div className="outline-none   mx-5 my-5" key={map.id}>
                   <Box>
                     <MapCard
                       key={map.id}

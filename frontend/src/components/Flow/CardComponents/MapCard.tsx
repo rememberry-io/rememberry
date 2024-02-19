@@ -45,7 +45,7 @@ const MapCard: React.FC<MapCardProps> = ({
   useAutosizeTextArea(descriptionRef.current, description);
 
   return (
-    <div className="flex flex-col gap-4 rounded-lg border bg-card text-card-foreground shadow-sm p-3 w-72">
+    <div className="flex flex-col gap-4 rounded-lg border bg-card dark:bg-dark-800 text-card-foreground shadow-sm p-3 w-72">
       <div className="flex gap-1">
         <button className="bg-red-500 rounded-full p-1">
           <X size="12" strokeWidth="3" color="#7E0508" />
@@ -69,8 +69,8 @@ const MapCard: React.FC<MapCardProps> = ({
             {map.name}
           </div>
 
-          <div title={map.description}>
-            <textarea className=" line-clamp-2  mt-2 linebreak overflow-ellipsis resize-none text-center ">
+          <div title={map.description} className="dark:bg-dark-800">
+            <textarea className=" line-clamp-2 dark:bg-dark-800  mt-2 linebreak overflow-ellipsis resize-none text-center ">
               {map.description}
             </textarea>
           </div>
