@@ -3,7 +3,7 @@ export const FlowTextArea = ({
   value,
   textAreaRef,
   rows,
-  readOnly,
+
   placeholder,
   changes,
   isStack,
@@ -14,7 +14,7 @@ export const FlowTextArea = ({
   value: string;
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
   rows: number;
-  readOnly: boolean;
+
   placeholder: string;
   isStack: boolean;
   isInput: boolean;
@@ -22,24 +22,19 @@ export const FlowTextArea = ({
   changes: (value: string) => void;
 }) => {
   var stackProps = "";
-  if (isStack == true && readOnly == true) {
+  if (isStack == true && isInput == false) {
     stackProps = "bg-primary text-white";
-
-  } else if (isStack == true && readOnly == false){
+  } else if (isStack == true && isInput == true) {
     stackProps = "bg-white";
-  } else if (isStack == false && readOnly == false) {
+  } else if (isStack == false && isInput == true) {
     stackProps = "dark:bg-dark-700";
   } else {
     stackProps = "dark:bg-dark-800";
   }
 
   const inputProps = isInput
-    ? "outline focus:outline-primary bg-gray-100 mt-5 "
-    : " outline-none";
-
-  const focusProps = readOnly
-    ? " outline-none focus:ring-0 focus:ring-offset-0"
-    : "outline-none focus:bg-primary";
+    ? "focus:outline-primary bg-gray-100 focus:outline-primary mt-5 "
+    : "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0 ";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -50,12 +45,12 @@ export const FlowTextArea = ({
 
   return (
     <textarea
-      className={`${focusProps}   rounded-md resize-none break-words flex items-center p-2 justify-between w-full   ${stackProps} ${inputProps}  `}
+      className={`${inputProps} read-only:visible  rounded-md resize-none break-words flex items-center p-2 justify-between w-full ${stackProps} `}
       value={value}
       ref={textAreaRef}
       placeholder={placeholder}
       rows={rows}
-      readOnly={readOnly}
+      readOnly={!isInput}
       onChange={(e) => changes(e.target.value)}
       onKeyDown={handleKeyDown}
     />

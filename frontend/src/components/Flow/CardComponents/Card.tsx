@@ -24,8 +24,10 @@ const selector = (state: RFState) => ({
 });
 
 const normalizeZoom = (zoom: number): number => {
-  return 1 / zoom;
+  // Adjust the calculation as necessary to fit the desired size
+  return Math.max(1 / zoom, 0.5); // Ensure it never goes below 0.5, for instance
 };
+
 
 interface NodeProps {
   id: string;
@@ -162,7 +164,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
-                  readOnly
                   className={"bg-primary text-white"}
                   placeholder={""}
                   changes={function (value: string): void {
@@ -192,7 +193,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
-                  readOnly
+
                   placeholder={""}
                   changes={function (value: string): void {
                     throw new Error("Function not implemented.");
