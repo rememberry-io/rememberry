@@ -79,7 +79,6 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
                   textAreaRef={frontTextAreaRef}
                   rows={1}
                   changes={(value: string) => setFrontText(value)}
-                  readOnly={false}
                   isStack={false}
                   isInput={true}
                   onSubmit={handleSubmit}
@@ -94,7 +93,6 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
                   textAreaRef={backTextAreaRef}
                   rows={1}
                   changes={(value: string) => setBackText(value)}
-                  readOnly={false}
                   isStack={false}
                   isInput={true}
                   onSubmit={handleSubmit}
