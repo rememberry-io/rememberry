@@ -1,6 +1,6 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
-import { Maximize2, RotateCcw } from "lucide-react";
+import { Maximize2 } from "lucide-react";
 import React, { memo, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../stores/nodeStore";
@@ -215,7 +215,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
           }}
         >
           <div className="flex relative flex-row align-middle ml-2">
-            <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-col items-center justify-center">
               <Button
                 variant="secondary"
                 size="icon"
@@ -251,7 +251,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             <div className="z-10 pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
-            <div className="flex flex-col items-center space-y-2">
+            <div className="flex flex-col items-center justify-center ">
               <Button
                 variant="secondary"
                 size="icon"
