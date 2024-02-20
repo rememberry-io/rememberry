@@ -83,7 +83,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0  relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-gray-100 dark:focus:bg-dark-500 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ",
+      " focus:outline-none focus:ring-0  focus:ring-offset-0  relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-gray-100 dark:focus:bg-dark-500 focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 ",
       inset && "pl-8",
       className,
     )}
@@ -99,7 +99,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0  dark:hover:bg-dark-800 relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-white focus:text-white-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      " focus:outline-none focus:ring-0  focus:ring-offset-0  dark:hover:bg-dark-800 relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-white focus:text-white-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
     checked={checked}
@@ -123,7 +123,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0  dark:hover:bg-dark-800 relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-white focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      " focus:outline-none focus:ring-0  focus:ring-offset-0  dark:hover:bg-dark-800 relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-white focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className,
     )}
     {...props}

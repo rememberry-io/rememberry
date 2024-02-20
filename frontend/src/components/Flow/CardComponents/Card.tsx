@@ -28,7 +28,6 @@ const normalizeZoom = (zoom: number): number => {
   return Math.max(1 / zoom, 0.5); // Ensure it never goes below 0.5, for instance
 };
 
-
 interface NodeProps {
   id: string;
 }
@@ -193,7 +192,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
                   value={isFront ? frontText : backText}
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
-
                   placeholder={""}
                   changes={function (value: string): void {
                     throw new Error("Function not implemented.");
