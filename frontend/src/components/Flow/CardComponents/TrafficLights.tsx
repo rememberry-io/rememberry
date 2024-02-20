@@ -5,10 +5,10 @@ interface TrafficLightsProps {
 }
 
 export const TrafficColor = {
-  red: "red-500",
-  orange: "orange-500",
-  yellow: "yellow-500",
   green: "green-500",
+  yellow: "yellow-500",
+  orange: "orange-500",
+  red: "red-500",
 } as const;
 
 export type ColorType = keyof typeof TrafficColor;

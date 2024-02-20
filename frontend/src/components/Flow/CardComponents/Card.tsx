@@ -142,6 +142,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   return (
     <div
       tabIndex={0}
+      onFocus={onFocus}
       className={`dragHandle  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -152,8 +153,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
-            onFocus={onFocus}
-            onBlur={onBlur}
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
             <div className="inputWrapper">
@@ -181,8 +180,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       {cardType === "flashcard" && (
         <>
           <div
-            onFocus={onFocus}
-            onBlur={onBlur}
             onClick={toggleCard}
             className={`p-2 rounded-lg ${borderClasses}`}
           >
@@ -215,8 +212,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             right: "-5rem",
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
-          onFocus={onFocus}
-          onBlur={onBlur}
         >
           <div className="flex relative flex-row align-middle ml-2">
             <div className="flex flex-col items-center justify-center">
@@ -250,8 +245,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             right: "-5rem",
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
-          onFocus={onFocus}
-          onBlur={onBlur}
         >
           <div className="flex relative flex-row align-middle ml-2">
             <div className="z-10 pr-2 mt-1">
