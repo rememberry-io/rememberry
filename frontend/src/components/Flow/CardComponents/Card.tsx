@@ -216,9 +216,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
         >
           <div className="flex relative flex-row align-middle ml-2">
             <div className="flex flex-col items-center space-y-2">
-              <Button onClick={toggleCard} variant="secondary" size="icon">
-                <RotateCcw />
-              </Button>
               <Button
                 variant="secondary"
                 size="icon"
@@ -255,9 +252,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               <TrafficLights onColorChange={handleColorChange} />
             </div>
             <div className="flex flex-col items-center space-y-2">
-              <Button onClick={toggleCard} variant="secondary" size="icon">
-                <RotateCcw />
-              </Button>
               <Button
                 variant="secondary"
                 size="icon"
