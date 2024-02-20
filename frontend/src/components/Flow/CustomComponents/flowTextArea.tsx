@@ -22,8 +22,11 @@ export const FlowTextArea = ({
   changes: (value: string) => void;
 }) => {
   var stackProps = "";
-  if (isStack == true) {
+  if (isStack == true && readOnly == true) {
     stackProps = "bg-primary text-white";
+
+  } else if (isStack == true && readOnly == false){
+    stackProps = "bg-white";
   } else if (isStack == false && readOnly == false) {
     stackProps = "dark:bg-dark-700";
   } else {
@@ -35,7 +38,7 @@ export const FlowTextArea = ({
     : " outline-none";
 
   const focusProps = readOnly
-    ? " outline-none focus-visible:hidden focus:ring-0 focus:ring-offset-0 focus:hidden "
+    ? " outline-none focus:ring-0 focus:ring-offset-0"
     : "outline-none focus:bg-primary";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -47,7 +50,7 @@ export const FlowTextArea = ({
 
   return (
     <textarea
-      className={`${focusProps}  rounded-md h-fit resize-none break-words flex items-center p-2 justify-between w-full  ${stackProps} ${inputProps}  `}
+      className={`${focusProps}   rounded-md resize-none break-words flex items-center p-2 justify-between w-full   ${stackProps} ${inputProps}  `}
       value={value}
       ref={textAreaRef}
       placeholder={placeholder}
