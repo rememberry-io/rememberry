@@ -22,7 +22,9 @@ export const TrafficLights = ({ onColorChange }: TrafficLightsProps) => {
   };
 
   return (
-    <div className="rounded-lg flex flex-col justify-center gap-2">
+    <div
+      className="rounded-lg flex flex-col justify-center gap-1"
+    >
       {Object.keys(TrafficColor).map((colorClass, index) => {
         const backgroundStyle = "bg-" + TrafficColor[colorClass as ColorType];
 
@@ -30,8 +32,10 @@ export const TrafficLights = ({ onColorChange }: TrafficLightsProps) => {
           <button
             key={index}
             onClick={() => changeBorder(colorClass as ColorType)}
-            className={`w-4 h-4 rounded-full ${backgroundStyle}`}
-          ></button>
+            className={`w-5 h-5 overflow-hidden flex justify-center items-center`}
+          >
+            <span className={`w-4 h-4 rounded-full ${backgroundStyle}`}></span>
+          </button>
         );
       })}
     </div>
