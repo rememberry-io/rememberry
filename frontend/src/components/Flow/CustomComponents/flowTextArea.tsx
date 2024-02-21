@@ -45,7 +45,7 @@ export const FlowTextArea = ({
 
   return (
     <textarea
-      className={`${inputProps} read-only:visible  rounded-md resize-none break-words flex items-center p-2 justify-between w-full ${stackProps} `}
+      className={`${inputProps} hover:cursor-pointer read-only:visible  rounded-md resize-none break-words flex items-center p-2 justify-between w-full ${stackProps} `}
       value={value}
       ref={textAreaRef}
       placeholder={placeholder}

@@ -129,7 +129,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const toggleCard = () => {
     setIsFront(!isFront);
-    //TODO: MAKE CURSER IT TO POINTER
   };
 
   const openDialog = () => {
@@ -148,7 +147,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     <div
       tabIndex={0}
       onFocus={onFocus}
-      className={`dragHandle  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
+      className={`dragHandle hover:cursor-pointer  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
