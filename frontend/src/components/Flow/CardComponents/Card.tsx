@@ -70,8 +70,10 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   const onFocus = () => {
     setFocusedId(id);
   };
-  const onBlur = () => {
-    if (isFocused) {
+  const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
+    const isFocusingChild =
+      e.currentTarget.contains(e.relatedTarget) || isDialogOpen;
+    if (isFocused && !isFocusingChild) {
       setFocusedId(null);
     }
   };
@@ -96,6 +98,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       setIsNew(false);
     }
   }, [isNew]);
+
   const handleDialogSubmit = (
     front: string,
     back: string,
@@ -126,10 +129,12 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
 
   const toggleCard = () => {
     setIsFront(!isFront);
+    //TODO: MAKE CURSER IT TO POINTER
   };
 
   const openDialog = () => {
     setIsDialogOpen(true);
+    //TODO: Flashcard on create, open dialog
   };
 
   const closeDialog = () => setIsDialogOpen(false);
@@ -153,6 +158,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
+            onBlur={onBlur}
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
             <div className="inputWrapper">
@@ -181,6 +187,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
         <>
           <div
             onClick={toggleCard}
+            onBlur={onBlur}
             className={`p-2 rounded-lg ${borderClasses}`}
           >
             <div className="inputWrapper">

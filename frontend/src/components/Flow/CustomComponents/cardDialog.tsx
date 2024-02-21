@@ -30,7 +30,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
   const [backText, setBackText] = useState(flashcardBackText);
   const [passedCardType, setPassedCardType] = useState(cardType);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent) => {
     onSubmit(frontText, backText, parentName);
     closeDialog();
   };
@@ -60,51 +60,49 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
   };
 
   return (
-    <div>
-      <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
-        <DialogContent onAbort={closeDialog}>
-          <form onSubmit={handleSubmit}>
+    <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
+      <DialogContent onAbort={closeDialog}>
+        <form onSubmit={handleSubmit}>
+          <div>
             <div>
-              <div>
-                <>
-                  <div className="font-medium text-primary dark:text-white leading-10">
-                    {parentName}
-                  </div>
-                </>
+              <>
+                <div className="font-medium text-primary dark:text-white leading-10">
+                  {parentName}
+                </div>
+              </>
 
-                <FlowTextArea
-                  className=" "
-                  value={frontText === "New Front Text" ? "" : frontText}
-                  placeholder="Front Text"
-                  textAreaRef={frontTextAreaRef}
-                  rows={1}
-                  changes={(value: string) => setFrontText(value)}
-                  isStack={false}
-                  isInput={true}
-                  onSubmit={handleSubmit}
-                />
-              </div>
-
-              <div className="leading-6 text-justify">
-                <FlowTextArea
-                  className=" "
-                  value={backText === "New Back Text" ? "" : backText}
-                  placeholder="Back Text"
-                  textAreaRef={backTextAreaRef}
-                  rows={1}
-                  changes={(value: string) => setBackText(value)}
-                  isStack={false}
-                  isInput={true}
-                  onSubmit={handleSubmit}
-                />
-              </div>
-              <Button className="  mt-4" variant="default">
-                Save
-              </Button>
+              <FlowTextArea
+                className=" "
+                value={frontText === "New Front Text" ? "" : frontText}
+                placeholder="Front Text"
+                textAreaRef={frontTextAreaRef}
+                rows={1}
+                changes={(value: string) => setFrontText(value)}
+                isStack={false}
+                isInput={true}
+                onSubmit={() => handleSubmit}
+              />
             </div>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </div>
+
+            <div className="leading-6 text-justify">
+              <FlowTextArea
+                className=" "
+                value={backText === "New Back Text" ? "" : backText}
+                placeholder="Back Text"
+                textAreaRef={backTextAreaRef}
+                rows={1}
+                changes={(value: string) => setBackText(value)}
+                isStack={false}
+                isInput={true}
+                onSubmit={() => handleSubmit}
+              />
+            </div>
+            <Button className="  mt-4" variant="default">
+              Save
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 };
