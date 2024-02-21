@@ -157,7 +157,6 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
-            onBlur={onBlur}
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
             <div className="inputWrapper">
@@ -212,34 +211,33 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
         </>
       )}
       {isFocused && cardType === "stack" && (
+        //TODO: button not working currently
         <div
           className="absolute"
           style={{
-            right: "-5rem",
+            right: "-3rem",
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
         >
-          <div className="flex relative flex-row align-middle ml-2">
-            <div className="flex flex-col items-center justify-center">
-              <Button
-                variant="secondary"
-                size="icon"
-                className=""
-                onClick={openDialog}
-              >
-                <Maximize2 />
-              </Button>
-              <FlowDialog
-                nodeId={id}
-                cardType={cardType}
-                onSubmit={handleDialogSubmit}
-                flashcardParentName={parentName}
-                flashcardFrontText={frontText}
-                flashcardBackText={backText}
-                isDialogOpen={isDialogOpen}
-                closeDialog={() => setIsDialogOpen(false)}
-              />
-            </div>
+          <div className=" ">
+            <Button
+              variant="secondary"
+              size="icon"
+              className=""
+              onClick={openDialog}
+            >
+              <Maximize2 />
+            </Button>
+            <FlowDialog
+              nodeId={id}
+              cardType={cardType}
+              onSubmit={handleDialogSubmit}
+              flashcardParentName={parentName}
+              flashcardFrontText={frontText}
+              flashcardBackText={backText}
+              isDialogOpen={isDialogOpen}
+              closeDialog={() => setIsDialogOpen(false)}
+            />
           </div>
         </div>
       )}

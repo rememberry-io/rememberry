@@ -73,7 +73,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
 
               <FlowTextArea
                 className=" "
-                value={frontText === "New Front Text" ? "" : frontText}
+                value={frontText}
                 placeholder="Front Text"
                 textAreaRef={frontTextAreaRef}
                 rows={1}
@@ -87,7 +87,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
             <div className="leading-6 text-justify">
               <FlowTextArea
                 className=" "
-                value={backText === "New Back Text" ? "" : backText}
+                value={backText}
                 placeholder="Back Text"
                 textAreaRef={backTextAreaRef}
                 rows={1}
