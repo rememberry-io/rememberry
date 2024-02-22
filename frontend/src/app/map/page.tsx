@@ -21,7 +21,7 @@ import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import FlowBackground from "@/components/Flow/Background/flowBackground";
-import Card from "@/components/Flow/CardComponents/Card";
+import Card from "@/components/Flow/CardComponents/NodewithState";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";

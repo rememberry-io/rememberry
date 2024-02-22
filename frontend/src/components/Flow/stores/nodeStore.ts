@@ -63,8 +63,8 @@ const useStore = create<RFState>((set, get) => ({
 
   addChildNode: (parentNode: Node, position: XYPosition) => {
     const newNode = {
-      id: nanoid(),
       type: "flashcard",
+      id: nanoid(),
       data: {
         frontText: "Front Text",
         backText: "New Front Text",

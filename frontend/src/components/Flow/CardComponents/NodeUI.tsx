@@ -1,99 +1,55 @@
-// hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
 import { Maximize2 } from "lucide-react";
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
-import { Position, useViewport } from "reactflow";
-import useStore, { RFState } from "../stores/nodeStore";
-
-import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
-
-import { shallow } from "zustand/shallow";
+import React, { useRef } from "react";
+import { Position } from "reactflow";
 import { NodeDialog } from "../CustomComponents/NodeDialog";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
+import { ColorType, TrafficLights } from "./TrafficLights";
 
-import useFlashcardFocusStore from "../stores/cardFocusStore";
 
-const normalizeZoom = (zoom: number): number => {
-  // Adjust the calculation as necessary to fit the desired size
-  return Math.max(1 / zoom, 0.5); // Ensure it never goes below 0.5, for instance
-};
-
-interface NodeProps {
-  type: string;
-  data: {
-    id: string;
-    parentName: string; // TODO: should be parent id -> change with db connection
-    frontText: string;
-    backText: string;
-    borderColor?: ColorType;
-    isNew?: boolean;
-    newNodeType: string;
-  };
+interface NodeUIProps {
+  isFront: boolean;
+  frontText: string;
+  backText: string;
+  borderClasses: string;
+  isDialogOpen: boolean;
+  isFocused: boolean;
+  normalizeZoom: (zoom: number) => number;
+  zoom: number;
+  toggleCard: () => void;
+  openDialog: () => void;
+  closeDialog: () => void;
+  handleDialogSubmit: (front: string, back: string, parentName: string) => void;
+  handleColorChange: (color: ColorType) => void;
+  cardType: string;
+  parentName: string;
+  nodeId: string;
+  focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
+  blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
 }
 
-export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
-  const [isFront, setIsFront] = useState(true);
-  const [parentName, setParentName] = useState(data.parentName);
-  const [frontText, setFront] = useState(data.frontText);
-  const [backText, setBack] = useState(data.backText);
-  const [isNew, setIsNew] = useState(data.isNew);
-  const [cardType, setCardType] = useState(type);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const [selectedColor, setSelectedColor] = useState<
-    ColorType | null | undefined
-  >(data.borderColor);
-
-  const handleColorChange = (color: ColorType) => {
-    setSelectedColor(color);
-  };
-
-  const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
-
-  const borderClasses =
-  cardType === "flashcard"
-    ? `border-2 ${borderStyle} border-opacity-50 hover:border-opacity-75`
-    : "border-2 border-ashberry border-opacity-50 hover:border-opacity-75";
-
-  // zoom so that the tools and trafficlights are still visible when zoomed out
-  const { zoom } = useViewport();
-
-  const { focusedId, setFocusedId } = useFlashcardFocusStore();
-  const isFocused = data.id === focusedId;
-
-  const onFocus = () => {
-    setFocusedId(data.id);
-  };
-  const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
-    const isFocusingChild =
-      e.currentTarget.contains(e.relatedTarget) || isDialogOpen;
-    if (isFocused && !isFocusingChild) {
-      setFocusedId(null);
-    }
-  };
-
-  
-
-  const { updateNode } = useStore(
-    (state) => ({ updateNode: state.updateNode }),
-    shallow,
-  );
-
-  const handleDialogSubmit = (
-    front: string,
-    back: string,
-    parentName: string,
-  ) => {
-    setFront(front);
-    setBack(back);
-    setParentName(parentName);
-    setIsDialogOpen(false);
-    setIsNew(false); // Ensure isNew is updated here if not handled elsewhere
-    updateNode(data.id, front, back, parentName, selectedColor || "", false); 
-  };
-
+export const NodeUI: React.FC<NodeUIProps> = ({
+  isFront,
+  frontText,
+  backText,
+  borderClasses,
+  isDialogOpen,
+  isFocused,
+  normalizeZoom,
+  zoom,
+  toggleCard,
+  openDialog,
+  closeDialog,
+  handleDialogSubmit,
+  handleColorChange,
+  cardType,
+  parentName,
+  nodeId,
+  focus,
+  blur,
+}) => {
   // for multiline textarea
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -101,18 +57,11 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
-  const toggleCard = () => {
-    setIsFront(!isFront);
-  };
-
-  const openDialog = () => setIsDialogOpen(true);
-
-  const closeDialog = () => setIsDialogOpen(false);
-
   return (
     <div
       tabIndex={0}
-      onFocus={onFocus}
+      onFocus={focus}
+      
       className={`dragHandle hover:cursor-pointer  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -123,9 +72,10 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
+            onBlur={blur}
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
-            <div className="inputWrapper">
+            <div className="inputWrapper"> 
               <div>
                 <FlowTextArea
                   isStack={true}
@@ -151,10 +101,10 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
         <>
           <div
             onClick={toggleCard}
-            onBlur={onBlur}
+            onBlur={blur}
             className={`p-2 rounded-lg ${borderClasses}`}
           >
-            <div className="inputWrapper">
+            <div onBlur={blur} className="inputWrapper">
               <div>
                 <FlowTextArea
                   isStack={false}
@@ -177,7 +127,6 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
         </>
       )}
       {isFocused && cardType === "stack" && (
-        //TODO: button not working currently
         <div
           className="absolute"
           style={{
@@ -195,14 +144,14 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
               <Maximize2 />
             </Button>
             <NodeDialog
-              nodeId={data.id}
+              nodeId={nodeId}
               cardType={cardType}
               onSubmit={handleDialogSubmit}
               cardParentName={parentName}
               cardFrontText={frontText}
               cardBackText={backText}
               isDialogOpen={isDialogOpen}
-              closeDialog={() => setIsDialogOpen(false)}
+              closeDialog={closeDialog}
             />
           </div>
         </div>
@@ -231,13 +180,13 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
               </Button>
               <NodeDialog
                 cardType={cardType}
-                nodeId={data.id}
+                nodeId={nodeId}
                 onSubmit={handleDialogSubmit}
                 cardParentName={parentName}
                 cardFrontText={frontText}
                 cardBackText={backText}
                 isDialogOpen={isDialogOpen}
-                closeDialog={() => setIsDialogOpen(false)}
+                closeDialog={closeDialog}
               />
             </div>
           </div>
@@ -249,5 +198,3 @@ export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
     </div>
   );
 };
-
-export default memo(Flashcard);
