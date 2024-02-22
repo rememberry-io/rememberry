@@ -27,13 +27,7 @@ import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
 
-const selector = (state: RFState) => ({
-  nodes: state.nodes,
-  edges: state.edges,
-  onNodesChange: state.onNodesChange,
-  onEdgesChange: state.onEdgesChange,
-  addChildNode: state.addChildNode,
-});
+const selector = (state: RFState) => (state);
 
 const nodeTypes = {
   flashcard: Card,
@@ -58,9 +52,7 @@ function Map() {
   const [isFront, setIsFront] = useState(true);
 
   const [isOpen, setIsOpen] = useState(false);
-  const [openDialogForNode, setOpenDialogForNode] = useState(null);
 
-  const [focusedNodeId, setFocusedNodeId] = useState(null);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -115,7 +107,8 @@ function Map() {
           event as MouseEvent,
           parentNode,
         );
-
+        //TODO: Move Dialog to page.tsx
+        //TODO: storybook implementation and separation of CardUI and CardWithState
         if (parentNode && childNodePosition) {
           addChildNode(parentNode, childNodePosition);
         }

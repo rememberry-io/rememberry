@@ -42,6 +42,7 @@ const useStore = create<RFState>((set, get) => ({
         parentName: "",
         mainStackID: "",
         borderColors: [],
+        isNew: false,
       },
     },
   ],
@@ -65,8 +66,8 @@ const useStore = create<RFState>((set, get) => ({
       id: nanoid(),
       type: "flashcard",
       data: {
-        frontText: "",
-        backText: "",
+        frontText: "Front Text",
+        backText: "New Front Text",
         parentName: parentNode.data.frontText,
         borderColor: "red",
         isNew: true,

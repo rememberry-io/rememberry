@@ -4,41 +4,34 @@ import React, { useRef, useState } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { FlowTextArea } from "./flowTextArea";
 
-interface FlowDialogProps {
+interface NodeDialogProps {
   nodeId: string;
-  flashcardParentName: string;
-  flashcardFrontText: string;
-  flashcardBackText: string;
+  cardParentName: string;
+  cardFrontText: string;
+  cardBackText: string;
   onSubmit: (frontText: string, backText: string, parentText: string) => void;
   isDialogOpen: boolean;
   closeDialog: () => void;
   cardType: string;
+  autoOpen?: boolean;
 }
 
-export const FlowDialog: React.FC<FlowDialogProps> = ({
-  nodeId,
-  flashcardParentName,
-  flashcardFrontText,
-  flashcardBackText,
-  onSubmit,
-  isDialogOpen,
-  closeDialog,
-  cardType,
-}) => {
-  const [parentName, setParentName] = useState(flashcardParentName);
-  const [frontText, setFrontText] = useState(flashcardFrontText);
-  const [backText, setBackText] = useState(flashcardBackText);
-  const [passedCardType, setPassedCardType] = useState(cardType);
+export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
+  const [parentName, setParentName] = useState(dialogProps.cardParentName);
+  const [frontText, setFrontText] = useState(dialogProps.cardFrontText);
+  const [backText, setBackText] = useState(dialogProps.cardBackText);
+  const [passedCardType, setPassedCardType] = useState(dialogProps.cardType);
 
   const handleSubmit = (e: React.FormEvent) => {
-    onSubmit(frontText, backText, parentName);
-    closeDialog();
+    e.preventDefault(); 
+    dialogProps.onSubmit(frontText, backText, parentName, );
+    dialogProps.closeDialog();
   };
 
   const discardChanges = () => {
-    setFrontText(flashcardFrontText);
-    setBackText(flashcardBackText);
-    closeDialog();
+    setFrontText(dialogProps.cardFrontText);
+    setBackText(dialogProps.cardBackText);
+    dialogProps.closeDialog();
   };
 
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -49,7 +42,6 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
 
   const handleChangeFront = (evt: React.ChangeEvent<HTMLTextAreaElement>) => {
     const valFront = evt.target?.value;
-
     setFrontText(valFront);
   };
 
@@ -60,8 +52,8 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
-      <DialogContent onAbort={closeDialog}>
+    <Dialog open={dialogProps.isDialogOpen || dialogProps.autoOpen} onOpenChange={discardChanges}>
+      <DialogContent onAbort={dialogProps.closeDialog}>
         <form onSubmit={handleSubmit}>
           <div>
             <div>
@@ -97,7 +89,7 @@ export const FlowDialog: React.FC<FlowDialogProps> = ({
                 onSubmit={() => handleSubmit}
               />
             </div>
-            <Button className="  mt-4" variant="default">
+            <Button type="submit" className="  mt-4" variant="default">
               Save
             </Button>
           </div>

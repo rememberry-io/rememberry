@@ -1,27 +1,19 @@
 // hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
 import { Button } from "@/components/ui/button";
 import { Maximize2 } from "lucide-react";
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { Position, useViewport } from "reactflow";
 import useStore, { RFState } from "../stores/nodeStore";
 
 import { ColorType, TrafficColor, TrafficLights } from "./TrafficLights";
 
 import { shallow } from "zustand/shallow";
-import { FlowDialog } from "../CustomComponents/cardDialog";
+import { NodeDialog } from "../CustomComponents/NodeDialog";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 
 import useFlashcardFocusStore from "../stores/cardFocusStore";
-
-const selector = (state: RFState) => ({
-  nodes: state.nodes,
-  edges: state.edges,
-  onNodesChange: state.onNodesChange,
-  onEdgesChange: state.onEdgesChange,
-  addChildNode: state.addChildNode,
-});
 
 const normalizeZoom = (zoom: number): number => {
   // Adjust the calculation as necessary to fit the desired size
@@ -29,14 +21,10 @@ const normalizeZoom = (zoom: number): number => {
 };
 
 interface NodeProps {
-  id: string;
-}
-
-interface FlashcardProps extends NodeProps {
   type: string;
   data: {
     id: string;
-    parentName: string;
+    parentName: string; // TODO: should be parent id -> change with db connection
     frontText: string;
     backText: string;
     borderColor?: ColorType;
@@ -45,13 +33,14 @@ interface FlashcardProps extends NodeProps {
   };
 }
 
-export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
+export const Flashcard: React.FC<NodeProps> = ({ data, type }) => {
   const [isFront, setIsFront] = useState(true);
   const [parentName, setParentName] = useState(data.parentName);
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
   const [isNew, setIsNew] = useState(data.isNew);
   const [cardType, setCardType] = useState(type);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
@@ -61,14 +50,21 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     setSelectedColor(color);
   };
 
+  const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
+
+  const borderClasses =
+  cardType === "flashcard"
+    ? `border-2 ${borderStyle} border-opacity-50 hover:border-opacity-75`
+    : "border-2 border-ashberry border-opacity-50 hover:border-opacity-75";
+
   // zoom so that the tools and trafficlights are still visible when zoomed out
   const { zoom } = useViewport();
 
   const { focusedId, setFocusedId } = useFlashcardFocusStore();
-  const isFocused = id === focusedId;
+  const isFocused = data.id === focusedId;
 
   const onFocus = () => {
-    setFocusedId(id);
+    setFocusedId(data.id);
   };
   const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     const isFocusingChild =
@@ -78,26 +74,12 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (isFocused) {
-        setFocusedId(null);
-      }
-    };
-  }, [isFocused, setFocusedId]);
-
-  const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
+  
 
   const { updateNode } = useStore(
     (state) => ({ updateNode: state.updateNode }),
     shallow,
   );
-  useEffect(() => {
-    if (isNew) {
-      setIsDialogOpen(true);
-      setIsNew(false);
-    }
-  }, [isNew]);
 
   const handleDialogSubmit = (
     front: string,
@@ -108,14 +90,8 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
     setBack(back);
     setParentName(parentName);
     setIsDialogOpen(false);
-    updateNode(
-      id,
-      front,
-      back,
-      parentName,
-      selectedColor || "",
-      isNew || false,
-    );
+    setIsNew(false); // Ensure isNew is updated here if not handled elsewhere
+    updateNode(data.id, front, back, parentName, selectedColor || "", false); 
   };
 
   // for multiline textarea
@@ -125,23 +101,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const toggleCard = () => {
     setIsFront(!isFront);
   };
 
-  const openDialog = () => {
-    setIsDialogOpen(true);
-    //TODO: Flashcard on create, open dialog
-  };
+  const openDialog = () => setIsDialogOpen(true);
 
   const closeDialog = () => setIsDialogOpen(false);
-
-  const borderClasses =
-    cardType === "flashcard"
-      ? `border-2 ${borderStyle} border-opacity-50 hover:border-opacity-75`
-      : "border-2 border-ashberry border-opacity-50 hover:border-opacity-75";
 
   return (
     <div
@@ -228,13 +194,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
             >
               <Maximize2 />
             </Button>
-            <FlowDialog
-              nodeId={id}
+            <NodeDialog
+              nodeId={data.id}
               cardType={cardType}
               onSubmit={handleDialogSubmit}
-              flashcardParentName={parentName}
-              flashcardFrontText={frontText}
-              flashcardBackText={backText}
+              cardParentName={parentName}
+              cardFrontText={frontText}
+              cardBackText={backText}
               isDialogOpen={isDialogOpen}
               closeDialog={() => setIsDialogOpen(false)}
             />
@@ -263,13 +229,13 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
               >
                 <Maximize2 />
               </Button>
-              <FlowDialog
+              <NodeDialog
                 cardType={cardType}
-                nodeId={id}
+                nodeId={data.id}
                 onSubmit={handleDialogSubmit}
-                flashcardParentName={parentName}
-                flashcardFrontText={frontText}
-                flashcardBackText={backText}
+                cardParentName={parentName}
+                cardFrontText={frontText}
+                cardBackText={backText}
                 isDialogOpen={isDialogOpen}
                 closeDialog={() => setIsDialogOpen(false)}
               />
