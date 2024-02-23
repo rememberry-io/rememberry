@@ -23,8 +23,8 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
   const [passedCardType, setPassedCardType] = useState(dialogProps.cardType);
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); 
-    dialogProps.onSubmit(frontText, backText, parentName, );
+    e.preventDefault();
+    dialogProps.onSubmit(frontText, backText, parentName);
     dialogProps.closeDialog();
   };
 
@@ -52,7 +52,10 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
   };
 
   return (
-    <Dialog open={dialogProps.isDialogOpen || dialogProps.autoOpen} onOpenChange={discardChanges}>
+    <Dialog
+      open={dialogProps.isDialogOpen || dialogProps.autoOpen}
+      onOpenChange={discardChanges}
+    >
       <DialogContent onAbort={dialogProps.closeDialog}>
         <form onSubmit={handleSubmit}>
           <div>
@@ -70,7 +73,7 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
                 textAreaRef={frontTextAreaRef}
                 rows={1}
                 changes={(value: string) => setFrontText(value)}
-                isStack={false}
+                cardType={passedCardType}
                 isInput={true}
                 onSubmit={() => handleSubmit}
               />
@@ -84,7 +87,7 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
                 textAreaRef={backTextAreaRef}
                 rows={1}
                 changes={(value: string) => setBackText(value)}
-                isStack={false}
+                cardType={passedCardType}
                 isInput={true}
                 onSubmit={() => handleSubmit}
               />

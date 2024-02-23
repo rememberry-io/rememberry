@@ -95,7 +95,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         >
           <div className="flex relative flex-row align-middle ml-2">
             {cardType === "flashcard" && (
-              <div className="z-10 pr-2 mt-1">
+              <div className=" pr-2 mt-1">
                 <TrafficLights onColorChange={handleColorChange} />
               </div>
             )}

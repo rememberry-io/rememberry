@@ -22,12 +22,13 @@ import "reactflow/dist/style.css";
 // we need to import the React Flow styles to make it work
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import Card from "@/components/Flow/CardComponents/NodewithState";
+import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialog";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
 
-const selector = (state: RFState) => (state);
+const selector = (state: RFState) => state;
 
 const nodeTypes = {
   flashcard: Card,
@@ -53,10 +54,22 @@ function Map() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  const interceptOnNodesChange: typeof onNodesChange = (changes) => {
+    console.log("nodes changed:", changes)
+    if (changes.some(i => i.type === "dimensions")) {
+      // @ts-expect-error lol
+      setNodeIdShownInDialog(changes[0].id);
+    }
+    return onNodesChange(changes);
+  }
+  const interceptOnEdgesChange: typeof onEdgesChange = (changes) => {
+    console.log("edges changed:", changes)
+    return onEdgesChange(changes);
+  }
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = store.getState();
@@ -92,6 +105,10 @@ function Map() {
     connectingNodeId.current = nodeId;
   }, []);
 
+  const [nodeIdShownInDialog, setNodeIdShownInDialog] = useState<string | null>(null);
+
+  const [createdNode, setCreatedNode] = useState<Node | null>(null);
+
   const onConnectEnd: OnConnectEnd = useCallback(
     (event) => {
       const { nodeInternals } = store.getState();
@@ -99,6 +116,13 @@ function Map() {
         "react-flow__pane",
       );
       const node = (event.target as Element).closest(".react-flow__node");
+
+      console.log("detail:", event.type)
+      
+      // setNodeIdShownInDialog(nodeId);
+
+      setCreatedNode(node as Node | null);
+
       if (node) {
         node.querySelector("input")?.focus({ preventScroll: true });
       } else if (targetIsPane && connectingNodeId.current) {
@@ -107,7 +131,7 @@ function Map() {
           event as MouseEvent,
           parentNode,
         );
-        //TODO: Move Dialog to page.tsx
+
         //TODO: storybook implementation and separation of CardUI and CardWithState
         if (parentNode && childNodePosition) {
           addChildNode(parentNode, childNodePosition);
@@ -126,13 +150,26 @@ function Map() {
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
+    {/* Node Dialog that gets thrown for input when node is created */}
+      {nodeIdShownInDialog && <NodeDialog
+        cardType={nodes.find(n => n.id === nodeIdShownInDialog)?.type || "flashcard"}
+        nodeId={nodeIdShownInDialog} 
+        onSubmit={() => alert("haher")}
+        cardParentName={nodes.find(n => n.id === nodeIdShownInDialog)?.data.parentName || ""}
+        cardFrontText={nodes.find(n => n.id === nodeIdShownInDialog)?.data.frontText}
+        cardBackText={nodes.find(n => n.id === nodeIdShownInDialog)?.data.backText}
+        isDialogOpen={nodeIdShownInDialog != null}
+        closeDialog={() => setNodeIdShownInDialog(null)}
+      />}
+
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={interceptOnNodesChange}
+        onEdgesChange={interceptOnEdgesChange}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
+
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}

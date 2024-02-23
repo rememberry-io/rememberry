@@ -25,7 +25,7 @@ interface NodePorps {
     frontText: string;
     backText: string;
     borderColor?: ColorType;
-    isNew?: boolean;
+
     newNodeType: string;
   };
 }
@@ -35,7 +35,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
   const [parentName, setParentName] = useState(data.parentName);
   const [frontText, setFront] = useState(data.frontText);
   const [backText, setBack] = useState(data.backText);
-  const [isNew, setIsNew] = useState(data.isNew);
+
   const [cardType, setCardType] = useState(type);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -59,7 +59,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
 
   const { focusedId, setFocusedId } = useFlashcardFocusStore();
   const isFocused = id === focusedId;
-  console.log("isFocused", isFocused, id, focusedId);
+  // console.log("isFocused", isFocused, id, focusedId);
 
   const onFocus = () => {
     setFocusedId(id);
@@ -73,7 +73,6 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
       setFocusedId(null);
     }
   };
- 
 
   const { updateNode } = useStore(
     (state) => ({ updateNode: state.updateNode }),
@@ -89,7 +88,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
     setBack(back);
     setParentName(parentName);
     setIsDialogOpen(false);
-    setIsNew(false); // Ensure isNew is updated here if not handled elsewhere
+
     updateNode(id, front, back, parentName, selectedColor || "", false);
   };
 
@@ -128,7 +127,6 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
       nodeId={id}
       focus={onFocus}
       blur={onBlur}
-
     />
   );
 };

@@ -42,7 +42,6 @@ const useStore = create<RFState>((set, get) => ({
         parentName: "",
         mainStackID: "",
         borderColors: [],
-        isNew: false,
       },
     },
   ],
@@ -70,7 +69,6 @@ const useStore = create<RFState>((set, get) => ({
         backText: "New Front Text",
         parentName: parentNode.data.frontText,
         borderColor: "red",
-        isNew: true,
       },
       position,
       dragHandle: ".dragHandle",
@@ -104,7 +102,7 @@ const useStore = create<RFState>((set, get) => ({
     backText: string,
     parentName: string,
     borderColor: string,
-    isNew: boolean,
+
   ) => {
     set({
       nodes: get().nodes.map((node) => {
@@ -117,7 +115,6 @@ const useStore = create<RFState>((set, get) => ({
               backText,
               parentName,
               borderColor,
-              isNew,
             },
           };
         }
