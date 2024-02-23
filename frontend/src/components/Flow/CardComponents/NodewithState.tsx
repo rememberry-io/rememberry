@@ -64,13 +64,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
   const onFocus = () => {
     setFocusedId(id);
   };
-  const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
-    const isFocusingChild =
-      e.currentTarget.contains(e.relatedTarget) || isDialogOpen;
-    if (isFocused && !isFocusingChild) {
-      setFocusedId(null);
-    }
-  };
+ 
 
   const { updateNode } = useStore(
     (state) => ({ updateNode: state.updateNode }),
@@ -124,7 +118,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
       parentName={parentName}
       nodeId={id}
       focus={onFocus}
-      blur={onBlur}
+
     />
   );
 };

@@ -27,7 +27,7 @@ interface NodeUIProps {
   parentName: string;
   nodeId: string;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
-  blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
+
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -48,7 +48,6 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   parentName,
   nodeId,
   focus,
-  blur,
 }) => {
   // for multiline textarea
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -56,6 +55,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
 
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
+
 
   return (
     <div
@@ -72,7 +72,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
-            onBlur={blur}
+
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
             <div className="inputWrapper"> 
@@ -101,10 +101,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <>
           <div
             onClick={toggleCard}
-            onBlur={blur}
+
             className={`p-2 rounded-lg ${borderClasses}`}
           >
-            <div onBlur={blur} className="inputWrapper">
+            <div  className="inputWrapper">
               <div>
                 <FlowTextArea
                   isStack={false}
