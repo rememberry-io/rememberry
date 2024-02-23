@@ -60,12 +60,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
     <div
       tabIndex={0}
       onFocus={focus}
-      onBlur={(e) => {
-        console.log("ischild:", e.currentTarget.contains(e.relatedTarget));
-        if (!e.currentTarget.contains(e.relatedTarget)) {
-          blur(e);
-        }
-      }}
+      onBlur={blur}
       className={`dragHandle hover:cursor-pointer  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,

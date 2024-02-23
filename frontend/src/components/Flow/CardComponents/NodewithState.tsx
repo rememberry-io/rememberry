@@ -66,10 +66,13 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
     console.log("onFocus", id, focusedId);
   };
 
-  const onBlur = () => {
-    setFocusedId(null);
-    console.log("onBlur", id, focusedId);
-  }
+  const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
+    const isFocusingChild =
+      e.currentTarget.contains(e.relatedTarget) || isDialogOpen;
+    if (isFocused && !isFocusingChild) {
+      setFocusedId(null);
+    }
+  };
  
 
   const { updateNode } = useStore(
