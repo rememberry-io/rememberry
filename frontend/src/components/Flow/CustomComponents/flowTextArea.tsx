@@ -6,7 +6,7 @@ export const FlowTextArea = ({
 
   placeholder,
   changes,
-  isStack,
+  cardType,
   isInput,
   onSubmit,
 }: {
@@ -16,17 +16,17 @@ export const FlowTextArea = ({
   rows: number;
 
   placeholder: string;
-  isStack: boolean;
+  cardType: string;
   isInput: boolean;
   onSubmit: () => void;
   changes: (value: string) => void;
 }) => {
   var stackProps = "";
-  if (isStack == true && isInput == false) {
+  if (cardType == "stack" && isInput == false) {
     stackProps = "bg-primary text-white";
-  } else if (isStack == true && isInput == true) {
+  } else if (cardType == "stack" && isInput == true) {
     stackProps = "bg-white";
-  } else if (isStack == false && isInput == true) {
+  } else if (cardType == "flashcard" && isInput == true) {
     stackProps = "dark:bg-dark-700";
   } else {
     stackProps = "dark:bg-dark-800";

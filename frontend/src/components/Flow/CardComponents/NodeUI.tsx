@@ -60,7 +60,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
     <div
       tabIndex={0}
       onFocus={focus}
-      onBlur={e => {
+      onBlur={(e) => {
         console.log("ischild:", e.currentTarget.contains(e.relatedTarget));
         if (!e.currentTarget.contains(e.relatedTarget)) {
           blur(e);
@@ -71,57 +71,27 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         borderWidth: normalizeZoom(zoom) * 3,
       }}
     >
-      {cardType === "stack" && (
-        <>
-          <div className="flex relative flex-row align-middle ml-2"></div>
-          <div
-            onClick={toggleCard}
-            
-            className={`p-2 bg-primary rounded-lg ${borderClasses} `}
-          >
-            <div className="inputWrapper">
-              <div>
-                <FlowTextArea
-                  isStack={true}
-                  value={isFront ? frontText : backText}
-                  textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
-                  rows={1}
-                  className={"bg-primary text-white"}
-                  placeholder={""}
-                  changes={function (): void {}}
-                  isInput={false}
-                  onSubmit={function (): void {}}
-                />
-              </div>
-            </div>
+      <div
+        onClick={toggleCard}
+        className={`p-2 ${cardType === "stack" ? "bg-primary text-white" : ""} rounded-lg ${borderClasses}`}
+      >
+        <div className="inputWrapper">
+          <div>
+            <FlowTextArea
+              cardType={cardType}
+              className={`${cardType === "stack" ? "bg-primary text-white" : ""}`}
+              value={isFront ? frontText : backText}
+              textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
+              rows={1}
+              placeholder={""}
+              changes={function (): void {}}
+              isInput={false}
+              onSubmit={function (): void {}}
+            />
           </div>
-        </>
-      )}
-      {cardType === "flashcard" && (
-        <>
-          <div
-            onClick={toggleCard}
+        </div>
+      </div>
 
-            className={`p-2 rounded-lg ${borderClasses}`}
-          >
-            <div className="inputWrapper">
-              <div>
-                <FlowTextArea
-                  isStack={false}
-                  className={""}
-                  value={isFront ? frontText : backText}
-                  textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
-                  rows={1}
-                  placeholder={""}
-                  changes={function (): void {}}
-                  isInput={false}
-                  onSubmit={function (): void {}}
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
       {isFocused && cardType === "stack" && (
         <div
           className="absolute"
@@ -162,9 +132,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
           }}
           onMouseDown={(e) => e.preventDefault()}
         >
-          <div className="flex relative flex-row align-middle ml-2"
-
-          >
+          <div className="flex relative flex-row align-middle ml-2">
             <div className="z-10 pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
