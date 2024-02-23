@@ -1,4 +1,5 @@
 "use client";
+import toast, { Toaster } from "react-hot-toast";
 import ReactFlow, {
   ConnectionLineType,
   Controls,
@@ -52,6 +53,9 @@ function Map() {
   const connectingNodeId = useRef<string | null>(null);
   const [isFront, setIsFront] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
+  const [nodeIdShownInDialog, setNodeIdShownInDialog] = useState<string | null>(
+    null,
+  );
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -60,8 +64,9 @@ function Map() {
   const interceptOnNodesChange: typeof onNodesChange = (changes) => {
     console.log("nodes changed:", changes);
     if (changes.some((i) => i.type === "dimensions")) {
-      // @ts-expect-error lol
-      setNodeIdShownInDialog(changes[0].id);
+      // @ts-expect-error
+      setNodeIdShownInDialog(changes[changes.length - 1].id);
+      
     }
 
     return onNodesChange(changes);
@@ -105,9 +110,6 @@ function Map() {
     connectingNodeId.current = nodeId;
   }, []);
 
-  const [nodeIdShownInDialog, setNodeIdShownInDialog] = useState<string | null>(
-    null,
-  );
 
   const onConnectEnd: OnConnectEnd = useCallback(
     (event) => {
@@ -115,15 +117,10 @@ function Map() {
       const targetIsPane = (event.target as Element).classList.contains(
         "react-flow__pane",
       );
-      const node = (event.target as Element).closest(".react-flow__node");
-
-      console.log("detail:", event.type);
 
       // setNodeIdShownInDialog(nodeId);
 
-      if (node) {
-        node.querySelector("input")?.focus({ preventScroll: true });
-      } else if (targetIsPane && connectingNodeId.current) {
+      if (targetIsPane && connectingNodeId.current) {
         const parentNode = nodeInternals.get(connectingNodeId.current);
         const childNodePosition = getChildNodePosition(
           event as MouseEvent,
@@ -141,20 +138,19 @@ function Map() {
 
   const addStack = useAddStack();
 
+  const closeToast = () => {
+    toast("Enter something first :)", {
+      icon: "💡",
+    });
+  };
+
   const { updateNode } = useStore(
     (state) => ({ updateNode: state.updateNode }),
     shallow,
   );
 
-  const handleDialogSubmit = (front: string, back: string) => {
-    updateNode(
-      nodeIdShownInDialog!,
-      front,
-      back,
-      nodes.find((n) => n.id === nodeIdShownInDialog!)?.data.parentName || "",
-      "red",
-      false,
-    );
+  const handleDialogSubmit = (front: string, back: string, parent: string) => {
+    updateNode(nodeIdShownInDialog!, front, back, parent, "red", false);
     setNodeIdShownInDialog(null);
   };
 
@@ -164,14 +160,12 @@ function Map() {
       className="flex flex-col justify-items-center"
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
-
+      <Toaster position="bottom-center" reverseOrder={false} />
       {/* Node Dialog that gets thrown for input when node is created */}
-
       {nodeIdShownInDialog && (
+        // ! At the moment the submitted text changes the value of the node before
+        
         <NodeDialog
-          cardType={
-            nodes.find((n) => n.id === nodeIdShownInDialog)?.type || "flashcard"
-          }
           nodeId={nodeIdShownInDialog}
           onSubmit={handleDialogSubmit}
           cardParentName={
@@ -185,7 +179,9 @@ function Map() {
             nodes.find((n) => n.id === nodeIdShownInDialog)?.data.backText
           }
           isDialogOpen={nodeIdShownInDialog != null}
-          closeDialog={() => setNodeIdShownInDialog(null)}
+          closeDialog={() => setNodeIdShownInDialog(null)
+        // TODO: set toast that opens if front or back text is empty  
+        }
         />
       )}
 
@@ -205,6 +201,7 @@ function Map() {
         <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
+
         <FlowFooter>
           <Button
             variant="default"
