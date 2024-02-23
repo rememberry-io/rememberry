@@ -51,7 +51,6 @@ function Map() {
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
   const [isFront, setIsFront] = useState(true);
-
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => {
@@ -59,17 +58,18 @@ function Map() {
   };
 
   const interceptOnNodesChange: typeof onNodesChange = (changes) => {
-    console.log("nodes changed:", changes)
-    if (changes.some(i => i.type === "dimensions")) {
+    console.log("nodes changed:", changes);
+    if (changes.some((i) => i.type === "dimensions")) {
       // @ts-expect-error lol
       setNodeIdShownInDialog(changes[0].id);
     }
+
     return onNodesChange(changes);
-  }
+  };
   const interceptOnEdgesChange: typeof onEdgesChange = (changes) => {
-    console.log("edges changed:", changes)
+    console.log("edges changed:", changes);
     return onEdgesChange(changes);
-  }
+  };
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = store.getState();
@@ -105,9 +105,9 @@ function Map() {
     connectingNodeId.current = nodeId;
   }, []);
 
-  const [nodeIdShownInDialog, setNodeIdShownInDialog] = useState<string | null>(null);
-
-  const [createdNode, setCreatedNode] = useState<Node | null>(null);
+  const [nodeIdShownInDialog, setNodeIdShownInDialog] = useState<string | null>(
+    null,
+  );
 
   const onConnectEnd: OnConnectEnd = useCallback(
     (event) => {
@@ -117,11 +117,9 @@ function Map() {
       );
       const node = (event.target as Element).closest(".react-flow__node");
 
-      console.log("detail:", event.type)
-      
-      // setNodeIdShownInDialog(nodeId);
+      console.log("detail:", event.type);
 
-      setCreatedNode(node as Node | null);
+      // setNodeIdShownInDialog(nodeId);
 
       if (node) {
         node.querySelector("input")?.focus({ preventScroll: true });
@@ -143,6 +141,23 @@ function Map() {
 
   const addStack = useAddStack();
 
+  const { updateNode } = useStore(
+    (state) => ({ updateNode: state.updateNode }),
+    shallow,
+  );
+
+  const handleDialogSubmit = (front: string, back: string) => {
+    updateNode(
+      nodeIdShownInDialog!,
+      front,
+      back,
+      nodes.find((n) => n.id === nodeIdShownInDialog!)?.data.parentName || "",
+      "red",
+      false,
+    );
+    setNodeIdShownInDialog(null);
+  };
+
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
@@ -150,17 +165,29 @@ function Map() {
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
 
-    {/* Node Dialog that gets thrown for input when node is created */}
-      {nodeIdShownInDialog && <NodeDialog
-        cardType={nodes.find(n => n.id === nodeIdShownInDialog)?.type || "flashcard"}
-        nodeId={nodeIdShownInDialog} 
-        onSubmit={() => alert("haher")}
-        cardParentName={nodes.find(n => n.id === nodeIdShownInDialog)?.data.parentName || ""}
-        cardFrontText={nodes.find(n => n.id === nodeIdShownInDialog)?.data.frontText}
-        cardBackText={nodes.find(n => n.id === nodeIdShownInDialog)?.data.backText}
-        isDialogOpen={nodeIdShownInDialog != null}
-        closeDialog={() => setNodeIdShownInDialog(null)}
-      />}
+      {/* Node Dialog that gets thrown for input when node is created */}
+
+      {nodeIdShownInDialog && (
+        <NodeDialog
+          cardType={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.type || "flashcard"
+          }
+          nodeId={nodeIdShownInDialog}
+          onSubmit={handleDialogSubmit}
+          cardParentName={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.data.parentName ||
+            ""
+          }
+          cardFrontText={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.data.frontText
+          }
+          cardBackText={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.data.backText
+          }
+          isDialogOpen={nodeIdShownInDialog != null}
+          closeDialog={() => setNodeIdShownInDialog(null)}
+        />
+      )}
 
       <ReactFlow
         nodes={nodes}
@@ -169,7 +196,6 @@ function Map() {
         onEdgesChange={interceptOnEdgesChange}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
-
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}
