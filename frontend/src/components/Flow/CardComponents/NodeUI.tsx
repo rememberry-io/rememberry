@@ -8,7 +8,6 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
 import { ColorType, TrafficLights } from "./TrafficLights";
 
-
 interface NodeUIProps {
   isFront: boolean;
   frontText: string;
@@ -27,7 +26,7 @@ interface NodeUIProps {
   parentName: string;
   nodeId: string;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
-
+  blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -48,6 +47,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   parentName,
   nodeId,
   focus,
+  blur,
 }) => {
   // for multiline textarea
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -56,12 +56,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
-
   return (
     <div
       tabIndex={0}
       onFocus={focus}
-      
       className={`dragHandle hover:cursor-pointer  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -72,10 +70,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
-
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
-            <div className="inputWrapper"> 
+            <div className="inputWrapper">
               <div>
                 <FlowTextArea
                   isStack={true}
@@ -84,13 +81,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({
                   rows={1}
                   className={"bg-primary text-white"}
                   placeholder={""}
-                  changes={function (value: string): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  changes={function (): void {}}
                   isInput={false}
-                  onSubmit={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  onSubmit={function (): void {}}
                 />
               </div>
             </div>
@@ -101,10 +94,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <>
           <div
             onClick={toggleCard}
-
             className={`p-2 rounded-lg ${borderClasses}`}
           >
-            <div  className="inputWrapper">
+            <div className="inputWrapper">
               <div>
                 <FlowTextArea
                   isStack={false}
@@ -113,13 +105,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({
                   textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
                   rows={1}
                   placeholder={""}
-                  changes={function (value: string): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  changes={function (): void {}}
                   isInput={false}
-                  onSubmit={function (): void {
-                    throw new Error("Function not implemented.");
-                  }}
+                  onSubmit={function (): void {}}
                 />
               </div>
             </div>
