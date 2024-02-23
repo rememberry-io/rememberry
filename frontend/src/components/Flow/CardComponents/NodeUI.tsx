@@ -56,24 +56,22 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   useAutosizeTextArea(frontTextAreaRef.current, frontText);
   useAutosizeTextArea(backTextAreaRef.current, backText);
 
+  const colorType = cardType === "stack" ? "bg-primary text-white" : "bg-white";
+
   return (
     <div
       tabIndex={0}
       onFocus={focus}
       onBlur={blur}
-      className={`dragHandle hover:cursor-pointer  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
+      className={`dragHandle hover:cursor-pointer ${colorType}  min-w-48 relative border-none dark:bg-dark-800  flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
     >
-      <div
-        onClick={toggleCard}
-        className={`p-2 ${cardType === "stack" ? "bg-primary text-white" : ""} rounded-lg ${borderClasses}`}
-      >
+      <div onClick={toggleCard} className={`p-2  rounded-lg ${borderClasses}`}>
         <div>
           <FlowTextArea
-            cardType={cardType}
-            className={`${cardType === "stack" ? "bg-primary text-white" : ""}`}
+            className={`${colorType}`}
             value={isFront ? frontText : backText}
             textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
             rows={1}
