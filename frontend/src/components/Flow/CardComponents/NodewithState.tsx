@@ -63,7 +63,13 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
 
   const onFocus = () => {
     setFocusedId(id);
+    console.log("onFocus", id, focusedId);
   };
+
+  const onBlur = () => {
+    setFocusedId(null);
+    console.log("onBlur", id, focusedId);
+  }
  
 
   const { updateNode } = useStore(
@@ -118,6 +124,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
       parentName={parentName}
       nodeId={id}
       focus={onFocus}
+      blur={onBlur}
 
     />
   );

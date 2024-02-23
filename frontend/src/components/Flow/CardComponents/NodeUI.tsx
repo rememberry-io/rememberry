@@ -60,6 +60,12 @@ export const NodeUI: React.FC<NodeUIProps> = ({
     <div
       tabIndex={0}
       onFocus={focus}
+      onBlur={e => {
+        console.log("ischild:", e.currentTarget.contains(e.relatedTarget));
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          blur(e);
+        }
+      }}
       className={`dragHandle hover:cursor-pointer  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
@@ -70,6 +76,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
           <div className="flex relative flex-row align-middle ml-2"></div>
           <div
             onClick={toggleCard}
+            
             className={`p-2 bg-primary rounded-lg ${borderClasses} `}
           >
             <div className="inputWrapper">
@@ -94,6 +101,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <>
           <div
             onClick={toggleCard}
+
             className={`p-2 rounded-lg ${borderClasses}`}
           >
             <div className="inputWrapper">
@@ -152,8 +160,11 @@ export const NodeUI: React.FC<NodeUIProps> = ({
             right: "-5rem",
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
+          onMouseDown={(e) => e.preventDefault()}
         >
-          <div className="flex relative flex-row align-middle ml-2">
+          <div className="flex relative flex-row align-middle ml-2"
+
+          >
             <div className="z-10 pr-2 mt-1">
               <TrafficLights onColorChange={handleColorChange} />
             </div>
