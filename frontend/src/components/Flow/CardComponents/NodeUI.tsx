@@ -107,7 +107,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
                 <Maximize2 />
               </Button>
               <NodeDialog
-                cardType={cardType}
+
                 nodeId={nodeId}
                 onSubmit={handleDialogSubmit}
                 cardParentName={parentName}

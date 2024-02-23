@@ -12,7 +12,6 @@ interface NodeDialogProps {
   onSubmit: (frontText: string, backText: string, parentText: string) => void;
   isDialogOpen: boolean;
   closeDialog: () => void;
-  cardType: string;
   autoOpen?: boolean;
 }
 
@@ -20,7 +19,6 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
   const [parentName, setParentName] = useState(dialogProps.cardParentName);
   const [frontText, setFrontText] = useState(dialogProps.cardFrontText);
   const [backText, setBackText] = useState(dialogProps.cardBackText);
-  const [passedCardType, setPassedCardType] = useState(dialogProps.cardType);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +71,6 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
                 textAreaRef={frontTextAreaRef}
                 rows={1}
                 changes={(value: string) => setFrontText(value)}
-                cardType={passedCardType}
                 isInput={true}
                 onSubmit={() => handleSubmit}
               />
@@ -87,7 +84,6 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
                 textAreaRef={backTextAreaRef}
                 rows={1}
                 changes={(value: string) => setBackText(value)}
-                cardType={passedCardType}
                 isInput={true}
                 onSubmit={() => handleSubmit}
               />
