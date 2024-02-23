@@ -75,20 +75,18 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         onClick={toggleCard}
         className={`p-2 ${cardType === "stack" ? "bg-primary text-white" : ""} rounded-lg ${borderClasses}`}
       >
-        <div className="inputWrapper">
-          <div>
-            <FlowTextArea
-              cardType={cardType}
-              className={`${cardType === "stack" ? "bg-primary text-white" : ""}`}
-              value={isFront ? frontText : backText}
-              textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
-              rows={1}
-              placeholder={""}
-              changes={function (): void {}}
-              isInput={false}
-              onSubmit={function (): void {}}
-            />
-          </div>
+        <div>
+          <FlowTextArea
+            cardType={cardType}
+            className={`${cardType === "stack" ? "bg-primary text-white" : ""}`}
+            value={isFront ? frontText : backText}
+            textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
+            rows={1}
+            placeholder={""}
+            changes={function (): void {}}
+            isInput={false}
+            onSubmit={function (): void {}}
+          />
         </div>
       </div>
 
@@ -96,7 +94,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <div
           className="absolute"
           style={{
-            right: "-3rem",
+            right: `${cardType === "stack" ? "-3rem" : "-5rem"}`,
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
         >
