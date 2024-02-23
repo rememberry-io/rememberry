@@ -163,7 +163,6 @@ function Map() {
       <Toaster position="bottom-center" reverseOrder={false} />
       {/* Node Dialog that gets thrown for input when node is created */}
       {nodeIdShownInDialog && (
-        // ! At the moment the submitted text changes the value of the node before
         
         <NodeDialog
           nodeId={nodeIdShownInDialog}
@@ -195,8 +194,10 @@ function Map() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}
-        connectionLineType={ConnectionLineType.Straight}
+        onEdgesDelete={(e) => console.log("edge deleted", e)}
         fitView
+
+        minZoom={0.1}
       >
         <FlowBackground />
         {/* <MiniMap /> */}
