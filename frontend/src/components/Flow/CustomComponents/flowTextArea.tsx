@@ -24,8 +24,6 @@ export const FlowTextArea = ({
   var stackProps = "";
   if (cardType == "stack" && isInput == false) {
     stackProps = "bg-primary text-white";
-  } else if (cardType == "stack" && isInput == true) {
-    stackProps = "bg-white";
   } else if (cardType == "flashcard" && isInput == true) {
     stackProps = "dark:bg-dark-700";
   } else {
