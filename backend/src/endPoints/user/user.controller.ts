@@ -37,7 +37,7 @@ class LuciaUserController implements UserController {
 
       return [null, user] as const;
     } catch (e) {
-      console.error("database error:", e)
+      console.error("database error:", e);
       return getTRPCError();
     }
   }
