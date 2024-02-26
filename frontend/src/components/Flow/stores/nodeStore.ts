@@ -28,6 +28,7 @@ export type RFState = {
     isNew: boolean,
   ) => void;
   updateNodeType: (nodeId: string, newNodeType: string) => void;
+  deleteNode: (nodeId: string) => void;
 };
 
 const useStore = create<RFState>((set, get) => ({
@@ -144,6 +145,14 @@ const useStore = create<RFState>((set, get) => ({
       }),
     });
   },
+  deleteNode: (nodeId: string) => {
+    set({
+      nodes: get().nodes.filter((node) => node.id !== nodeId),
+      edges: get().edges.filter(
+        (edge) => edge.source !== nodeId && edge.target !== nodeId,
+      ),
+    });
+  }
 }));
 
 export default useStore;

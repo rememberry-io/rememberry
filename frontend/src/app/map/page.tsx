@@ -139,10 +139,11 @@ function Map() {
   const addStack = useAddStack();
 
   const closeToast = () => {
-    toast("Enter something first :)", {
-      icon: "💡",
-    });
+      toast("Please enter front and back text :)", {
+        icon: "💡",
+      });
   };
+
 
   const { updateNode } = useStore(
     (state) => ({ updateNode: state.updateNode }),
@@ -178,9 +179,8 @@ function Map() {
             nodes.find((n) => n.id === nodeIdShownInDialog)?.data.backText
           }
           isDialogOpen={nodeIdShownInDialog != null}
-          closeDialog={() => setNodeIdShownInDialog(null)
-        // TODO: set toast that opens if front or back text is empty  
-        }
+          closeDialog={closeToast}
+        
         />
       )}
 

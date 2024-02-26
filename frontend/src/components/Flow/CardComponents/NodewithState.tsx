@@ -79,6 +79,11 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
     shallow,
   );
 
+  const { deleteNode } = useStore(
+    (state) => ({ deleteNode: state.deleteNode }),
+    shallow,
+  );
+
   const handleDialogSubmit = (
     front: string,
     back: string,
@@ -109,10 +114,15 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
 
   return (
     <NodeUI
-      isFront={isFront}
+    nodeId={id}
       frontText={data.frontText}
       backText={data.backText}
+      cardType={cardType}
+      parentName={parentName}
       borderClasses={borderClasses}
+      focus={onFocus}
+      blur={onBlur}
+      isFront={isFront}
       isDialogOpen={isDialogOpen}
       isFocused={isFocused}
       normalizeZoom={normalizeZoom}
@@ -122,11 +132,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
       closeDialog={closeDialog}
       handleDialogSubmit={handleDialogSubmit}
       handleColorChange={handleColorChange}
-      cardType={cardType}
-      parentName={parentName}
-      nodeId={id}
-      focus={onFocus}
-      blur={onBlur}
+      deleteNode={deleteNode}
     />
   );
 };

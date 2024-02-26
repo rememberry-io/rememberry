@@ -27,6 +27,7 @@ interface NodeUIProps {
   nodeId: string;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
+  deleteNode: (id: string) => void;
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -48,6 +49,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   nodeId,
   focus,
   blur,
+  deleteNode
 }) => {
   // for multiline textarea
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -107,7 +109,6 @@ export const NodeUI: React.FC<NodeUIProps> = ({
                 <Maximize2 />
               </Button>
               <NodeDialog
-
                 nodeId={nodeId}
                 onSubmit={handleDialogSubmit}
                 cardParentName={parentName}
