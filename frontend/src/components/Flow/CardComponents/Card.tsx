@@ -143,7 +143,7 @@ export const Flashcard: React.FC<FlashcardProps> = ({ data, id, type }) => {
       tabIndex={0}
       onFocus={onFocus}
       onBlur={onBlur}
-      className={`dragHandle  min-w-48 relative border-none dark:bg-dark-600 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
+      className={`dragHandle  min-w-48 relative border-none dark:bg-dark-800 bg-white flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}

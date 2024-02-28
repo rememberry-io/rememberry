@@ -38,7 +38,11 @@ function MapMenu() {
     setIsDialogOpen(open);
   };
 
-  const handleZoomDialog = (map: { id: any; name: any; description: any }) => {
+  const handleZoomDialog = (map: {
+    id: string;
+    name: string;
+    description: string;
+  }) => {
     setName(map.name);
     setDescription(map.description);
     setMapId(map.id);
@@ -55,13 +59,19 @@ function MapMenu() {
       setZoomActive(false);
     }
   };
-  const handleEditDialog = (map: { id: any; name: any; description: any }) => {
+  const handleEditDialog = (map: {
+    id: string;
+    name: string;
+    description: string;
+  }) => {
     setName(map.name);
     setDescription(map.description);
     setMapId(map.id);
     setIsDialogOpen(true);
     setEditingActive(true);
     setAddMapActive(false);
+    console.log("edit:", map.name, map.description);
+    console.log("edit:", map.name, map.description);
   };
 
   const openAddDialog = () => {
@@ -119,7 +129,7 @@ function MapMenu() {
           {sortedMaps.map(
             (map: { id: string; name: string; description: string }) => (
               <>
-                <div className="dark:bg-dark-600 mx-5 my-5" key={map.id}>
+                <div className="outline-none   mx-5 my-5" key={map.id}>
                   <Box>
                     <MapCard
                       key={map.id}

@@ -34,7 +34,7 @@ export default function Settings() {
             <Formik initialValues={initialValues} onSubmit={handleUpdate}>
               {({ isSubmitting }) => (
                 <Form>
-                  <Card className="dark:bg-dark-800 dark:border-dark-700 p-4">
+                  <Card className="dark:bg-dark-800 dark:border-dark-800 p-4">
                     <CardHeader>
                       <CardTitle>
                         Do you want to do some juicy changes? 🫐
