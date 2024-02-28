@@ -35,3 +35,18 @@ yarn-error.log*
 next-env.d.ts
 
 README.md
+stories
+.eslintrc.json 
+.prettierrc.json
+.storybook/main.ts 
+.storybook/preview.ts 
+components.json
+docker-compose.yml 
+next.config.js 
+package-lock.json 
+package.json 
+postcss.config.js 
+tailwind.config.js
+tailwind.config.ts
+tsconfig.json 
+

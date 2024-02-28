@@ -82,7 +82,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
       <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
         <DialogContent onAbort={discardChanges}>
           <div>
-            <div>
+            <div className="bg-dark-800 ">
               {isAddingactive && (
                 <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?
@@ -105,9 +105,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   className=""
                   rows={1}
                   changes={(value: string) => setName(value)}
-                  readOnly={!isEditingActive && !isAddingactive}
-                  isStack={false}
-                  isInput={true}
+                  isInput={isAddingactive || isEditingActive}
                   onSubmit={handleSubmit}
                 />
                 <hr className="mt-4" />
@@ -118,9 +116,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
                   className=""
                   rows={1}
                   changes={(value: string) => setDescription(value)}
-                  readOnly={!isEditingActive && !isAddingactive}
-                  isStack={false}
-                  isInput={true}
+                  isInput={isAddingactive || isEditingActive}
                   onSubmit={handleSubmit}
                 />
               </div>

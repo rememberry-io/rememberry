@@ -28,6 +28,7 @@ export type RFState = {
     isNew: boolean,
   ) => void;
   updateNodeType: (nodeId: string, newNodeType: string) => void;
+  deleteNode: (nodeId: string) => void;
 };
 
 const useStore = create<RFState>((set, get) => ({
@@ -37,8 +38,8 @@ const useStore = create<RFState>((set, get) => ({
       type: "stack",
       position: { x: 300, y: 100 },
       data: {
-        frontText: "New Front Text",
-        backText: "New Back Text",
+        frontText: "",
+        backText: "",
         parentName: "",
         mainStackID: "",
         borderColors: [],
@@ -62,14 +63,13 @@ const useStore = create<RFState>((set, get) => ({
 
   addChildNode: (parentNode: Node, position: XYPosition) => {
     const newNode = {
-      id: nanoid(),
       type: "flashcard",
+      id: nanoid(),
       data: {
-        frontText: "New Front Text",
-        backText: "New Back Text",
+        frontText: "",
+        backText: "",
         parentName: parentNode.data.frontText,
         borderColor: "red",
-        isNew: true,
       },
       position,
       dragHandle: ".dragHandle",
@@ -103,7 +103,6 @@ const useStore = create<RFState>((set, get) => ({
     backText: string,
     parentName: string,
     borderColor: string,
-    isNew: boolean,
   ) => {
     set({
       nodes: get().nodes.map((node) => {
@@ -116,7 +115,6 @@ const useStore = create<RFState>((set, get) => ({
               backText,
               parentName,
               borderColor,
-              isNew,
             },
           };
         }
@@ -145,6 +143,14 @@ const useStore = create<RFState>((set, get) => ({
         }
         return node;
       }),
+    });
+  },
+  deleteNode: (nodeId: string) => {
+    set({
+      nodes: get().nodes.filter((node) => node.id !== nodeId),
+      edges: get().edges.filter(
+        (edge) => edge.source !== nodeId && edge.target !== nodeId,
+      ),
     });
   },
 }));
