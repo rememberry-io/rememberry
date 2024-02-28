@@ -5,10 +5,10 @@ interface TrafficLightsProps {
 }
 
 export const TrafficColor = {
-  red: "red-500",
-  orange: "orange-500",
-  yellow: "yellow-500",
   green: "green-500",
+  yellow: "yellow-500",
+  orange: "orange-500",
+  red: "red-500",
 } as const;
 
 export type ColorType = keyof typeof TrafficColor;
@@ -30,7 +30,7 @@ export const TrafficLights = ({ onColorChange }: TrafficLightsProps) => {
           <button
             key={index}
             onClick={() => changeBorder(colorClass as ColorType)}
-            className={`w-4 h-4 rounded-full ${backgroundStyle}`}
+            className={`w-5 h-5 rounded-full ${backgroundStyle}`}
           ></button>
         );
       })}

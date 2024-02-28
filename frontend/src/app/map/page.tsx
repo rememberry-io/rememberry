@@ -1,6 +1,6 @@
 "use client";
+import toast, { Toaster } from "react-hot-toast";
 import ReactFlow, {
-  ConnectionLineType,
   Controls,
   Node,
   NodeOrigin,
@@ -21,19 +21,14 @@ import "reactflow/dist/style.css";
 
 // we need to import the React Flow styles to make it work
 import FlowBackground from "@/components/Flow/Background/flowBackground";
-import Card from "@/components/Flow/CardComponents/Card";
+import Card from "@/components/Flow/CardComponents/NodewithState";
+import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialog";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { useAddStack } from "@/components/Flow/addStacks";
 import "reactflow/dist/style.css";
 
-const selector = (state: RFState) => ({
-  nodes: state.nodes,
-  edges: state.edges,
-  onNodesChange: state.onNodesChange,
-  onEdgesChange: state.onEdgesChange,
-  addChildNode: state.addChildNode,
-});
+const selector = (state: RFState) => state;
 
 const nodeTypes = {
   flashcard: Card,
@@ -56,14 +51,27 @@ function Map() {
   const { screenToFlowPosition } = useReactFlow();
   const connectingNodeId = useRef<string | null>(null);
   const [isFront, setIsFront] = useState(true);
-
   const [isOpen, setIsOpen] = useState(false);
-  const [openDialogForNode, setOpenDialogForNode] = useState(null);
-
-  const [focusedNodeId, setFocusedNodeId] = useState(null);
+  const [nodeIdShownInDialog, setNodeIdShownInDialog] = useState<string | null>(
+    null,
+  );
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
+  };
+
+  const interceptOnNodesChange: typeof onNodesChange = (changes) => {
+    console.log("nodes changed:", changes);
+    if (changes.some((i) => i.type === "dimensions")) {
+      // @ts-expect-error
+      setNodeIdShownInDialog(changes[changes.length - 1].id);
+    }
+
+    return onNodesChange(changes);
+  };
+  const interceptOnEdgesChange: typeof onEdgesChange = (changes) => {
+    console.log("edges changed:", changes);
+    return onEdgesChange(changes);
   };
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
@@ -106,16 +114,17 @@ function Map() {
       const targetIsPane = (event.target as Element).classList.contains(
         "react-flow__pane",
       );
-      const node = (event.target as Element).closest(".react-flow__node");
-      if (node) {
-        node.querySelector("input")?.focus({ preventScroll: true });
-      } else if (targetIsPane && connectingNodeId.current) {
+
+      // setNodeIdShownInDialog(nodeId);
+
+      if (targetIsPane && connectingNodeId.current) {
         const parentNode = nodeInternals.get(connectingNodeId.current);
         const childNodePosition = getChildNodePosition(
           event as MouseEvent,
           parentNode,
         );
 
+        //TODO: storybook implementation and separation of CardUI and CardWithState
         if (parentNode && childNodePosition) {
           addChildNode(parentNode, childNodePosition);
         }
@@ -126,29 +135,67 @@ function Map() {
 
   const addStack = useAddStack();
 
+  const closeToast = () => {
+    toast("Please enter front and back text :)", {
+      icon: "💡",
+    });
+  };
+
+  const { updateNode } = useStore(
+    (state) => ({ updateNode: state.updateNode }),
+    shallow,
+  );
+
+  const handleDialogSubmit = (front: string, back: string, parent: string) => {
+    updateNode(nodeIdShownInDialog!, front, back, parent, "red", false);
+    setNodeIdShownInDialog(null);
+  };
+
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
       className="flex flex-col justify-items-center"
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <Toaster position="bottom-center" reverseOrder={false} />
+      {/* Node Dialog that gets thrown for input when node is created */}
+      {nodeIdShownInDialog && (
+        <NodeDialog
+          nodeId={nodeIdShownInDialog}
+          onSubmit={handleDialogSubmit}
+          cardParentName={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.data.parentName ||
+            ""
+          }
+          cardFrontText={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.data.frontText
+          }
+          cardBackText={
+            nodes.find((n) => n.id === nodeIdShownInDialog)?.data.backText
+          }
+          isDialogOpen={nodeIdShownInDialog != null}
+          closeDialog={closeToast}
+        />
+      )}
 
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={interceptOnNodesChange}
+        onEdgesChange={interceptOnEdgesChange}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}
-        connectionLineType={ConnectionLineType.Straight}
+        onEdgesDelete={(e) => console.log("edge deleted", e)}
         fitView
+        minZoom={0.1}
       >
         <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
+
         <FlowFooter>
           <Button
             variant="default"
