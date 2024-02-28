@@ -152,7 +152,7 @@ const useStore = create<RFState>((set, get) => ({
         (edge) => edge.source !== nodeId && edge.target !== nodeId,
       ),
     });
-  }
+  },
 }));
 
 export default useStore;

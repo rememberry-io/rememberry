@@ -114,7 +114,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
 
   return (
     <NodeUI
-    nodeId={id}
+      nodeId={id}
       frontText={data.frontText}
       backText={data.backText}
       cardType={cardType}

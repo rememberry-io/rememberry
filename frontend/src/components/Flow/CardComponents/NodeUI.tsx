@@ -49,7 +49,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   nodeId,
   focus,
   blur,
-  deleteNode
+  deleteNode,
 }) => {
   // for multiline textarea
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);

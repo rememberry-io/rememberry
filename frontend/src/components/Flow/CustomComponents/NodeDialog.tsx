@@ -32,7 +32,6 @@ export const NodeDialog: React.FC<NodeDialogProps> = (dialogProps) => {
     dialogProps.closeDialog();
   };
 
-
   const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
   const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
 

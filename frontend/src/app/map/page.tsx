@@ -1,7 +1,6 @@
 "use client";
 import toast, { Toaster } from "react-hot-toast";
 import ReactFlow, {
-  ConnectionLineType,
   Controls,
   Node,
   NodeOrigin,
@@ -66,7 +65,6 @@ function Map() {
     if (changes.some((i) => i.type === "dimensions")) {
       // @ts-expect-error
       setNodeIdShownInDialog(changes[changes.length - 1].id);
-      
     }
 
     return onNodesChange(changes);
@@ -110,7 +108,6 @@ function Map() {
     connectingNodeId.current = nodeId;
   }, []);
 
-
   const onConnectEnd: OnConnectEnd = useCallback(
     (event) => {
       const { nodeInternals } = store.getState();
@@ -139,11 +136,10 @@ function Map() {
   const addStack = useAddStack();
 
   const closeToast = () => {
-      toast("Please enter front and back text :)", {
-        icon: "💡",
-      });
+    toast("Please enter front and back text :)", {
+      icon: "💡",
+    });
   };
-
 
   const { updateNode } = useStore(
     (state) => ({ updateNode: state.updateNode }),
@@ -164,7 +160,6 @@ function Map() {
       <Toaster position="bottom-center" reverseOrder={false} />
       {/* Node Dialog that gets thrown for input when node is created */}
       {nodeIdShownInDialog && (
-        
         <NodeDialog
           nodeId={nodeIdShownInDialog}
           onSubmit={handleDialogSubmit}
@@ -180,7 +175,6 @@ function Map() {
           }
           isDialogOpen={nodeIdShownInDialog != null}
           closeDialog={closeToast}
-        
         />
       )}
 
@@ -196,7 +190,6 @@ function Map() {
         nodeOrigin={nodeOrigin}
         onEdgesDelete={(e) => console.log("edge deleted", e)}
         fitView
-
         minZoom={0.1}
       >
         <FlowBackground />
