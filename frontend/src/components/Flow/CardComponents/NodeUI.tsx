@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Maximize2 } from "lucide-react";
 import React, { useRef } from "react";
 import { Position } from "reactflow";
-import { NodeDialog } from "../CustomComponents/NodeDialog";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
@@ -10,20 +9,16 @@ import { ColorType, TrafficLights } from "./TrafficLights";
 
 interface NodeUIProps {
   isFront: boolean;
-  frontText: string;
-  backText: string;
+  frontside: string;
+  backside: string;
   borderClasses: string;
-  isDialogOpen: boolean;
   isFocused: boolean;
   normalizeZoom: (zoom: number) => number;
   zoom: number;
   toggleCard: () => void;
   openDialog: () => void;
-  closeDialog: () => void;
-  handleDialogSubmit: (front: string, back: string, parentName: string) => void;
   handleColorChange: (color: ColorType) => void;
   cardType: string;
-  parentName: string;
   nodeId: string;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
@@ -32,31 +27,26 @@ interface NodeUIProps {
 
 export const NodeUI: React.FC<NodeUIProps> = ({
   isFront,
-  frontText,
-  backText,
+  frontside,
+  backside,
   borderClasses,
-  isDialogOpen,
   isFocused,
   normalizeZoom,
   zoom,
   toggleCard,
   openDialog,
-  closeDialog,
-  handleDialogSubmit,
   handleColorChange,
   cardType,
-  parentName,
-  nodeId,
   focus,
   blur,
   deleteNode,
 }) => {
   // for multiline textarea
-  const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
-  const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
+  const frontsideAreaRef = useRef<HTMLTextAreaElement>(null);
+  const backsideAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  useAutosizeTextArea(frontTextAreaRef.current, frontText);
-  useAutosizeTextArea(backTextAreaRef.current, backText);
+  useAutosizeTextArea(frontsideAreaRef.current, frontside);
+  useAutosizeTextArea(backsideAreaRef.current, backside);
 
   const colorType = cardType === "stack" ? "bg-primary text-white" : "bg-white";
 
@@ -74,8 +64,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <div>
           <FlowTextArea
             className={`${colorType}`}
-            value={isFront ? frontText : backText}
-            textAreaRef={isFront ? frontTextAreaRef : backTextAreaRef}
+            value={isFront ? frontside : backside}
+            textAreaRef={isFront ? frontsideAreaRef : backsideAreaRef}
             rows={1}
             placeholder={""}
             changes={function (): void {}}
@@ -108,15 +98,6 @@ export const NodeUI: React.FC<NodeUIProps> = ({
               >
                 <Maximize2 />
               </Button>
-              <NodeDialog
-                nodeId={nodeId}
-                onSubmit={handleDialogSubmit}
-                cardParentName={parentName}
-                cardFrontText={frontText}
-                cardBackText={backText}
-                isDialogOpen={isDialogOpen}
-                closeDialog={closeDialog}
-              />
             </div>
           </div>
         </div>

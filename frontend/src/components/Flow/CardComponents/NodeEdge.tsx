@@ -1,6 +1,6 @@
 import { BaseEdge, EdgeProps, getStraightPath } from "reactflow";
 
-function FlashcardEdge(props: EdgeProps) {
+function NodeEdge(props: EdgeProps) {
   const { sourceX, sourceY, targetX, targetY } = props;
 
   const [edgePath] = getStraightPath({
@@ -12,4 +12,4 @@ function FlashcardEdge(props: EdgeProps) {
 
   return <BaseEdge path={edgePath} {...props} />;
 }
-export default FlashcardEdge;
+export default NodeEdge;

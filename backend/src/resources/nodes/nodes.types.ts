@@ -1,6 +1,9 @@
 import z from "zod";
+import { NewNode, Node } from "../../db/schema";
 
-export const newNodeInput = z.object({
+export const nodeType = z.enum(["stack", "flashcard"]);
+
+export const newNodeInput: z.ZodType<NewNode> = z.object({
   id: z.string().optional(),
   mapId: z.string(),
   frontside: z.string(),
@@ -8,12 +11,12 @@ export const newNodeInput = z.object({
   xPosition: z.number(),
   yPosition: z.number(),
   parentNodeId: z.string().optional(),
-  nodeType: z.string(),
+  nodeType: nodeType,
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
 
-export const stackInput = z.object({
+export const nodeInput: z.ZodType<Node> = z.object({
   id: z.string(),
   mapId: z.string(),
   frontside: z.string(),
@@ -21,12 +24,12 @@ export const stackInput = z.object({
   xPosition: z.number(),
   yPosition: z.number(),
   parentNodeId: z.string().nullable(),
-  nodeType: z.string(),
+  nodeType: nodeType,
   createdAt: z.date(),
   updatedAt: z.date(),
 });
 
-export const changeParentStackInput = z.object({
+export const changeParentNodeInput = z.object({
   childId: z.string(),
   parentId: z.string(),
 });

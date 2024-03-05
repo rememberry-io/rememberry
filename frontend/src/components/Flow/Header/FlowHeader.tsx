@@ -1,5 +1,4 @@
 import { DropDown } from "@/components/Flow/Header/DropDown";
-import { MainStack } from "@/components/Flow/StackComponents/MainStack";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { SidebarButton } from "@/components/ui/SidebarButton";
 import { Button } from "@/components/ui/button";
@@ -43,12 +42,6 @@ export const FlowHeader: React.FC<HeaderProps> = () => {
             Back to menu
           </Button>
         </Link>
-        <MainStack
-          frontText={frontText}
-          backText={backText}
-          toggleMainStack={toggleMainStack}
-          isFront={isFront}
-        />
         <DropDown />
         <ModeToggle />
       </div>

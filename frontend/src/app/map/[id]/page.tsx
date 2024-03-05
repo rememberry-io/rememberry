@@ -1,75 +1,94 @@
 "use client";
+import FlowBackground from "@/components/Flow/Background/flowBackground";
+import NodeEdge from "@/components/Flow/CardComponents/NodeEdge";
+import NodeWithState from "@/components/Flow/CardComponents/NodewithState";
+import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialog";
+import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
+import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
+import { Button } from "@/components/ui/button";
+import { NodeData } from "@/lib/services/node/nodeStore";
+import useNodeCreate, {
+  databaseNodeToStoreNode,
+  storeNodeToDatabaseNode,
+} from "@/lib/services/node/useCreateNode";
+import useGetNodesByMapId from "@/lib/services/node/useGetNodesByMapId";
+import useNodeUpdate from "@/lib/services/node/useUpdateNode";
+import { nanoid } from "nanoid/non-secure";
+import { useCallback, useEffect, useState } from "react";
+import { Toaster } from "react-hot-toast";
 import ReactFlow, {
-  ConnectionLineType,
   Controls,
+  Edge,
   Node,
+  NodeDragHandler,
   NodeOrigin,
   OnConnectEnd,
   OnConnectStart,
-  Panel,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
   useReactFlow,
   useStoreApi,
 } from "reactflow";
-import { shallow } from "zustand/shallow";
-
-// we have to import the React Flow styles for it to work
-import FlashcardEdge from "@/components/Flow/FlashcardComponents/FlashcardEdge";
-import useStore, { RFState } from "@/components/Flow/stores/nodeStore";
-import { Button } from "@/components/ui/button";
-import { useCallback, useRef, useState } from "react";
 import "reactflow/dist/style.css";
-
-// we need to import the React Flow styles to make it work
-import FlowBackground from "@/components/Flow/Background/flowBackground";
-import Card from "@/components/Flow/FlashcardComponents/Card";
-import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
-import { useAddStack } from "@/components/Flow/addStacks";
-import "reactflow/dist/style.css";
-
-type MapProps = {
-  params: { id: string };
-};
-
-const selector = (state: RFState) => ({
-  nodes: state.nodes,
-  edges: state.edges,
-  onNodesChange: state.onNodesChange,
-  onEdgesChange: state.onEdgesChange,
-  addChildNode: state.addChildNode,
-});
 
 const nodeTypes = {
-  flashcard: Card,
-  stack: Card,
+  node: NodeWithState,
 };
 
 const edgeTypes = {
-  flashcard: FlashcardEdge,
-  stack: FlashcardEdge,
+  node: NodeEdge,
 };
 
 const nodeOrigin: NodeOrigin = [0.5, 0.5];
 
-function Map() {
-  const store = useStoreApi();
-  const { nodes, edges, onNodesChange, onEdgesChange, addChildNode } = useStore(
-    selector,
-    shallow,
-  );
-  const { screenToFlowPosition } = useReactFlow();
-  const connectingNodeId = useRef<string | null>(null);
-  const [isFront, setIsFront] = useState(true);
+type MapProps = {
+  nodesProp: Node[];
+  edgesProp: Edge[];
+  mapId: string;
+};
 
+function Map({ nodesProp, edgesProp, mapId }: MapProps) {
+  const reactflowStore = useStoreApi();
+  const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(nodesProp);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(edgesProp);
   const [isOpen, setIsOpen] = useState(false);
-  const [openDialogForNode, setOpenDialogForNode] = useState(null);
+  const [parentNodeId, setParentNodeId] = useState<string | null>(null);
+  const [connectingNodeId, setConnectingNodeId] = useState<string | null>(null);
+  const { screenToFlowPosition } = useReactFlow();
+
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [isCreateNode, setCreateNode] = useState(false);
+  const [xPosition, setXPosition] = useState(500);
+  const [yPosition, setYPosition] = useState(500);
+  const createNode = useNodeCreate();
+  const updateNode = useNodeUpdate();
+
+  //const deleteNode = useNodeDelete();
+
+  useEffect(() => {
+    if (nodes.length === 0) {
+      setDialogOpen(true);
+      setCreateNode(true);
+    }
+  }, [nodesProp]);
+
+  const onDragEnd: NodeDragHandler = async (_event, node, _nodes) => {
+    const dbUpdatedNode = storeNodeToDatabaseNode(node);
+    await updateNode({ node: dbUpdatedNode });
+  };
+
+  useEffect(() => {
+    setNodes(nodesProp);
+    setEdges(edgesProp);
+  }, [nodesProp]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
-    const { domNode } = store.getState();
+    const { domNode } = reactflowStore.getState();
 
     if (
       !domNode ||
@@ -90,43 +109,85 @@ function Map() {
       y: event.clientY - top,
     });
 
-    // calculating with positionAbsolute here because child nodes are positioned relative to their parent
+    const x = panePosition.x;
+    const y = panePosition.y + parentNode.height / 2;
+
     return {
-      x: panePosition.x - parentNode.positionAbsolute.x + parentNode.width / 2,
-      y: panePosition.y - parentNode.positionAbsolute.y + parentNode.height / 2,
+      x,
+      y,
     };
   };
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
     // remember where the connection started so we can add the new node to the correct parent on connect end
-    connectingNodeId.current = nodeId;
+    setConnectingNodeId(nodeId);
   }, []);
 
   const onConnectEnd: OnConnectEnd = useCallback(
     (event) => {
-      const { nodeInternals } = store.getState();
+      const { nodeInternals } = reactflowStore.getState();
       const targetIsPane = (event.target as Element).classList.contains(
         "react-flow__pane",
       );
-      const node = (event.target as Element).closest(".react-flow__node");
-      if (node) {
-        node.querySelector("input")?.focus({ preventScroll: true });
-      } else if (targetIsPane && connectingNodeId.current) {
-        const parentNode = nodeInternals.get(connectingNodeId.current);
+
+      if (targetIsPane && connectingNodeId) {
+        const parentNode = nodeInternals.get(connectingNodeId);
+
         const childNodePosition = getChildNodePosition(
           event as MouseEvent,
           parentNode,
         );
 
+        //TODO: storybook implementation and separation of CardUI and CardWithState
         if (parentNode && childNodePosition) {
-          addChildNode(parentNode, childNodePosition);
+          setParentNodeId(parentNode.id);
+          setXPosition(childNodePosition.x);
+          setYPosition(childNodePosition.y);
+          setDialogOpen(true);
+          setCreateNode(true);
         }
       }
     },
     [getChildNodePosition],
   );
 
-  const addStack = useAddStack();
+  const createNewNodeToMap = () => {
+    const topLevelNode = nodes.find((n) => n.data.parentNodeId === null);
+    setDialogOpen(true);
+    setCreateNode(true);
+    setXPosition(topLevelNode ? topLevelNode.position.x + 350 : 500);
+    setYPosition(topLevelNode?.position.y || 500);
+    setParentNodeId(null);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleDialogSubmit = async (front: string, back: string) => {
+    if (isCreateNode) {
+      await createNode({
+        node: {
+          mapId: mapId,
+          frontside: front,
+          backside: back,
+          xPosition,
+          yPosition,
+          nodeType: "flashcard",
+          parentNodeId: parentNodeId ? parentNodeId : undefined,
+        },
+      });
+      const parentNode = nodes.find((n) => n.id === parentNodeId);
+      if (parentNode) {
+        parentNode.data.nodeType = "stack";
+
+        const dbParentNode = storeNodeToDatabaseNode(parentNode);
+        await updateNode({ node: dbParentNode });
+      }
+    } else {
+    }
+    setParentNodeId(null);
+  };
 
   return (
     <div
@@ -134,6 +195,20 @@ function Map() {
       className="flex flex-col justify-items-center"
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <Toaster position="bottom-center" reverseOrder={false} />
+      {/* Node Dialog that gets thrown for input when node is created */}
+      {dialogOpen && (
+        <NodeDialog
+          onSubmit={handleDialogSubmit}
+          nodeParentFrontside={
+            nodes.find((n) => n.id === parentNodeId)?.data.frontside || ""
+          }
+          frontside={""}
+          backside={""}
+          isDialogOpen={dialogOpen}
+          closeDialog={closeDialog}
+        />
+      )}
 
       <ReactFlow
         nodes={nodes}
@@ -145,29 +220,56 @@ function Map() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         nodeOrigin={nodeOrigin}
-        connectionLineType={ConnectionLineType.Straight}
+        onEdgesDelete={(e) => console.log("edge deleted", e)}
         fitView
+        minZoom={0.1}
+        onNodeDragStop={onDragEnd}
       >
         <FlowBackground />
         {/* <MiniMap /> */}
         <Controls showInteractive={false} />
-        <Panel position="bottom-center" className="space-x-4">
+
+        <FlowFooter>
           <Button
             variant="default"
             className="border-2 border-white dark:border-dark-900"
-            onClick={addStack}
+            onClick={createNewNodeToMap}
           >
             Add Stack
           </Button>
-        </Panel>
+        </FlowFooter>
       </ReactFlow>
     </div>
   );
 }
-export default function MapFlow({ params }: MapProps) {
+
+type MapDongs = {
+  params: { id: string };
+};
+
+export default function MapFlow({ params }: MapDongs) {
+  const { isLoading, data, isError } = useGetNodesByMapId(params.id);
+  if (isLoading) {
+    return null;
+  } else if (isError) {
+    return null;
+  }
+  const edges = data.reduce<Edge[]>((acc, node) => {
+    if (node.parentNodeId) {
+      acc.push({
+        id: nanoid(),
+        source: node.parentNodeId,
+        target: node.id,
+      });
+    }
+    return acc;
+  }, []);
+
+  const reactFlowNodes = data.map((node) => databaseNodeToStoreNode(node));
+
   return (
     <ReactFlowProvider>
-      <Map />
+      <Map nodesProp={reactFlowNodes} edgesProp={edges} mapId={params.id} />
     </ReactFlowProvider>
   );
 }

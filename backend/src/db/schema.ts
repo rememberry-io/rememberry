@@ -3,7 +3,9 @@ import {
   AnyPgColumn,
   boolean,
   date,
+  doublePrecision,
   integer,
+  pgEnum,
   pgTable,
   timestamp,
   uuid,
@@ -80,6 +82,10 @@ export const mapRelations = relations(maps, ({ one, many }) => ({
 export type Map = typeof maps.$inferSelect;
 export type newMap = typeof maps.$inferInsert;
 
+export const nodeType = pgEnum("node_type", ["stack", "flashcard"]);
+
+export type NodeType = typeof nodeType.enumValues;
+
 export const nodes = pgTable("nodes", {
   id: uuid("id").defaultRandom().primaryKey(),
   mapId: uuid("map_id")
@@ -87,10 +93,10 @@ export const nodes = pgTable("nodes", {
     .notNull(),
   frontside: varchar("frontside").notNull(),
   backside: varchar("backside").notNull(),
-  xPosition: integer("x_position").notNull(),
-  yPosition: integer("y_position").notNull(),
+  xPosition: doublePrecision("x_position").notNull(),
+  yPosition: doublePrecision("y_position").notNull(),
   parentNodeId: uuid("parent_node_id").references((): AnyPgColumn => nodes.id),
-  nodeType: varchar("node_type").notNull(),
+  nodeType: nodeType("node_type").notNull(),
   createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",

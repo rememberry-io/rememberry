@@ -2,11 +2,7 @@ import z from "zod";
 import { privateProcedure } from "../../middleware/validateSession";
 import { router } from "../../trpc";
 import { nodeControllerDrizzle } from "./nodes.controller";
-import {
-  changeParentStackInput,
-  newNodeInput,
-  stackInput,
-} from "./nodes.types";
+import { changeParentNodeInput, newNodeInput, nodeInput } from "./nodes.types";
 
 export const nodeRouter = router({
   create: privateProcedure.input(newNodeInput).mutation(async (opts) => {
@@ -73,7 +69,7 @@ export const nodeRouter = router({
     return nodes;
   }),
 
-  updateById: privateProcedure.input(stackInput).mutation(async (opts) => {
+  updateById: privateProcedure.input(nodeInput).mutation(async (opts) => {
     const [err, node] = await nodeControllerDrizzle.updateNodeById(opts.input);
 
     if (err) throw err;
@@ -82,7 +78,7 @@ export const nodeRouter = router({
   }),
 
   changeParent: privateProcedure
-    .input(changeParentStackInput)
+    .input(changeParentNodeInput)
     .mutation(async (opts) => {
       const [err, node] = await nodeControllerDrizzle.changeParentNode(
         opts.input.parentId,

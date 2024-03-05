@@ -1,3 +1,9 @@
+DO $$ BEGIN
+ CREATE TYPE "node_type" AS ENUM('stack', 'flashcard');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "invites" (
 	"id" uuid DEFAULT gen_random_uuid(),
 	"reveiver_id" uuid,
@@ -45,10 +51,10 @@ CREATE TABLE IF NOT EXISTS "nodes" (
 	"map_id" uuid NOT NULL,
 	"frontside" varchar NOT NULL,
 	"backside" varchar NOT NULL,
-	"x_position" integer NOT NULL,
-	"y_position" integer NOT NULL,
+	"x_position" double precision NOT NULL,
+	"y_position" double precision NOT NULL,
 	"parent_node_id" uuid,
-	"node_type" varchar NOT NULL,
+	"node_type" "node_type" NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "5706797a-df6a-45b8-b736-fed580556841",
+  "id": "83a27f4a-c5b7-4843-8fb9-29121004c494",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "invites": {
@@ -377,13 +377,13 @@
         },
         "x_position": {
           "name": "x_position",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
         "y_position": {
           "name": "y_position",
-          "type": "integer",
+          "type": "double precision",
           "primaryKey": false,
           "notNull": true
         },
@@ -395,7 +395,7 @@
         },
         "node_type": {
           "name": "node_type",
-          "type": "varchar",
+          "type": "node_type",
           "primaryKey": false,
           "notNull": true
         },
@@ -632,7 +632,15 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "node_type": {
+      "name": "node_type",
+      "values": {
+        "stack": "stack",
+        "flashcard": "flashcard"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "schemas": {},
