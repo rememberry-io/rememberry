@@ -6,17 +6,14 @@ import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { MapDialog } from "@/components/Flow/CustomComponents/mapDialog";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/lib/services/authentication/userStore";
-import { useMapsStore } from "@/lib/services/maps/mapsStore";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import { Box } from "@radix-ui/themes";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import "reactflow/dist/style.css";
 
 function MapMenu() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [mapId, setMapId] = useState("");
@@ -27,7 +24,6 @@ function MapMenu() {
   const [isZoomActive, setZoomActive] = useState(false);
 
   const userId = useUserStore((state) => state.user?.id || null);
-  const { actions } = useMapsStore();
 
   if (isLoading) return null;
 

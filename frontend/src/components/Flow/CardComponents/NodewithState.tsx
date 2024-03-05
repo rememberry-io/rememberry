@@ -1,47 +1,20 @@
-// hook that memoizes a function, preventing it from being recreated on each render if its dependencies haven't changed
-import React, { memo, useRef, useState } from "react";
+import { Node } from "@/lib/services/node/nodeStore";
+import { normalizeZoom } from "@/lib/utils";
+import React, { memo, useState } from "react";
 import { useViewport } from "reactflow";
-import useStore from "../stores/nodeStore";
-
-import { ColorType, TrafficColor } from "./TrafficLights";
-
-import { shallow } from "zustand/shallow";
-import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
-
 import useFlashcardFocusStore from "../stores/cardFocusStore";
 import { NodeUI } from "./NodeUI";
+import { ColorType, TrafficColor } from "./TrafficLights";
 
-const normalizeZoom = (zoom: number): number => {
-  // Adjust the calculation as necessary to fit the desired size
-  return Math.max(1 / zoom, 0.5); // Ensure it never goes below 0.5, for instance
-};
+type NodeWithStateProps = Omit<Node, "position">;
 
-interface NodePorps {
-  type: string;
-  id: string;
-  data: {
-    id: string;
-    parentName: string;
-    frontText: string;
-    backText: string;
-    borderColor?: ColorType;
-
-    newNodeType: string;
-  };
-}
-
-export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
+export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
-  const [parentName, setParentName] = useState(data.parentName);
-  const [frontText, setFront] = useState(data.frontText);
-  const [backText, setBack] = useState(data.backText);
-
-  const [cardType, setCardType] = useState(type);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
-  >(data.borderColor);
+  >(null);
 
   const handleColorChange = (color: ColorType) => {
     setSelectedColor(color);
@@ -50,7 +23,7 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
   const borderStyle = `border-${TrafficColor[selectedColor!] || "ashberry"}`;
 
   const borderClasses =
-    cardType === "flashcard"
+    data.nodeType === "flashcard"
       ? `border-2 ${borderStyle} border-opacity-50 hover:border-opacity-75`
       : "border-2 border-ashberry border-opacity-50 hover:border-opacity-75";
 
@@ -59,7 +32,6 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
 
   const { focusedId, setFocusedId } = useFlashcardFocusStore();
   const isFocused = id === focusedId;
-  // console.log("isFocused", isFocused, id, focusedId);
 
   const onFocus = () => {
     setFocusedId(id);
@@ -74,35 +46,8 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
     }
   };
 
-  const { updateNode } = useStore(
-    (state) => ({ updateNode: state.updateNode }),
-    shallow,
-  );
-
-  const { deleteNode } = useStore(
-    (state) => ({ deleteNode: state.deleteNode }),
-    shallow,
-  );
-
-  const handleDialogSubmit = (
-    front: string,
-    back: string,
-    parentName: string,
-  ) => {
-    setFront(front);
-    setBack(back);
-    setParentName(parentName);
-    setIsDialogOpen(false);
-
-    updateNode(id, front, back, parentName, selectedColor || "", false);
-  };
-
-  // for multiline textarea
-  const frontTextAreaRef = useRef<HTMLTextAreaElement>(null);
-  const backTextAreaRef = useRef<HTMLTextAreaElement>(null);
-
-  useAutosizeTextArea(frontTextAreaRef.current, frontText);
-  useAutosizeTextArea(backTextAreaRef.current, backText);
+  //TODO: just a placeholder
+  const deleteNode = () => {};
 
   const toggleCard = () => {
     setIsFront(!isFront);
@@ -110,31 +55,25 @@ export const Flashcard: React.FC<NodePorps> = ({ data, type, id }) => {
 
   const openDialog = () => setIsDialogOpen(true);
 
-  const closeDialog = () => setIsDialogOpen(false);
-
   return (
     <NodeUI
       nodeId={id}
-      frontText={data.frontText}
-      backText={data.backText}
-      cardType={cardType}
-      parentName={parentName}
+      frontside={data.frontside}
+      backside={data.backside}
+      cardType={data.nodeType}
       borderClasses={borderClasses}
       focus={onFocus}
       blur={onBlur}
       isFront={isFront}
-      isDialogOpen={isDialogOpen}
       isFocused={isFocused}
       normalizeZoom={normalizeZoom}
       zoom={zoom}
       toggleCard={toggleCard}
       openDialog={openDialog}
-      closeDialog={closeDialog}
-      handleDialogSubmit={handleDialogSubmit}
       handleColorChange={handleColorChange}
       deleteNode={deleteNode}
     />
   );
 };
 
-export default memo(Flashcard);
+export default memo(NodeWithState);

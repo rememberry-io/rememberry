@@ -1,6 +1,15 @@
 import { useUserStore } from "../authentication/userStore";
 import { rqTrpc } from "../trpc/client";
-import { Map } from "./mapsStore";
+
+export type Map = {
+  id: string;
+  userId: string;
+  peerId: string | null;
+  name: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export default function useGetMapByUserId() {
   const userId = useUserStore((state) => {

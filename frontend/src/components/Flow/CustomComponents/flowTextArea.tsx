@@ -1,15 +1,4 @@
-export const FlowTextArea = ({
-  className,
-  value,
-  textAreaRef,
-  rows,
-
-  placeholder,
-  changes,
-
-  isInput,
-  onSubmit,
-}: {
+interface FlowTextAreaProps {
   className: string;
   value: string;
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
@@ -18,6 +7,17 @@ export const FlowTextArea = ({
   isInput: boolean;
   onSubmit: () => void;
   changes: (value: string) => void;
+}
+
+export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
+  className,
+  value,
+  textAreaRef,
+  rows,
+  placeholder,
+  isInput,
+  onSubmit,
+  changes,
 }) => {
   const inputProps = isInput
     ? "focus:outline-primary bg-gray-100 focus:outline-primary mt-5 dark:bg-dark-700  "

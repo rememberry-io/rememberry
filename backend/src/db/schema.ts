@@ -3,7 +3,9 @@ import {
   AnyPgColumn,
   boolean,
   date,
+  doublePrecision,
   integer,
+  pgEnum,
   pgTable,
   timestamp,
   uuid,
@@ -17,7 +19,7 @@ export const users = pgTable("users", {
   password: varchar("password").notNull(),
 });
 
-export const session = pgTable("user_session", {
+export const session = pgTable("session", {
   id: varchar("id").primaryKey(),
   userId: uuid("user_id")
     .notNull()
@@ -48,7 +50,7 @@ export const maps = pgTable("maps", {
       onDelete: "cascade",
     })
     .notNull(),
-  peerId: uuid("peer_id").references(() => Peers.id),
+  peerId: uuid("peer_id").references(() => peers.id),
   name: varchar("name").notNull(),
   description: varchar("description").default("").notNull(),
   createdAt: timestamp("created_at", {
@@ -70,34 +72,38 @@ export const mapRelations = relations(maps, ({ one, many }) => ({
     fields: [maps.userId],
     references: [users.id],
   }),
-  peers: one(Peers, {
+  peers: one(peers, {
     fields: [maps.peerId],
-    references: [Peers.id],
+    references: [peers.id],
   }),
-  stacks: many(stacks),
+  nodes: many(nodes),
 }));
 
 export type Map = typeof maps.$inferSelect;
 export type newMap = typeof maps.$inferInsert;
 
-export const stacks = pgTable("stacks", {
+export const nodeType = pgEnum("node_type", ["stack", "flashcard"]);
+
+export type NodeType = typeof nodeType.enumValues;
+
+export const nodes = pgTable("nodes", {
   id: uuid("id").defaultRandom().primaryKey(),
-  mapId: uuid("map_id").references(() => maps.id, { onDelete: "cascade" }),
-  stack_name: varchar("stack_name"),
-  stack_description: varchar("stack_description"),
-  number_of_learned_cards: integer("number_of_learned_cards"),
-  number_of_unlearned_cards: integer("number_of_unlearned_cards"),
-  positioning: varchar("positioning"),
-  parent_stack_id: uuid("parent_stack_id").references(
-    (): AnyPgColumn => stacks.id,
-  ),
-  created_at: timestamp("created_at", {
+  mapId: uuid("map_id")
+    .references(() => maps.id, { onDelete: "cascade" })
+    .notNull(),
+  frontside: varchar("frontside").notNull(),
+  backside: varchar("backside").notNull(),
+  xPosition: doublePrecision("x_position").notNull(),
+  yPosition: doublePrecision("y_position").notNull(),
+  parentNodeId: uuid("parent_node_id").references((): AnyPgColumn => nodes.id),
+  nodeType: nodeType("node_type").notNull(),
+  createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
   })
     .notNull()
     .defaultNow(),
-  updated_at: timestamp("updated_at", {
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
   })
@@ -105,32 +111,37 @@ export const stacks = pgTable("stacks", {
     .defaultNow(),
 });
 
-export const stacksRelations = relations(stacks, ({ one, many }) => ({
+export const nodesRelations = relations(nodes, ({ one, many }) => ({
   maps: one(maps, {
-    fields: [stacks.mapId],
+    fields: [nodes.mapId],
     references: [maps.id],
   }),
-  stacks: many(stacks),
-  flashcards: many(flashcards),
+  nodes: many(nodes),
+  media: many(media),
+  learningData: many(learningData),
 }));
 
-export type Stack = typeof stacks.$inferSelect;
-export type NewStack = typeof stacks.$inferInsert;
+export type Node = typeof nodes.$inferSelect;
+export type NewNode = typeof nodes.$inferInsert;
 
-export const flashcards = pgTable("flashcards", {
+export const learningData = pgTable("learning_data", {
   id: uuid("id").defaultRandom().primaryKey(),
-  stackId: uuid("stack_id").references(() => stacks.id, {
+  nodeId: uuid("node_id").references(() => nodes.id, {
     onDelete: "cascade",
   }),
-  frontside_text: varchar("frontside_text"),
-  backside_text: varchar("backside_text"),
-  created_at: timestamp("created_at", {
+  userId: uuid("user_id").references(() => users.id, {
+    onDelete: "cascade",
+  }),
+  timesLearned: integer("times_learned"),
+  lastLearned: date("last_learned"),
+  learningStatus: integer("learning_status").default(0),
+  createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
   })
     .notNull()
     .defaultNow(),
-  updated_at: timestamp("updated_at", {
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
   })
@@ -138,73 +149,36 @@ export const flashcards = pgTable("flashcards", {
     .defaultNow(),
 });
 
-export const flashcardsRelations = relations(flashcards, ({ one, many }) => ({
-  stacks: one(stacks, {
-    fields: [flashcards.stackId],
-    references: [stacks.id],
-  }),
-  Media: many(Media),
-  session_data: many(session_data),
-}));
-
-export type Flashcard = typeof flashcards.$inferSelect;
-export type NewFlashcard = typeof flashcards.$inferInsert;
-
-export const session_data = pgTable("session_data", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  flashcardId: uuid("flashcard_id").references(() => flashcards.id, {
-    onDelete: "cascade",
-  }),
-  user_id: uuid("user_id").references(() => users.id, {
-    onDelete: "cascade",
-  }),
-  times_learned: integer("times_learned"),
-  last_learned: date("last_learned"),
-  learning_status: integer("learning_status").default(0),
-  created_at: timestamp("created_at", {
-    withTimezone: true,
-    mode: "date",
-  })
-    .notNull()
-    .defaultNow(),
-  updated_at: timestamp("updated_at", {
-    withTimezone: true,
-    mode: "date",
-  })
-    .notNull()
-    .defaultNow(),
-});
-
-export const session_data_relations = relations(session_data, ({ one }) => ({
-  flashcards: one(flashcards, {
-    fields: [session_data.flashcardId],
-    references: [flashcards.id],
+export const session_data_relations = relations(learningData, ({ one }) => ({
+  flashcards: one(nodes, {
+    fields: [learningData.nodeId],
+    references: [nodes.id],
   }),
   users: one(users, {
-    fields: [session_data.user_id],
+    fields: [learningData.userId],
     references: [users.id],
   }),
 }));
 
-export type SessionData = typeof session_data.$inferSelect;
-export type NewSessionData = typeof session_data.$inferInsert;
+export type LearningData = typeof learningData.$inferSelect;
+export type NewLearningData = typeof learningData.$inferInsert;
 
-export const Media = pgTable("media", {
+export const media = pgTable("media", {
   id: uuid("id").defaultRandom().primaryKey(),
-  flashcardId: uuid("flashcard_id").references(() => flashcards.id, {
+  flashcardId: uuid("flashcard_id").references(() => nodes.id, {
     onDelete: "cascade",
   }),
-  frontside_media_link: varchar("frontside_media_link"),
-  frontside_media_positioning: varchar("frontside_media_positioning"),
-  backside_media_link: varchar("backside_media_link"),
-  backside_media_positioning: varchar("backside_media_positioning"),
-  created_at: timestamp("created_at", {
+  frontsideMediaLink: varchar("frontside_media_link"),
+  frontsideMediaPositioning: varchar("frontside_media_positioning"),
+  backsideMediaLink: varchar("backside_media_link"),
+  backsideMediaPositioning: varchar("backside_media_positioning"),
+  createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
   })
     .notNull()
     .defaultNow(),
-  updated_at: timestamp("updated_at", {
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
   })
@@ -212,26 +186,26 @@ export const Media = pgTable("media", {
     .defaultNow(),
 });
 
-export const media_relations = relations(Media, ({ one }) => ({
-  flashcards: one(flashcards, {
-    fields: [Media.flashcardId],
-    references: [flashcards.id],
+export const media_relations = relations(media, ({ one }) => ({
+  flashcards: one(nodes, {
+    fields: [media.flashcardId],
+    references: [nodes.id],
   }),
 }));
 
-export type Medias = typeof Media.$inferSelect;
-export type NewMedia = typeof Media.$inferInsert;
+export type Media = typeof media.$inferSelect;
+export type NewMedia = typeof media.$inferInsert;
 
-export const Peers = pgTable("peers", {
+export const peers = pgTable("peers", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name").notNull(),
-  created_at: timestamp("created_at", {
+  createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
   })
     .notNull()
     .defaultNow(),
-  updated_at: timestamp("updated_at", {
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
   })
@@ -239,48 +213,48 @@ export const Peers = pgTable("peers", {
     .defaultNow(),
 });
 
-export const peers_relations = relations(Peers, ({ one, many }) => ({
-  Users_Peers: many(Users_Peers),
+export const peersRelations = relations(peers, ({ many }) => ({
+  usersPeers: many(usersPeers),
   maps: many(maps),
   invites: many(invites),
 }));
 
-export type Peer = typeof Peers.$inferSelect;
-export type NewPeer = typeof Peers.$inferInsert;
+export type Peer = typeof peers.$inferSelect;
+export type NewPeer = typeof peers.$inferInsert;
 
-export const Users_Peers = pgTable("users_peers", {
+export const usersPeers = pgTable("users_peers", {
   userId: uuid("user_id").references(() => users.id),
-  peerId: uuid("peer_id").references(() => Peers.id),
+  peerId: uuid("peer_id").references(() => peers.id),
   isPeerAdmin: boolean("is_peer_admin").default(false).notNull(),
 });
 
-export const users_peers_relations = relations(Users_Peers, ({ one }) => ({
+export const users_peers_relations = relations(usersPeers, ({ one }) => ({
   users: one(users, {
-    fields: [Users_Peers.userId],
+    fields: [usersPeers.userId],
     references: [users.id],
   }),
-  Peers: one(Peers, {
-    fields: [Users_Peers.peerId],
-    references: [Peers.id],
+  Peers: one(peers, {
+    fields: [usersPeers.peerId],
+    references: [peers.id],
   }),
 }));
 
-export type UsersPeers = typeof Users_Peers.$inferSelect;
-export type NewUsersPeers = typeof Users_Peers.$inferInsert;
+export type UsersPeers = typeof usersPeers.$inferSelect;
+export type NewUsersPeers = typeof usersPeers.$inferInsert;
 
 export const invites = pgTable("invites", {
-  invite_id: uuid("invite_id").defaultRandom(),
-  receiver_id: uuid("reveiver_id").references(() => users.id),
-  sender_id: uuid("sender_id").references(() => users.id),
-  peer_id: uuid("peer_id").references(() => Peers.id),
+  id: uuid("id").defaultRandom(),
+  receiverId: uuid("reveiver_id").references(() => users.id),
+  senderId: uuid("sender_id").references(() => users.id),
+  peerId: uuid("peer_id").references(() => peers.id),
   text: varchar("text"),
-  created_at: timestamp("created_at", {
+  createdAt: timestamp("created_at", {
     withTimezone: true,
     mode: "date",
   })
     .notNull()
     .defaultNow(),
-  updated_at: timestamp("updated_at", {
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
     mode: "date",
   })
@@ -288,9 +262,9 @@ export const invites = pgTable("invites", {
     .defaultNow(),
 });
 
-export const invites_relations = relations(invites, ({ one }) => ({
+export const invitesRelations = relations(invites, ({ one }) => ({
   users: one(users),
-  peers: one(Peers),
+  peers: one(peers),
 }));
 
 export type Invite = typeof invites.$inferSelect;
