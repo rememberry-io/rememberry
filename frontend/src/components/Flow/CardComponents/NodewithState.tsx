@@ -59,18 +59,18 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   const updateNode = useNodeUpdate();
   
   const handleSubmit = async (front: string, back: string) => {
-    if (isDialogOpen) {
-      await updateNode({
-        // TODO: Why should all the props be updated?
-        node: {
-          id,
-          frontside: front,
-          backside: back
-        },
-      });
-      closeDialog();
-    }
-    setParentNodeId(null);
+    // if (isDialogOpen) {
+    //   await updateNode({
+    //     // TODO: Why should all the props be updated?
+    //     node: {
+    //       id,
+    //       frontside: front,
+    //       backside: back
+    //     },
+    //   });
+    //   closeDialog();
+    // }
+    // setParentNodeId(null);
   };
 
   return (
@@ -78,7 +78,7 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
       nodeId={id}
       frontside={data.frontside}
       backside={data.backside}
-      cardType={data.nodeType}
+      nodeType={data.nodeType}
       borderClasses={borderClasses}
       focus={onFocus}
       blur={onBlur}

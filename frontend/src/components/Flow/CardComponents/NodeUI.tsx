@@ -22,7 +22,7 @@ interface NodeUIProps {
   isDialogOpen: boolean;
   handleColorChange: (color: ColorType) => void;
   handleDialogSubmit: (frontside: string, backside: string) => void;
-  cardType: string;
+  nodeType: string;
   nodeId: string;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
@@ -41,7 +41,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   closeDialog,
   isDialogOpen,
   handleColorChange,
-  cardType,
+  nodeType: nodeType,
   focus,
   blur,
   handleDialogSubmit,
@@ -54,7 +54,7 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   useAutosizeTextArea(backsideAreaRef.current, backside);
 
   const colorType =
-    cardType === "stack"
+    nodeType === "stack"
       ? "bg-primary text-white"
       : "bg-white dark:bg-dark-800 ";
 
@@ -87,12 +87,12 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <div
           className="absolute"
           style={{
-            right: `${cardType === "stack" ? "-3rem" : "-5rem"}`,
+            right: `${nodeType === "stack" ? "-3rem" : "-5rem"}`,
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
         >
           <div className="flex relative flex-row align-middle ml-2">
-            {cardType === "flashcard" && (
+            {nodeType === "flashcard" && (
               <div className=" pr-2 mt-1">
                 <TrafficLights onColorChange={handleColorChange} />
               </div>
