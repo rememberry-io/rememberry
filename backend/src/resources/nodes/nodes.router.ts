@@ -104,7 +104,7 @@ export const nodeRouter = router({
 
   deleteAndMoveChildrenUp: privateProcedure
     .input(z.string())
-    .query(async (opts) => {
+    .mutation(async (opts) => {
       const [err, nodes] =
         await nodeControllerDrizzle.deleteMiddleOrderNodeAndMoveChildrenUp(
           opts.input,
@@ -117,7 +117,7 @@ export const nodeRouter = router({
 
   deleteWithAllChildren: privateProcedure
     .input(z.string())
-    .query(async (opts) => {
+    .mutation(async (opts) => {
       const [err, nodes] = await nodeControllerDrizzle.deleteNodeAndChildren(
         opts.input,
       );
