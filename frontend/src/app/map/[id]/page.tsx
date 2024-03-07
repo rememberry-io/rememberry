@@ -2,7 +2,7 @@
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import NodeEdge from "@/components/Flow/CardComponents/NodeEdge";
 import NodeWithState from "@/components/Flow/CardComponents/NodewithState";
-import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialog";
+import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialogState";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { Button } from "@/components/ui/button";
@@ -138,13 +138,13 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
           parentNode,
         );
 
-        //TODO: storybook implementation and separation of CardUI and CardWithState
         if (parentNode && childNodePosition) {
           setParentNodeId(parentNode.id);
           setXPosition(childNodePosition.x);
           setYPosition(childNodePosition.y);
           setDialogOpen(true);
           setCreateNode(true);
+          console.log("creating new flaschard")
         }
       }
     },
@@ -155,6 +155,7 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
     const topLevelNode = nodes.find((n) => n.data.parentNodeId === null);
     setDialogOpen(true);
     setCreateNode(true);
+    console.log("creating new map")
     setXPosition(topLevelNode ? topLevelNode.position.x + 350 : 500);
     setYPosition(topLevelNode?.position.y || 500);
     setParentNodeId(null);
@@ -200,11 +201,9 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
       {dialogOpen && (
         <NodeDialog
           onSubmit={handleDialogSubmit}
-          nodeParentFrontside={
-            nodes.find((n) => n.id === parentNodeId)?.data.frontside || ""
-          }
           frontside={""}
           backside={""}
+
           isDialogOpen={dialogOpen}
           closeDialog={closeDialog}
         />

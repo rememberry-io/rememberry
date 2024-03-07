@@ -5,7 +5,6 @@ import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { FlowTextArea } from "./flowTextArea";
 
 interface NodeDialogProps {
-  parentNodeFrontside: string;
   frontside: string;
   backside: string;
   isDialogOpen: boolean;
@@ -18,7 +17,6 @@ interface NodeDialogProps {
 }
 
 export const NodeDialogUI: React.FC<NodeDialogProps> = ({
-  parentNodeFrontside,
   frontside,
   backside,
   isDialogOpen,
@@ -40,11 +38,6 @@ export const NodeDialogUI: React.FC<NodeDialogProps> = ({
         <form onSubmit={onSubmit}>
           <div>
             <div>
-              <>
-                <div className="font-medium text-primary dark:text-white leading-10">
-                  {parentNodeFrontside}
-                </div>
-              </>
 
               <FlowTextArea
                 className=" "

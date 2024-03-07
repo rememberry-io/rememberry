@@ -3,6 +3,7 @@ import { normalizeZoom } from "@/lib/utils";
 import React, { memo, useState } from "react";
 import { useViewport } from "reactflow";
 import useFlashcardFocusStore from "../stores/cardFocusStore";
+import useNodeUpdate from "@/lib/services/node/useUpdateNode";
 import { NodeUI } from "./NodeUI";
 import { ColorType, TrafficColor } from "./TrafficLights";
 
@@ -46,14 +47,31 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
     }
   };
 
-  //TODO: just a placeholder
-  const deleteNode = () => {};
-
   const toggleCard = () => {
     setIsFront(!isFront);
   };
 
   const openDialog = () => setIsDialogOpen(true);
+  const closeDialog = () => setIsDialogOpen(false);
+
+  const [parentNodeId, setParentNodeId] = useState<string | null>(null);
+
+  const updateNode = useNodeUpdate();
+  
+  const handleSubmit = async (front: string, back: string) => {
+    if (isDialogOpen) {
+      await updateNode({
+        // TODO: Why should all the props be updated?
+        node: {
+          id,
+          frontside: front,
+          backside: back
+        },
+      });
+      closeDialog();
+    }
+    setParentNodeId(null);
+  };
 
   return (
     <NodeUI
@@ -70,8 +88,10 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
       zoom={zoom}
       toggleCard={toggleCard}
       openDialog={openDialog}
+      closeDialog={closeDialog}
+      isDialogOpen={isDialogOpen}
       handleColorChange={handleColorChange}
-      deleteNode={deleteNode}
+      handleDialogSubmit={handleSubmit}
     />
   );
 };

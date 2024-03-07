@@ -2,17 +2,14 @@ import React, { useState } from "react";
 import { NodeDialogUI } from "./NodeDialogUi";
 
 interface NodeDialogWithStateProps {
-  nodeParentFrontside: string;
   frontside: string;
   backside: string;
   isDialogOpen: boolean;
-  autoOpen?: boolean;
   onSubmit: (frontside: string, backside: string) => void;
   closeDialog: () => void;
 }
 
 export const NodeDialog: React.FC<NodeDialogWithStateProps> = ({
-  nodeParentFrontside,
   frontside,
   backside,
   isDialogOpen,
@@ -36,7 +33,6 @@ export const NodeDialog: React.FC<NodeDialogWithStateProps> = ({
 
   return (
     <NodeDialogUI
-      parentNodeFrontside={nodeParentFrontside}
       frontside={frontsideState}
       backside={backsideState}
       isDialogOpen={isDialogOpen}
