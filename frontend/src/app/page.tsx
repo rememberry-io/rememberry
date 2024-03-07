@@ -8,8 +8,6 @@ import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/lib/services/authentication/userStore";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import { Box } from "@radix-ui/themes";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import "reactflow/dist/style.css";
 
@@ -147,12 +145,6 @@ function MapMenu() {
         </div>
         <FlowFooter>
           <>
-            <Link href={"/map"}>
-              <Button className="flex items-center ">
-                <span>Go to Map</span>
-                <ArrowRight className="ml-2" />
-              </Button>
-            </Link>
             <Button onClick={openAddDialog}>Add Map</Button>
           </>
         </FlowFooter>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Maximize2 } from "lucide-react";
 import React, { useRef } from "react";
 import { Position } from "reactflow";
+import { NodeDialog } from "../CustomComponents/NodeDialogState";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
@@ -17,12 +18,14 @@ interface NodeUIProps {
   zoom: number;
   toggleCard: () => void;
   openDialog: () => void;
+  closeDialog: () => void;
+  isDialogOpen: boolean;
   handleColorChange: (color: ColorType) => void;
-  cardType: string;
+  handleDialogSubmit: (frontside: string, backside: string) => void;
+  nodeType: string;
   nodeId: string;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
-  deleteNode: (id: string) => void;
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -35,11 +38,13 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   zoom,
   toggleCard,
   openDialog,
+  closeDialog,
+  isDialogOpen,
   handleColorChange,
-  cardType,
+  nodeType: nodeType,
   focus,
   blur,
-  deleteNode,
+  handleDialogSubmit,
 }) => {
   // for multiline textarea
   const frontsideAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -48,14 +53,17 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   useAutosizeTextArea(frontsideAreaRef.current, frontside);
   useAutosizeTextArea(backsideAreaRef.current, backside);
 
-  const colorType = cardType === "stack" ? "bg-primary text-white" : "bg-white";
+  const colorType =
+    nodeType === "stack"
+      ? "bg-primary text-white"
+      : "bg-white dark:bg-dark-800 ";
 
   return (
     <div
       tabIndex={0}
       onFocus={focus}
       onBlur={blur}
-      className={`dragHandle hover:cursor-pointer ${colorType}  min-w-48 relative border-none dark:bg-dark-800  flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
+      className={`dragHandle hover:cursor-pointer ${colorType}  min-w-48 relative border-none  flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}
@@ -79,12 +87,12 @@ export const NodeUI: React.FC<NodeUIProps> = ({
         <div
           className="absolute"
           style={{
-            right: `${cardType === "stack" ? "-3rem" : "-5rem"}`,
+            right: `${nodeType === "stack" ? "-3rem" : "-5rem"}`,
             transform: `scale(${normalizeZoom(zoom)})`,
           }}
         >
           <div className="flex relative flex-row align-middle ml-2">
-            {cardType === "flashcard" && (
+            {nodeType === "flashcard" && (
               <div className=" pr-2 mt-1">
                 <TrafficLights onColorChange={handleColorChange} />
               </div>
@@ -101,6 +109,15 @@ export const NodeUI: React.FC<NodeUIProps> = ({
             </div>
           </div>
         </div>
+      )}
+      {isDialogOpen && (
+        <NodeDialog
+          frontside={frontside}
+          backside={backside}
+          isDialogOpen={isDialogOpen}
+          onSubmit={function (): void {}}
+          closeDialog={closeDialog}
+        ></NodeDialog>
       )}
 
       <CustomHandle position={Position.Top} />
