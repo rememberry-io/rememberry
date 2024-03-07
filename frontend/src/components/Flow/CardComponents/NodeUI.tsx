@@ -48,14 +48,14 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   useAutosizeTextArea(frontsideAreaRef.current, frontside);
   useAutosizeTextArea(backsideAreaRef.current, backside);
 
-  const colorType = cardType === "stack" ? "bg-primary text-white" : "bg-white";
+  const colorType = cardType === "stack" ? "bg-primary text-white" : "bg-white dark:bg-dark-800 ";
 
   return (
     <div
       tabIndex={0}
       onFocus={focus}
       onBlur={blur}
-      className={`dragHandle hover:cursor-pointer ${colorType}  min-w-48 relative border-none dark:bg-dark-800  flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
+      className={`dragHandle hover:cursor-pointer ${colorType}  min-w-48 relative border-none  flex flex-col rounded-lg items-center justify-center h-auto max-w-xs `}
       style={{
         borderWidth: normalizeZoom(zoom) * 3,
       }}

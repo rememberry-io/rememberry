@@ -21,7 +21,7 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
 }) => {
   const inputProps = isInput
     ? "focus:outline-primary bg-gray-100 focus:outline-primary mt-5 dark:bg-dark-700  "
-    : "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0 dark:bg-dark-800";
+    : "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0 ";
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
