@@ -38,7 +38,6 @@ export const NodeDialogUI: React.FC<NodeDialogProps> = ({
         <form onSubmit={onSubmit}>
           <div>
             <div>
-
               <FlowTextArea
                 className=" "
                 value={frontside}

@@ -1,9 +1,9 @@
 import { Node } from "@/lib/services/node/nodeStore";
+import useNodeUpdate from "@/lib/services/node/useUpdateNode";
 import { normalizeZoom } from "@/lib/utils";
 import React, { memo, useState } from "react";
 import { useViewport } from "reactflow";
 import useFlashcardFocusStore from "../stores/cardFocusStore";
-import useNodeUpdate from "@/lib/services/node/useUpdateNode";
 import { NodeUI } from "./NodeUI";
 import { ColorType, TrafficColor } from "./TrafficLights";
 
@@ -57,7 +57,7 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   const [parentNodeId, setParentNodeId] = useState<string | null>(null);
 
   const updateNode = useNodeUpdate();
-  
+
   const handleSubmit = async (front: string, back: string) => {
     // if (isDialogOpen) {
     //   await updateNode({

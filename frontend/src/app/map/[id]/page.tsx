@@ -144,7 +144,7 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
           setYPosition(childNodePosition.y);
           setDialogOpen(true);
           setCreateNode(true);
-          console.log("creating new flaschard")
+          console.log("creating new flaschard");
         }
       }
     },
@@ -155,7 +155,7 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
     const topLevelNode = nodes.find((n) => n.data.parentNodeId === null);
     setDialogOpen(true);
     setCreateNode(true);
-    console.log("creating new map")
+    console.log("creating new map");
     setXPosition(topLevelNode ? topLevelNode.position.x + 350 : 500);
     setYPosition(topLevelNode?.position.y || 500);
     setParentNodeId(null);
@@ -203,7 +203,6 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
           onSubmit={handleDialogSubmit}
           frontside={""}
           backside={""}
-
           isDialogOpen={dialogOpen}
           closeDialog={closeDialog}
         />

@@ -117,7 +117,6 @@ export const NodeUI: React.FC<NodeUIProps> = ({
           isDialogOpen={isDialogOpen}
           onSubmit={function (): void {}}
           closeDialog={closeDialog}
-
         ></NodeDialog>
       )}
 
