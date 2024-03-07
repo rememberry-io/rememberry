@@ -67,6 +67,7 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
   //const deleteNode = useNodeDelete();
 
   useEffect(() => {
+    console.log("fire", nodes.length);
     if (nodes.length === 0) {
       setDialogOpen(true);
       setCreateNode(true);
@@ -144,7 +145,6 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
           setYPosition(childNodePosition.y);
           setDialogOpen(true);
           setCreateNode(true);
-          console.log("creating new flaschard")
         }
       }
     },
@@ -156,7 +156,7 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
     setDialogOpen(true);
     setCreateNode(true);
     console.log("creating new map")
-    setXPosition(topLevelNode ? topLevelNode.position.x + 350 : 500);
+    setXPosition(topLevelNode ? topLevelNode.position.x + 250 : 500);
     setYPosition(topLevelNode?.position.y || 500);
     setParentNodeId(null);
   };
@@ -196,7 +196,7 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
       className="flex flex-col justify-items-center"
     >
       <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
-      <Toaster position="bottom-center" reverseOrder={false} />
+      {/* <Toaster position="bottom-center" reverseOrder={false} /> */}
       {/* Node Dialog that gets thrown for input when node is created */}
       {dialogOpen && (
         <NodeDialog

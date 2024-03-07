@@ -59,9 +59,10 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   const updateNode = useNodeUpdate();
   
   const handleSubmit = async (front: string, back: string) => {
+    // TODO: Why should all the props be updated?
     if (isDialogOpen) {
       await updateNode({
-        // TODO: Why should all the props be updated?
+        
         node: {
           id,
           frontside: front,
