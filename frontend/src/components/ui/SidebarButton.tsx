@@ -8,17 +8,20 @@ interface SidebarButtonProps {
 }
 
 export function SidebarButton({ isOpen, toggleSidebar }: SidebarButtonProps) {
+
+  const activeButton = isOpen ? "bg-primary hover:bg-primarylight" : "";
+  const activeIcon = isOpen ? "text-white": ""
   return (
     <Button
       variant="outline"
       size="icon"
-      className="bg-primary  text-white"
       onClick={toggleSidebar}
+      className={`${activeButton}`}
     >
       {isOpen ? (
-        <ChevronsLeft className="h-4 w-4" />
+        <ChevronsLeft className={`h-4 w-4 ${activeIcon}`} />
       ) : (
-        <ChevronsRight className="h-4 w-4" />
+        <ChevronsRight className={`h-4 w-4 ${activeIcon}`} />
       )}
     </Button>
   );
