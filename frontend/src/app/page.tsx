@@ -97,9 +97,11 @@ function MapMenu() {
   };
 
   return (
-    <div className="relative">
-      <FlowBackground />
-      <div className="z-10 absolute top-0 left-0 w-full h-screen">
+    <div className="relative w-full h-full">
+      <div className="fixed">
+        <FlowBackground />
+      </div>
+      <div className="z-10 absolute top-0 left-0 h-screen">
         <MapDialog
           userID={userId ?? ""}
           mapID={mapId}
@@ -119,7 +121,7 @@ function MapMenu() {
         >
           <h1 className="">Which map do you want to learn today?</h1>
         </div>
-        <div id="body" className="flex content-start p-20 w-screen flex-wrap">
+        <div id="body" className="flex content-start p-20 flex-wrap">
           {sortedMaps.map(
             (map: { id: string; name: string; description: string }) => (
               <>
