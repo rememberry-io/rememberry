@@ -1,6 +1,7 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
 import { db, dbConnection } from "../../db/db";
 import { NewNode, Node, nodes } from "../../db/schema";
+import { Logger, ScopedLogger } from "../../logger";
 import {
   TRPCStatus,
   getModelDefaultError,
@@ -33,18 +34,20 @@ export interface NodeModel {
 
 class NodeModelDrizzle implements NodeModel {
   db: dbConnection;
+  logger: Logger;
   constructor(db: dbConnection) {
     this.db = db;
+    this.logger = new ScopedLogger("Node Model");
   }
 
   async createNode(input: NewNode) {
     try {
       const node = await this.db.insert(nodes).values(input).returning();
 
-      if (!hasOnlyOneEntry(node)) getTRPCError();
+      if (!hasOnlyOneEntry(node)) getTRPCError(this.logger);
       return [null, node[0]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -57,11 +60,11 @@ class NodeModelDrizzle implements NodeModel {
         .prepare("node");
       const node = await prep.execute({ id: nodeId });
 
-      if (!hasOnlyOneEntry(node)) return getTRPCError();
+      if (!hasOnlyOneEntry(node)) return getTRPCError(this.logger);
 
       return [null, node[0]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -76,7 +79,7 @@ class NodeModelDrizzle implements NodeModel {
 
       return [null, selectedNodes] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -98,7 +101,7 @@ class NodeModelDrizzle implements NodeModel {
       const selectedNodes = await prep.execute({ id: mapId });
       return [null, selectedNodes] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -112,7 +115,7 @@ class NodeModelDrizzle implements NodeModel {
       const selectedNodes = await prep.execute({ id: nodeId });
       return [null, selectedNodes] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -134,7 +137,7 @@ class NodeModelDrizzle implements NodeModel {
       `);
       return [null, selectedStacks.rows as Node[]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -145,10 +148,10 @@ class NodeModelDrizzle implements NodeModel {
         .set(node)
         .where(eq(nodes.id, node.id))
         .returning();
-      if (!hasOnlyOneEntry(updatedNode)) return getTRPCError();
+      if (!hasOnlyOneEntry(updatedNode)) return getTRPCError(this.logger);
       return [null, updatedNode[0]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -160,11 +163,11 @@ class NodeModelDrizzle implements NodeModel {
         .where(eq(nodes.id, nodeId))
         .returning();
 
-      if (!hasOnlyOneEntry(node)) getTRPCError();
+      if (!hasOnlyOneEntry(node)) return getTRPCError(this.logger);
 
       return [null, node[0]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -176,10 +179,10 @@ class NodeModelDrizzle implements NodeModel {
         .where(eq(nodes.id, nodeId))
         .returning();
 
-      if (!hasOnlyOneEntry(node)) getTRPCError();
+      if (!hasOnlyOneEntry(node)) return getTRPCError(this.logger);
       return [null, node[0]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 
@@ -207,7 +210,7 @@ class NodeModelDrizzle implements NodeModel {
       });
       return [null, updatedNodes] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
   async deleteNodeAndChildren(nodeId: string) {
@@ -228,7 +231,7 @@ class NodeModelDrizzle implements NodeModel {
       `);
       return [null, res.rows as Node[]] as const;
     } catch (e) {
-      return getModelDefaultError(e);
+      return getModelDefaultError(e, this.logger);
     }
   }
 }
