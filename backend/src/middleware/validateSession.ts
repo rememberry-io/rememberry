@@ -28,13 +28,14 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
       !allowedHosts ||
       !verifyRequestOrigin(originHeader, [allowedHosts])
     )
-      throw getTRPCError("CSFR Protection", "FORBIDDEN")[0];
+      throw getTRPCError(undefined, "CSFR Protection", "FORBIDDEN")[0];
   }
 
   const cookieHeader = req.headers.cookie;
 
   const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
-  if (!sessionId) throw getTRPCError("Invalid cookie", "UNAUTHORIZED")[0];
+  if (!sessionId)
+    throw getTRPCError(undefined, "Invalid cookie", "UNAUTHORIZED")[0];
 
   const { session, user } = await lucia.validateSession(sessionId);
   if (!session) {
