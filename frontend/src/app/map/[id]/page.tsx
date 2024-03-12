@@ -259,9 +259,8 @@ type MapParams = {
 
 export default function MapFlow({ params }: MapParams) {
   const { isLoading, data, isError } = useGetNodesByMapId(params.id);
-  
-  const { isLoading: mapLoading, maps } = useGetMapByUserId();
 
+  const { isLoading: mapLoading, maps } = useGetMapByUserId();
 
   if (isLoading || mapLoading) {
     return null;
@@ -281,7 +280,7 @@ export default function MapFlow({ params }: MapParams) {
 
   const reactFlowNodes = data.map((node) => databaseNodeToStoreNode(node));
 
-  const mapName = maps.find(map => map.id === params.id)?.name || ""
+  const mapName = maps.find((map) => map.id === params.id)?.name || "";
 
   return (
     <ReactFlowProvider>

@@ -8,9 +8,10 @@ interface SidebarButtonProps {
 }
 
 export function SidebarButton({ isOpen, toggleSidebar }: SidebarButtonProps) {
-
-  const activeButton = isOpen ? "bg-primary hover:bg-primarylight dark:bg-800 dark:hover:bg-primaryLight" : "";
-  const activeIcon = isOpen ? "text-white": ""
+  const activeButton = isOpen
+    ? "bg-primary hover:bg-primarylight dark:bg-800 dark:hover:bg-primaryLight"
+    : "";
+  const activeIcon = isOpen ? "text-white" : "";
   return (
     <Button
       variant="outline"

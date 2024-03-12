@@ -3,7 +3,6 @@ import { ModeToggle } from "@/components/ui/ModeToggle";
 import { SidebarButton } from "@/components/ui/SidebarButton";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useCallback, useState } from "react";
 import { Panel } from "reactflow";
 
 interface HeaderProps {
@@ -19,9 +18,8 @@ export const FlowHeader: React.FC<HeaderProps> = ({
   mapName,
   openHandler,
 }) => {
-
   //Todo: on sidebar open, show maps
-  
+
   return (
     <Panel
       position="top-center"
@@ -34,10 +32,7 @@ export const FlowHeader: React.FC<HeaderProps> = ({
     >
       <div className="flex flex-row items-center justify-between">
         <div className="flex gap-5">
-          <SidebarButton
-            isOpen={isOpen}
-            toggleSidebar={openHandler}
-          />
+          <SidebarButton isOpen={isOpen} toggleSidebar={openHandler} />
           <Link href="/">
             <Button variant="outline" className="p-3">
               🫐 <p className="ml-2 text-sm">{mapName}</p>
