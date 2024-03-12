@@ -82,7 +82,7 @@ export const MapDialog: React.FC<MapDialogProps> = ({
       <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
         <DialogContent onAbort={discardChanges}>
           <div>
-            <div className="bg-dark-800 ">
+            <div className="dark:bg-dark-800 ">
               {isAddingactive && (
                 <h1 className="text-2xl font-medium max-w-xl text-blackberry dark:text-white">
                   What do you want to call it?

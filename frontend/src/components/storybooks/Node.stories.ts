@@ -20,7 +20,7 @@ export const Primary: Story = {
     toggleCard: () => {},
     openDialog: () => {},
     handleColorChange: (color: string) => {},
-    cardType: "card",
+    nodeType: "card",
     nodeId: "nodeId",
     blur: () => {},
   },
