@@ -95,6 +95,9 @@ function MapMenu() {
   const handleMapId = (id: string) => {
     setMapId(id);
   };
+  const handleMapName = (name: string) => {
+    setName(name);
+  };
 
   return (
     <div className="relative w-full h-full">
@@ -137,6 +140,7 @@ function MapMenu() {
                       handleToggleDialog={handleToggleDialog}
                       handleZoomDialog={() => handleZoomDialog(map)}
                       handleMapId={handleMapId}
+                      handleMapName={handleMapName}
                       handleEditDialog={() => handleEditDialog(map)}
                     />
                   </Box>

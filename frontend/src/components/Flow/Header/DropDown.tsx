@@ -11,12 +11,12 @@ import {
 export function DropDown() {
   return (
     <Select>
-      <SelectTrigger className="w-[180px]  dark:bg-dark-800 hover:bg-gray-100">
-        <SelectValue placeholder="Show difficulty" />
+      <SelectTrigger className="[w-auto]  dark:bg-dark-800  hover:dark:bg-dark-600 hover:bg-gray-50">
+        <SelectValue placeholder="Difficulty" />
       </SelectTrigger>
-      <SelectContent className="flex flex-col  dark:bg-dark-800 ">
+      <SelectContent className="flex flex-col  dark:bg-dark-800  ">
         <SelectGroup className="">
-          <SelectLabel>How to show the difficulty</SelectLabel>
+          <SelectLabel>How do you want to see the difficulty?</SelectLabel>
           <SelectItem className="" value="apple">
             Colored borders
           </SelectItem>
