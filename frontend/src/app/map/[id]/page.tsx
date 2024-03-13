@@ -202,7 +202,6 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
       className="flex flex-col justify-items-center"
     >
       <FlowHeader
-        //Todo: pass map name to header
         mapName={mapName}
         openHandler={() => setIsOpen(!isOpen)}
         isOpen={isOpen}
