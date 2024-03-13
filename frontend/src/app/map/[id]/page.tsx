@@ -6,6 +6,7 @@ import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialogState";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { Button } from "@/components/ui/button";
+import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import { NodeData } from "@/lib/services/node/nodeStore";
 import useNodeCreate, {
   databaseNodeToStoreNode,
@@ -46,9 +47,10 @@ type MapProps = {
   nodesProp: Node[];
   edgesProp: Edge[];
   mapId: string;
+  mapName: string;
 };
 
-function Map({ nodesProp, edgesProp, mapId }: MapProps) {
+function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   const reactflowStore = useStoreApi();
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(nodesProp);
   const [edges, setEdges, onEdgesChange] = useEdgesState(edgesProp);
@@ -86,6 +88,12 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+  };
+  console.log("Map: " + mapId);
+  const handleMapName = (name: string) => {};
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = reactflowStore.getState();
@@ -161,10 +169,6 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
     setParentNodeId(null);
   };
 
-  const closeDialog = () => {
-    setDialogOpen(false);
-  };
-
   const handleDialogSubmit = async (front: string, back: string) => {
     if (isCreateNode) {
       await createNode({
@@ -190,12 +194,19 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
     setParentNodeId(null);
   };
 
+  console.log("id", mapId, "name", mapName, "nodes", nodes, "edges", edges);
+
   return (
     <div
       style={{ height: "100vh", width: "100vw" }}
       className="flex flex-col justify-items-center"
     >
-      <FlowHeader isOpen={isOpen} toggleSidebar={toggleSidebar} />
+      <FlowHeader
+        mapName={mapName}
+        openHandler={() => setIsOpen(!isOpen)}
+        isOpen={isOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <Toaster position="bottom-center" reverseOrder={false} />
       {/* Node Dialog that gets thrown for input when node is created */}
       {dialogOpen && (
@@ -241,13 +252,16 @@ function Map({ nodesProp, edgesProp, mapId }: MapProps) {
   );
 }
 
-type MapDongs = {
+type MapParams = {
   params: { id: string };
 };
 
-export default function MapFlow({ params }: MapDongs) {
+export default function MapFlow({ params }: MapParams) {
   const { isLoading, data, isError } = useGetNodesByMapId(params.id);
-  if (isLoading) {
+
+  const { isLoading: mapLoading, maps } = useGetMapByUserId();
+
+  if (isLoading || mapLoading) {
     return null;
   } else if (isError) {
     return null;
@@ -265,9 +279,16 @@ export default function MapFlow({ params }: MapDongs) {
 
   const reactFlowNodes = data.map((node) => databaseNodeToStoreNode(node));
 
+  const mapName = maps.find((map) => map.id === params.id)?.name || "";
+
   return (
     <ReactFlowProvider>
-      <Map nodesProp={reactFlowNodes} edgesProp={edges} mapId={params.id} />
+      <Map
+        nodesProp={reactFlowNodes}
+        edgesProp={edges}
+        mapId={params.id}
+        mapName={mapName}
+      />
     </ReactFlowProvider>
   );
 }

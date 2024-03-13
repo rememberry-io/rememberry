@@ -12,6 +12,7 @@ interface MapCardProps {
   handleZoomDialog: (open: boolean) => void;
   handleToggleDialog: (open: boolean) => void;
   handleMapId: (id: string) => void;
+  handleMapName: (name: string) => void;
   handleEditDialog: (open: boolean) => void;
 }
 
@@ -20,6 +21,7 @@ const MapCard: React.FC<MapCardProps> = ({
   handleToggleDialog,
   handleZoomDialog,
   handleMapId,
+  handleMapName,
   handleEditDialog,
 }) => {
   const [name, setName] = useState(map.name);
