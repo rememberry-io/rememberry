@@ -7,13 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { create, useStore } from "zustand";
 import useDropDownFocusStore from "../stores/headerDropdownStore";
 
-
 export function DropDown() {
-  const title = useDropDownFocusStore((state) => state.dropdownName)
-  const updateTitle = useDropDownFocusStore((state) => state.updateDropDown)
+  const title = useDropDownFocusStore((state) => state.dropdownName);
+  const updateTitle = useDropDownFocusStore((state) => state.updateDropDown);
 
   return (
     <Select>

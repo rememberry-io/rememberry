@@ -42,11 +42,8 @@ export const FlowHeader: React.FC<HeaderProps> = ({
               Learn another map:
             </h1>
             {sortedMaps.map((map) => (
-              <Link href={`/map/${map.id}`}>
-                <Card
-                  key={map.id}
-                  className="flex w-full my-2 hover:bg-gray-100 dark:hover:bg-dark-600 dark:bg-dark-700 p-2"
-                >
+              <Link href={`/map/${map.id}`} key={map.id}>
+                <Card className="flex w-full my-2 hover:bg-gray-100 dark:hover:bg-dark-600 dark:bg-dark-700 p-2">
                   <div className="justify-center p-1 text-center ">
                     <p>{map.name}</p>
                     <p className="text-xs mt-1">{map.description}</p>

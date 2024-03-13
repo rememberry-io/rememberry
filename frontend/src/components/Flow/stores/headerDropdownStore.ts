@@ -13,5 +13,4 @@ const useDropDownFocusStore = create<State & Action>((set) => ({
   updateDropDown: (dropdownName) => set(() => ({ dropdownName: dropdownName })),
 }));
 
-
 export default useDropDownFocusStore;
