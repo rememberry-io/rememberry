@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NodeDialogUI } from "./NodeDialogUi";
+import { NodeDialogUI } from "./NodeDialogUI";
 
 interface NodeDialogWithStateProps {
   frontside: string;

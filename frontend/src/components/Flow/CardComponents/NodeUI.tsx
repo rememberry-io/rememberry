@@ -28,6 +28,8 @@ interface NodeUIProps {
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
 }
 
+//type level = 'again' | 'hard' | 'good' | 'easy';
+
 export const NodeUI: React.FC<NodeUIProps> = ({
   isFront,
   frontside,

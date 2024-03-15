@@ -6,12 +6,14 @@ import { Card } from "@/components/ui/card";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import Link from "next/link";
 import { Panel } from "reactflow";
+import useDropDownFocusStore from "../stores/headerDropdownStore";
 
 interface HeaderProps {
   isOpen: boolean;
   toggleSidebar: () => void;
   mapName: string;
   openHandler: () => void;
+  showLevelHandler: (level: string) => void;
 }
 
 export const FlowHeader: React.FC<HeaderProps> = ({
@@ -19,8 +21,8 @@ export const FlowHeader: React.FC<HeaderProps> = ({
   toggleSidebar,
   mapName,
   openHandler,
+  showLevelHandler,
 }) => {
-  //Todo: on sidebar open, show maps
 
   const { isLoading, maps } = useGetMapByUserId();
   if (isLoading) {
@@ -31,6 +33,13 @@ export const FlowHeader: React.FC<HeaderProps> = ({
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
+  const level = useDropDownFocusStore((state) => state.dropdownName);
+  const setLevel = useDropDownFocusStore((state) => state.updateDropDown);
+  const levelHandler = (level: string) => {
+    setLevel(level);
+  }
+  
+
   return (
     <div>
       <div className="relative ">
@@ -38,7 +47,7 @@ export const FlowHeader: React.FC<HeaderProps> = ({
           className={`fixed z-10 ${isOpen ? "translate-x-0" : "-translate-x-full"} ease-in-out duration-300 flex flex-row `}
         >
           <div className=" overflow-scroll w-56 h-screen bg-white dark:bg-dark-900 px-5 border-r-2 pt-5 dark:border-dark-300/50">
-            <h1 className=" text-lg font-semibold text-center text-primary mb-4">
+            <h1 className=" text-lg font-semibold text-center  mb-4">
               Learn another map:
             </h1>
             {sortedMaps.map((map) => (
@@ -59,7 +68,7 @@ export const FlowHeader: React.FC<HeaderProps> = ({
             ))}
           </div>
           <div className="ml-2  mt-8">
-            <SidebarButton isOpen={isOpen} toggleSidebar={openHandler} />
+            <SidebarButton isOpen={isOpen} toggleSidebar={openHandler}  />
           </div>
         </div>
       </div>
@@ -82,7 +91,7 @@ export const FlowHeader: React.FC<HeaderProps> = ({
             </Link>
           </div>
           <div className="flex gap-5">
-            <DropDown />
+            <DropDown level={""}  levelHandler={levelHandler} />
             <ModeToggle />
           </div>
         </div>

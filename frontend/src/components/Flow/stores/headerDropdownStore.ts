@@ -9,7 +9,7 @@ type Action = {
 };
 
 const useDropDownFocusStore = create<State & Action>((set) => ({
-  dropdownName: "Difficulty",
+  dropdownName: "level",
   updateDropDown: (dropdownName) => set(() => ({ dropdownName: dropdownName })),
 }));
 
