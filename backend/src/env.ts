@@ -3,6 +3,7 @@ exports type parsed environment variables (i.e. PORT: "420" becomes PORT: 420) f
 in staging and prod, these are sourced from process.env (injected via heroku), in development from the local .env file
 */
 import { config } from "dotenv";
+import fs from "fs";
 import { z } from "zod";
 
 const EnvZod = z.object({
@@ -23,7 +24,23 @@ const EnvZod = z.object({
 function getEnvSrc() {
   const { error, parsed } = config();
 
-  if (error || parsed == null) return process.env as { [key: string]: string };
+  if (error || parsed == null) {
+    const processedEnv = process.env as { [key: string]: string };
+
+    const secretPath = "/vault/secrets/db-creds";
+    // errors when file not found - on purpose because app should panic
+    const vaultFile = fs.readFileSync(secretPath, "utf8");
+    for (const line of vaultFile.split("\n")) {
+      const [key, value] = line.split("=");
+      if (key && value) processedEnv[key] = value.replace(/"/g, "");
+    }
+
+    console.info("env variables", processedEnv);
+
+    return processedEnv;
+  }
+
+  console.info("env from file", parsed);
 
   return parsed;
 }
