@@ -117,7 +117,7 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         working-directory: "deployments/frontend/base"
         run: |
-          kustomize edit set image rem-backend-image=notemann27/rememberry-frontend:$GITHUB_SHA
+          kustomize edit set image rem-frontend-image=notemann27/rememberry-frontend:$GITHUB_SHA
 
       - name: apply new config to deploy in cluster
         working-directory: "deployments/frontend"

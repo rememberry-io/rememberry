@@ -4,6 +4,7 @@ in staging and prod, these are sourced from process.env (injected via heroku), i
 */
 import { config } from "dotenv";
 import { z } from "zod";
+import fs from "fs";
 
 const EnvZod = z.object({
   NODE_ENV: z.enum(["production", "development", "testing", "staging"]),
@@ -23,7 +24,23 @@ const EnvZod = z.object({
 function getEnvSrc() {
   const { error, parsed } = config();
 
-  if (error || parsed == null) return process.env as { [key: string]: string };
+  if (error || parsed == null) {
+    const processedEnv = process.env as { [key: string]: string };
+
+    const secretPath = "/vault/secrets/db-creds";
+    // errors when file not found - on purpose because app should panic
+    const vaultFile = fs.readFileSync(secretPath, "utf8")
+    for (const line of vaultFile.split("\n")) {
+      const [key, value] = line.split("=")
+      if (key && value) processedEnv[key] = value.replace(/"/g, '')
+    }
+
+    console.info("env variables", processedEnv);
+
+    return processedEnv;
+  }
+
+  console.info("env from file", parsed);
 
   return parsed;
 }
@@ -45,7 +62,7 @@ function validateEnv(env: { [key: string]: any }) {
   if (!parsedEnv.success)
     throw new Error(
       "Failed to Parse Environment Variables: " +
-        JSON.stringify(parsedEnv.error.issues, null, 2),
+      JSON.stringify(parsedEnv.error.issues, null, 2),
     );
 
   return parsedEnv.data;
