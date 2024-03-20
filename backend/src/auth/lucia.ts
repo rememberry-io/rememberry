@@ -2,14 +2,14 @@ import { DrizzlePostgreSQLAdapter } from "@lucia-auth/adapter-drizzle";
 import { Lucia, TimeSpan } from "lucia";
 import { db } from "../db/db";
 import { session, users } from "../db/schema";
-import env from "../env";
+import { env } from "../env";
 
 const adapter = new DrizzlePostgreSQLAdapter(db, session, users);
 
 export const getDomain = () => {
-  if (env.NODE_ENV === "staging") {
+  if (env.get("NODE_ENV") === "staging") {
     return "stage.rememberry.app";
-  } else if (env.NODE_ENV === "production") {
+  } else if (env.get("NODE_ENV") === "production") {
     return "rememberry.app";
   } else {
     return "127.0.0.1";

@@ -1,8 +1,9 @@
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import cors from "cors";
 import { createContext } from "./context";
-import env from "./env";
+import { env } from "./env";
 import { appRouter } from "./routers/_app";
+import { theALMIGHTYDB } from "./db/db";
 
 const server = createHTTPServer({
   middleware: cors({
@@ -18,6 +19,11 @@ const server = createHTTPServer({
   createContext,
 });
 
-server.listen(env.PORT);
+process.on("SIGHUP", () => {
+  env.updateEnv()
+  theALMIGHTYDB.updateDBConnection()
+})
 
-console.log("server listening on http://localhost:" + env.PORT);
+server.listen(env.get("PORT"));
+
+console.log("server listening on http://localhost:" + env.get("PORT"));

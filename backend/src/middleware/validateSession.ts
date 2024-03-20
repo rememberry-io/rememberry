@@ -1,14 +1,14 @@
 import { TRPCError } from "@trpc/server";
 import { verifyRequestOrigin } from "lucia";
 import { lucia } from "../auth/lucia";
-import env from "../env";
+import { env } from "../env";
 import { middleware, publicProcedure } from "../trpc";
 import { getTRPCError } from "../utils";
 
 const allowedHost = () => {
-  if (env.NODE_ENV === "staging") {
+  if (env.get("NODE_ENV") === "staging") {
     return "web.stage.rememberry.app";
-  } else if (env.NODE_ENV === "production") {
+  } else if (env.get("NODE_ENV") === "production") {
     return "rememberry.app";
   } else {
     return "127.0.0.1:3000";

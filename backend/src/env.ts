@@ -2,7 +2,7 @@
 exports type parsed environment variables (i.e. PORT: "420" becomes PORT: 420) for linting and auto completion purposes.
 in staging and prod, these are sourced from process.env (injected via heroku), in development from the local .env file
 */
-import { config } from "dotenv";
+import { config, parse } from "dotenv";
 import fs from "fs";
 import { z } from "zod";
 
@@ -25,22 +25,17 @@ function getEnvSrc() {
   const { error, parsed } = config();
 
   if (error || parsed == null) {
-    const processedEnv = process.env as { [key: string]: string };
 
-    const secretPath = "/vault/secrets/db-creds";
-    // errors when file not found - on purpose because app should panic
+    const secretPath = process.env.VAULT_SECRET_PATH;
+    if (!secretPath) throw Error("VAULT_SECRET_PATH env variable is missing")
+    // errors when file not found - on purpose because app should throw and error
     const vaultFile = fs.readFileSync(secretPath, "utf8");
-    for (const line of vaultFile.split("\n")) {
-      const [key, value] = line.split("=");
-      if (key && value) processedEnv[key] = value.replace(/"/g, "");
-    }
+    const dbCreds = parse(vaultFile) as { [key: string]: string }
+    const environment = process.env as { [key: string]: string }
 
-    console.info("env variables", processedEnv);
+    return { ...dbCreds, ...environment }
+  };
 
-    return processedEnv;
-  }
-
-  console.info("env from file", parsed);
 
   return parsed;
 }
@@ -62,9 +57,27 @@ function validateEnv(env: { [key: string]: any }) {
   if (!parsedEnv.success)
     throw new Error(
       "Failed to Parse Environment Variables: " +
-        JSON.stringify(parsedEnv.error.issues, null, 2),
+      JSON.stringify(parsedEnv.error.issues, null, 2),
     );
 
   return parsedEnv.data;
 }
-export default validateEnv(parseEnv(getEnvSrc()));
+
+class Environment {
+  private env: z.infer<typeof EnvZod>
+  constructor() {
+    this.env = validateEnv(parseEnv(getEnvSrc()))
+    console.log(this.env);
+
+  }
+  updateEnv() {
+    this.env = validateEnv(parseEnv(getEnvSrc()))
+    console.log("update:", this.env);
+  }
+
+  get<K extends keyof z.infer<typeof EnvZod>>(input: K): z.infer<typeof EnvZod>[K] {
+    return this.env[input];
+  }
+}
+
+export const env = new Environment()
