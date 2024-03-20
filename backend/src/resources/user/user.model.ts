@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { DatabaseError } from "pg";
-import { db, dbConnection } from "../../db/db";
+import { DrizzleDB, db } from "../../db/db";
 import { NewUser, User, users } from "../../db/schema";
 import { Logger, ScopedLogger } from "../../logger";
 import { TRPCStatus, getTRPCError, hasOnlyOneEntry } from "../../utils";
@@ -14,14 +14,17 @@ export interface UserModel {
 
 class UserModelDrizzle implements UserModel {
   logger: Logger;
-  db: dbConnection;
-  constructor(db: dbConnection) {
+  db: DrizzleDB;
+  constructor(db: DrizzleDB) {
     this.db = db;
     this.logger = new ScopedLogger("User Model");
   }
   async createUser(newUser: NewUser) {
     try {
-      const user = await this.db.insert(users).values(newUser).returning();
+      const user = await this.db.drizzle
+        .insert(users)
+        .values(newUser)
+        .returning();
 
       if (!hasOnlyOneEntry(user)) return getTRPCError(this.logger);
 
@@ -45,13 +48,13 @@ class UserModelDrizzle implements UserModel {
           }
         }
       }
-      return getTRPCError(this.logger);
+      return getTRPCError(this.logger, JSON.stringify(e));
     }
   }
 
   async getUserByEmail(email: string): Promise<TRPCStatus<User>> {
     try {
-      const user = await this.db
+      const user = await this.db.drizzle
         .select()
         .from(users)
         .where(eq(users.email, email));
@@ -75,7 +78,7 @@ class UserModelDrizzle implements UserModel {
   }
   async updateUserById(userInput: User) {
     try {
-      const user = await this.db
+      const user = await this.db.drizzle
         .update(users)
         .set({
           username: userInput.username,
@@ -100,7 +103,7 @@ class UserModelDrizzle implements UserModel {
   }
   async deleteUserById(id: string) {
     try {
-      const user = await this.db
+      const user = await this.db.drizzle
         .delete(users)
         .where(eq(users.id, id))
         .returning();

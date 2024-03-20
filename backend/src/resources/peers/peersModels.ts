@@ -6,7 +6,7 @@ import * as schema from "../../db/schema";
 const internalServerError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
 export async function createPeer(peerName: string) {
-  const prep = db
+  const prep = db.drizzle
     .insert(schema.peers)
     .values({
       name: sql.placeholder("name"),
@@ -22,7 +22,7 @@ export async function createPeer(peerName: string) {
 }
 
 export async function createUsersPeersRelation(peerId: string, userId: string) {
-  const res = await db
+  const res = await db.drizzle
     .insert(schema.usersPeers)
     .values({
       userId: userId,
@@ -36,7 +36,7 @@ export async function createUsersPeersRelation(peerId: string, userId: string) {
 }
 
 export async function createAdminPeerrelation(peerId: string, userId: string) {
-  const res = await db
+  const res = await db.drizzle
     .insert(schema.usersPeers)
     .values({
       userId: userId,
@@ -51,7 +51,7 @@ export async function createAdminPeerrelation(peerId: string, userId: string) {
 }
 
 export async function updatePeerName(newPeerName: string, peerId: string) {
-  const res = await db
+  const res = await db.drizzle
     .update(schema.peers)
     .set({ name: newPeerName })
     .returning();
@@ -63,7 +63,7 @@ export async function updatePeerName(newPeerName: string, peerId: string) {
 
 export async function getAdminStatus(userId: string, peerId: string) {
   try {
-    const adminStatus = await db
+    const adminStatus = await db.drizzle
       .select({ isAdmin: schema.usersPeers.isPeerAdmin })
       .from(schema.usersPeers)
       .where(
@@ -79,7 +79,7 @@ export async function getAdminStatus(userId: string, peerId: string) {
 }
 
 export async function removeAdminStatus(userId: string, peerId: string) {
-  const res = await db
+  const res = await db.drizzle
     .update(schema.usersPeers)
     .set({ isPeerAdmin: false })
     .where(
@@ -96,7 +96,7 @@ export async function removeAdminStatus(userId: string, peerId: string) {
 }
 
 export async function addAdminStatus(userId: string, peerId: string) {
-  const res = await db
+  const res = await db.drizzle
     .update(schema.usersPeers)
     .set({ isPeerAdmin: true })
     .where(
@@ -113,7 +113,7 @@ export async function addAdminStatus(userId: string, peerId: string) {
 }
 
 export async function kickMember(kickedUserId: string, peerId: string) {
-  const res = await db
+  const res = await db.drizzle
     .delete(schema.usersPeers)
     .where(
       and(

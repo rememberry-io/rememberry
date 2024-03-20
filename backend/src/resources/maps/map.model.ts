@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { eq, sql } from "drizzle-orm";
-import { db, dbConnection } from "../../db/db";
+import { DrizzleDB, db } from "../../db/db";
 import { Map, maps, newMap } from "../../db/schema";
 import { Logger, ScopedLogger } from "../../logger";
 import {
@@ -18,15 +18,15 @@ export interface MapModel {
 }
 
 class MapModelDrizzle implements MapModel {
-  db: dbConnection;
+  db: DrizzleDB;
   logger: Logger;
-  constructor(db: dbConnection) {
+  constructor(db: DrizzleDB) {
     this.db = db;
     this.logger = new ScopedLogger("Map Model");
   }
   async createMap(input: newMap) {
     try {
-      const map = await this.db.insert(maps).values(input).returning();
+      const map = await this.db.drizzle.insert(maps).values(input).returning();
 
       if (!hasOnlyOneEntry(map)) return getTRPCError(this.logger);
 
@@ -37,7 +37,7 @@ class MapModelDrizzle implements MapModel {
   }
   async getMapsByUserId(userId: string) {
     try {
-      const prepared = this.db
+      const prepared = this.db.drizzle
         .select()
         .from(maps)
         .where(eq(maps.userId, sql.placeholder("id")))
@@ -51,7 +51,7 @@ class MapModelDrizzle implements MapModel {
   }
   async updateMapById(input: Map) {
     try {
-      const updatedMap = await this.db
+      const updatedMap = await this.db.drizzle
         .update(maps)
         .set({
           name: input.name,
@@ -71,7 +71,7 @@ class MapModelDrizzle implements MapModel {
   }
   async deleteMapById(mapId: string) {
     try {
-      const deletedMap = await this.db
+      const deletedMap = await this.db.drizzle
         .delete(maps)
         .where(eq(maps.id, mapId))
         .returning();

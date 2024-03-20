@@ -11,15 +11,18 @@ export const getTRPCError = (
   message?: string | null,
   error?: TRPC_ERROR_CODE_KEY | null,
 ) => {
-  let tError: TRPC_ERROR_CODE_KEY = "INTERNAL_SERVER_ERROR";
   let defaultError = new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
   if (error) defaultError = new TRPCError({ code: error });
   if (message) {
     defaultError.message = message;
     if (logger) {
-      logger.error(JSON.stringify(defaultError));
+      logger.error(
+        "\n\t" + defaultError.code + ":\n\n" + defaultError.message + "\n",
+      );
     } else {
-      console.error(JSON.stringify(defaultError));
+      console.error(
+        "\n\t" + defaultError.code + ":\n\n" + defaultError.message + "\n",
+      );
     }
 
     return [defaultError, null] as const;

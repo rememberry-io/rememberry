@@ -4,7 +4,8 @@ in staging and prod, these are sourced from process.env (injected via heroku), i
 */
 import { config, parse } from "dotenv";
 import fs from "fs";
-import { z } from "zod";
+import { Schema, z } from "zod";
+import { ScopedLogger } from "./logger";
 
 const EnvZod = z.object({
   NODE_ENV: z.enum(["production", "development", "testing", "staging"]),
@@ -25,17 +26,15 @@ function getEnvSrc() {
   const { error, parsed } = config();
 
   if (error || parsed == null) {
-
     const secretPath = process.env.VAULT_SECRET_PATH;
-    if (!secretPath) throw Error("VAULT_SECRET_PATH env variable is missing")
+    if (!secretPath) throw Error("VAULT_SECRET_PATH env variable is missing");
     // errors when file not found - on purpose because app should throw and error
     const vaultFile = fs.readFileSync(secretPath, "utf8");
-    const dbCreds = parse(vaultFile) as { [key: string]: string }
-    const environment = process.env as { [key: string]: string }
+    const dbCreds = parse(vaultFile) as { [key: string]: string };
+    const environment = process.env as { [key: string]: string };
 
-    return { ...dbCreds, ...environment }
-  };
-
+    return { ...dbCreds, ...environment };
+  }
 
   return parsed;
 }
@@ -64,20 +63,32 @@ function validateEnv(env: { [key: string]: any }) {
 }
 
 class Environment {
-  private env: z.infer<typeof EnvZod>
+  private env: z.infer<typeof EnvZod>;
+  logger: ScopedLogger;
   constructor() {
-    this.env = validateEnv(parseEnv(getEnvSrc()))
-    console.log(this.env);
+    this.env = validateEnv(parseEnv(getEnvSrc()));
+    this.logger = new ScopedLogger("Environment")
+    const envForLogging = { ...this.env };
 
+    envForLogging.POSTGRES_PASSWORD = `${envForLogging.POSTGRES_PASSWORD.substring(0, 5)}*****`;
+    envForLogging.POSTGRES_USER = `${envForLogging.POSTGRES_USER.substring(0, 5)}*****`;
+
+    this.logger.info("init:", this.env);
   }
   updateEnv() {
-    this.env = validateEnv(parseEnv(getEnvSrc()))
-    console.log("update:", this.env);
+    this.env = validateEnv(parseEnv(getEnvSrc()));
+    const envForLogging = { ...this.env };
+
+    envForLogging.POSTGRES_PASSWORD = `${envForLogging.POSTGRES_PASSWORD.substring(0, 5)}*****`;
+    envForLogging.POSTGRES_USER = `${envForLogging.POSTGRES_USER.substring(0, 5)}*****`;
+    this.logger.info("update:", this.env);
   }
 
-  get<K extends keyof z.infer<typeof EnvZod>>(input: K): z.infer<typeof EnvZod>[K] {
+  get<K extends keyof z.infer<typeof EnvZod>>(
+    input: K,
+  ): z.infer<typeof EnvZod>[K] {
     return this.env[input];
   }
 }
 
-export const env = new Environment()
+export const env = new Environment();

@@ -33,13 +33,13 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
 
   const cookieHeader = req.headers.cookie;
 
-  const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
+  const sessionId = lucia.lucia.readSessionCookie(cookieHeader ?? "");
   if (!sessionId)
     throw getTRPCError(undefined, "Invalid cookie", "UNAUTHORIZED")[0];
 
-  const { session, user } = await lucia.validateSession(sessionId);
+  const { session, user } = await lucia.lucia.validateSession(sessionId);
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
+    const sessionCookie = lucia.lucia.createBlankSessionCookie();
     res.setHeader("Set-Cookie", sessionCookie.serialize());
 
     throw new TRPCError({
@@ -49,7 +49,7 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   }
 
   if (session.fresh) {
-    const sessionCookie = lucia.createSessionCookie(session.id);
+    const sessionCookie = lucia.lucia.createSessionCookie(session.id);
     res.setHeader("Set-Cookie", sessionCookie.serialize());
   }
 
