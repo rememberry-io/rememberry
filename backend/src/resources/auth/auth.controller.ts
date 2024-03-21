@@ -111,7 +111,7 @@ class LuciaAuthentication implements AuthenticationController {
       );
       return [null, payload] as const;
     } catch (e) {
-      const error = e as Error
+      const error = e as Error;
       return getTRPCError(
         this.logger,
         "Could not create session" + JSON.stringify(error.message),

@@ -4,7 +4,7 @@ in staging and prod, these are sourced from process.env (injected via heroku), i
 */
 import { config, parse } from "dotenv";
 import fs from "fs";
-import { Schema, z } from "zod";
+import { z } from "zod";
 import { ScopedLogger } from "./logger";
 
 const EnvZod = z.object({
@@ -56,7 +56,7 @@ function validateEnv(env: { [key: string]: any }) {
   if (!parsedEnv.success)
     throw new Error(
       "Failed to Parse Environment Variables: " +
-      JSON.stringify(parsedEnv.error.issues, null, 2),
+        JSON.stringify(parsedEnv.error.issues, null, 2),
     );
 
   return parsedEnv.data;
@@ -67,7 +67,7 @@ class Environment {
   logger: ScopedLogger;
   constructor() {
     this.env = validateEnv(parseEnv(getEnvSrc()));
-    this.logger = new ScopedLogger("Environment")
+    this.logger = new ScopedLogger("Environment");
     const envForLogging = { ...this.env };
 
     envForLogging.POSTGRES_PASSWORD = `${envForLogging.POSTGRES_PASSWORD.substring(0, 5)}*****`;

@@ -4,8 +4,8 @@ import { lucia } from "./auth/lucia";
 import { createContext } from "./context";
 import { db } from "./db/db";
 import { env } from "./env";
-import { appRouter } from "./routers/_app";
 import { ScopedLogger } from "./logger";
+import { appRouter } from "./routers/_app";
 
 const server = createHTTPServer({
   middleware: cors({
@@ -26,7 +26,7 @@ function delay(ms: number) {
 }
 
 process.on("SIGHUP", async () => {
-  const logger = new ScopedLogger("SIGHUP")
+  const logger = new ScopedLogger("SIGHUP");
   env.updateEnv();
   let attempts = 0;
   const maxAttempts = 5;
