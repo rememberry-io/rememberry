@@ -2,9 +2,10 @@
 exports type parsed environment variables (i.e. PORT: "420" becomes PORT: 420) for linting and auto completion purposes.
 in staging and prod, these are sourced from process.env (injected via heroku), in development from the local .env file
 */
-import { config } from "dotenv";
+import { config, parse } from "dotenv";
 import fs from "fs";
 import { z } from "zod";
+import { ScopedLogger } from "./logger";
 
 const EnvZod = z.object({
   NODE_ENV: z.enum(["production", "development", "testing", "staging"]),
@@ -25,22 +26,15 @@ function getEnvSrc() {
   const { error, parsed } = config();
 
   if (error || parsed == null) {
-    const processedEnv = process.env as { [key: string]: string };
-
-    const secretPath = "/vault/secrets/db-creds";
-    // errors when file not found - on purpose because app should panic
+    const secretPath = process.env.VAULT_SECRET_PATH;
+    if (!secretPath) throw Error("VAULT_SECRET_PATH env variable is missing");
+    // errors when file not found - on purpose because app should throw and error
     const vaultFile = fs.readFileSync(secretPath, "utf8");
-    for (const line of vaultFile.split("\n")) {
-      const [key, value] = line.split("=");
-      if (key && value) processedEnv[key] = value.replace(/"/g, "");
-    }
+    const dbCreds = parse(vaultFile) as { [key: string]: string };
+    const environment = process.env as { [key: string]: string };
 
-    console.info("env variables", processedEnv);
-
-    return processedEnv;
+    return { ...dbCreds, ...environment };
   }
-
-  console.info("env from file", parsed);
 
   return parsed;
 }
@@ -67,4 +61,34 @@ function validateEnv(env: { [key: string]: any }) {
 
   return parsedEnv.data;
 }
-export default validateEnv(parseEnv(getEnvSrc()));
+
+class Environment {
+  private env: z.infer<typeof EnvZod>;
+  logger: ScopedLogger;
+  constructor() {
+    this.env = validateEnv(parseEnv(getEnvSrc()));
+    this.logger = new ScopedLogger("Environment");
+    const envForLogging = { ...this.env };
+
+    envForLogging.POSTGRES_PASSWORD = `${envForLogging.POSTGRES_PASSWORD.substring(0, 5)}*****`;
+    envForLogging.POSTGRES_USER = `${envForLogging.POSTGRES_USER.substring(0, 5)}*****`;
+
+    this.logger.info("init:", this.env);
+  }
+  updateEnv() {
+    this.env = validateEnv(parseEnv(getEnvSrc()));
+    const envForLogging = { ...this.env };
+
+    envForLogging.POSTGRES_PASSWORD = `${envForLogging.POSTGRES_PASSWORD.substring(0, 5)}*****`;
+    envForLogging.POSTGRES_USER = `${envForLogging.POSTGRES_USER.substring(0, 5)}*****`;
+    this.logger.info("update:", this.env);
+  }
+
+  get<K extends keyof z.infer<typeof EnvZod>>(
+    input: K,
+  ): z.infer<typeof EnvZod>[K] {
+    return this.env[input];
+  }
+}
+
+export const env = new Environment();

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { eq } from "drizzle-orm";
-import { db, dbConnection } from "../../db/db";
+import { DrizzleDB, db } from "../../db/db";
 import { Media, NewMedia, media } from "../../db/schema";
 import { PromiseTStatus, catchDrizzleErrorOneEntry } from "../../utils";
 
@@ -12,24 +12,24 @@ export interface MediaModel {
 }
 
 class MediaModelDrizzle implements MediaModel {
-  db: dbConnection;
-  constructor(db: dbConnection) {
+  db: DrizzleDB;
+  constructor(db: DrizzleDB) {
     this.db = db;
   }
   async createMedia(input: NewMedia) {
     return catchDrizzleErrorOneEntry(() =>
-      this.db.insert(media).values(input).returning(),
+      this.db.drizzle.insert(media).values(input).returning(),
     );
   }
   async getMediaById(id: string) {
     return catchDrizzleErrorOneEntry(() =>
-      this.db.select().from(media).where(eq(media.id, id)),
+      this.db.drizzle.select().from(media).where(eq(media.id, id)),
     );
   }
 
   async updateMediaById(input: Media) {
     return catchDrizzleErrorOneEntry(() =>
-      this.db
+      this.db.drizzle
         .update(media)
         .set({ ...input, updatedAt: dayjs().toDate() })
         .where(eq(media.id, input.id))
@@ -38,7 +38,7 @@ class MediaModelDrizzle implements MediaModel {
   }
   async deleteMediaById(id: string) {
     return catchDrizzleErrorOneEntry(() =>
-      this.db.delete(media).where(eq(media.id, id)).returning(),
+      this.db.drizzle.delete(media).where(eq(media.id, id)).returning(),
     );
   }
 }

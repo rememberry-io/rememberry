@@ -1,5 +1,5 @@
-import { Lucia, Scrypt, User as luciaUser } from "lucia";
-import { lucia } from "../../auth/lucia";
+import { Scrypt, User as luciaUser } from "lucia";
+import { LuciaAuth, lucia } from "../../auth/lucia";
 import { NewUser, User } from "../../db/schema";
 import { Logger, ScopedLogger } from "../../logger";
 import { TRPCStatus, getTRPCError } from "../../utils";
@@ -18,9 +18,9 @@ export interface UserController {
 
 class LuciaUserController implements UserController {
   userModel: UserModel;
-  luciaAuth: Lucia;
+  luciaAuth: LuciaAuth;
   logger: Logger;
-  constructor(userModel: UserModel, luciaAuth: Lucia) {
+  constructor(userModel: UserModel, luciaAuth: LuciaAuth) {
     this.userModel = userModel;
     this.luciaAuth = luciaAuth;
     this.logger = new ScopedLogger("User Controller");
@@ -51,10 +51,11 @@ class LuciaUserController implements UserController {
   async getUserBySession(input: GetUserBySessionInput) {
     const cookieHeader = input.req.headers.cookie;
     if (!cookieHeader) return getTRPCError(this.logger, "No cookie");
-    const sessionId = this.luciaAuth.readSessionCookie(cookieHeader);
+    const sessionId = this.luciaAuth.lucia.readSessionCookie(cookieHeader);
     if (!sessionId) return getTRPCError(this.logger, "Could not read session");
 
-    const { session, user } = await this.luciaAuth.validateSession(sessionId);
+    const { session, user } =
+      await this.luciaAuth.lucia.validateSession(sessionId);
 
     if (!session) return getTRPCError(this.logger, "Session is invalid");
 

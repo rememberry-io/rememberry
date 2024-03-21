@@ -1,5 +1,5 @@
-import { Lucia, Scrypt, User } from "lucia";
-import { lucia } from "../../auth/lucia";
+import { Scrypt, User } from "lucia";
+import { LuciaAuth, lucia } from "../../auth/lucia";
 import { User as DBUser } from "../../db/schema";
 import { Logger, ScopedLogger } from "../../logger";
 import { TRPCStatus, getTRPCError } from "../../utils";
@@ -14,12 +14,12 @@ export interface AuthenticationController {
 
 class LuciaAuthentication implements AuthenticationController {
   userController: UserController;
-  luciaAuth: Lucia;
+  luciaAuth: LuciaAuth;
   logger: Logger;
-  constructor(userController: UserController, luciaAuth: Lucia) {
+  constructor(userController: UserController, luciaAuth: LuciaAuth) {
     this.userController = userController;
     this.luciaAuth = luciaAuth;
-    this.logger = new ScopedLogger("Authentication");
+    this.logger = new ScopedLogger("Authentication Controller");
   }
   async register(registerInput: RegisterInput) {
     const [err, user] = await this.userController.createUser(registerInput);
@@ -60,12 +60,14 @@ class LuciaAuthentication implements AuthenticationController {
 
     const cookieHeader = req.headers.cookie;
 
-    const sessionId = this.luciaAuth.readSessionCookie(cookieHeader ?? "");
+    const sessionId = this.luciaAuth.lucia.readSessionCookie(
+      cookieHeader ?? "",
+    );
     if (!sessionId)
       return getTRPCError(this.logger, "Invalid cookie", "UNAUTHORIZED");
 
     try {
-      await this.luciaAuth.invalidateSession(sessionId);
+      await this.luciaAuth.lucia.invalidateSession(sessionId);
     } catch (e) {
       return getTRPCError(
         this.logger,
@@ -74,7 +76,7 @@ class LuciaAuthentication implements AuthenticationController {
       );
     }
 
-    const sessionCookie = this.luciaAuth.createBlankSessionCookie();
+    const sessionCookie = this.luciaAuth.lucia.createBlankSessionCookie();
 
     const payload: AuthWithoutUser = {
       sessionCookie: sessionCookie.serialize(),
@@ -86,9 +88,11 @@ class LuciaAuthentication implements AuthenticationController {
   }
   private async createSessionAndCookie(userIn: DBUser) {
     try {
-      const session = await this.luciaAuth.createSession(userIn.id, {});
+      const session = await this.luciaAuth.lucia.createSession(userIn.id, {});
 
-      const sessionCookie = this.luciaAuth.createSessionCookie(session.id);
+      const sessionCookie = this.luciaAuth.lucia.createSessionCookie(
+        session.id,
+      );
 
       const user: User = {
         id: userIn.id,
@@ -107,9 +111,10 @@ class LuciaAuthentication implements AuthenticationController {
       );
       return [null, payload] as const;
     } catch (e) {
+      const error = e as Error;
       return getTRPCError(
         this.logger,
-        "Could not create session" + JSON.stringify(e),
+        "Could not create session" + JSON.stringify(error.message),
         "INTERNAL_SERVER_ERROR",
       );
     }

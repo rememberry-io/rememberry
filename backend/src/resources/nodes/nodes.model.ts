@@ -1,5 +1,5 @@
 import { and, eq, isNull, sql } from "drizzle-orm";
-import { db, dbConnection } from "../../db/db";
+import { DrizzleDB, db } from "../../db/db";
 import { NewNode, Node, nodes } from "../../db/schema";
 import { Logger, ScopedLogger } from "../../logger";
 import {
@@ -33,16 +33,19 @@ export interface NodeModel {
 }
 
 class NodeModelDrizzle implements NodeModel {
-  db: dbConnection;
+  db: DrizzleDB;
   logger: Logger;
-  constructor(db: dbConnection) {
+  constructor(db: DrizzleDB) {
     this.db = db;
     this.logger = new ScopedLogger("Node Model");
   }
 
   async createNode(input: NewNode) {
     try {
-      const node = await this.db.insert(nodes).values(input).returning();
+      const node = await this.db.drizzle
+        .insert(nodes)
+        .values(input)
+        .returning();
 
       if (!hasOnlyOneEntry(node)) getTRPCError(this.logger);
       return [null, node[0]] as const;
@@ -53,7 +56,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async getNodeById(nodeId: string) {
     try {
-      const prep = this.db
+      const prep = this.db.drizzle
         .select()
         .from(nodes)
         .where(eq(nodes.id, sql.placeholder("id")))
@@ -70,7 +73,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async getNodesByMapId(mapId: string) {
     try {
-      const prep = this.db
+      const prep = this.db.drizzle
         .select()
         .from(nodes)
         .where(eq(nodes.mapId, sql.placeholder("id")))
@@ -88,7 +91,7 @@ class NodeModelDrizzle implements NodeModel {
    */
   async getTopLevelNodesByMapId(mapId: string) {
     try {
-      const prep = this.db
+      const prep = this.db.drizzle
         .select()
         .from(nodes)
         .where(
@@ -107,7 +110,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async getDirectChildrenNodesFromParentNode(nodeId: string) {
     try {
-      const prep = this.db
+      const prep = this.db.drizzle
         .select()
         .from(nodes)
         .where(eq(nodes.parentNodeId, sql.placeholder("id")))
@@ -121,7 +124,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async getAllChildrenNodesFromParentNode(nodeId: string) {
     try {
-      const selectedStacks = await this.db.execute(sql`
+      const selectedStacks = await this.db.drizzle.execute(sql`
         WITH RECURSIVE cte_subnodes AS (
         
         SELECT * FROM nodes WHERE id=${nodeId}
@@ -143,7 +146,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async updateNodeById(node: Node) {
     try {
-      const updatedNode = await this.db
+      const updatedNode = await this.db.drizzle
         .update(nodes)
         .set(node)
         .where(eq(nodes.id, node.id))
@@ -157,7 +160,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async changeParentNode(parentId: string, nodeId: string) {
     try {
-      const node = await this.db
+      const node = await this.db.drizzle
         .update(nodes)
         .set({ parentNodeId: parentId })
         .where(eq(nodes.id, nodeId))
@@ -173,7 +176,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async deleteParentNodeRelation(nodeId: string) {
     try {
-      const node = await this.db
+      const node = await this.db.drizzle
         .update(nodes)
         .set({ parentNodeId: null })
         .where(eq(nodes.id, nodeId))
@@ -188,7 +191,7 @@ class NodeModelDrizzle implements NodeModel {
 
   async deleteMiddleOrderNodeAndMoveChildrenUp(nodeId: string) {
     try {
-      const updatedNodes = await this.db.transaction(async (tx) => {
+      const updatedNodes = await this.db.drizzle.transaction(async (tx) => {
         const nodeToDelete = await tx
           .select({ parentId: nodes.parentNodeId })
           .from(nodes)
@@ -215,7 +218,7 @@ class NodeModelDrizzle implements NodeModel {
   }
   async deleteNodeAndChildren(nodeId: string) {
     try {
-      const res = await this.db.execute(sql`
+      const res = await this.db.drizzle.execute(sql`
         WITH RECURSIVE nodes_to_delete AS(
         SELECT id FROM nodes
         WHERE id =${nodeId}

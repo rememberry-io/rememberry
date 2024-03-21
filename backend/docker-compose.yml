@@ -23,8 +23,8 @@ services:
     image: postgres:15.4
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
-      POSTGRES_DB: ${PG_DATABASE_NAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin2}
+      POSTGRES_DB: ${PG_DATABASE_NAME:-remproduction}
     volumes:
       - postgres:/data/postgres
       - ./drizzle:/drizzle

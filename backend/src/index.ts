@@ -1,7 +1,10 @@
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import cors from "cors";
+import { lucia } from "./auth/lucia";
 import { createContext } from "./context";
-import env from "./env";
+import { db } from "./db/db";
+import { env } from "./env";
+import { ScopedLogger } from "./logger";
 import { appRouter } from "./routers/_app";
 
 const server = createHTTPServer({
@@ -18,6 +21,35 @@ const server = createHTTPServer({
   createContext,
 });
 
-server.listen(env.PORT);
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-console.log("server listening on http://localhost:" + env.PORT);
+process.on("SIGHUP", async () => {
+  const logger = new ScopedLogger("SIGHUP");
+  env.updateEnv();
+  let attempts = 0;
+  const maxAttempts = 5;
+  let drizzle;
+
+  while (!drizzle && attempts < maxAttempts) {
+    drizzle = await db.updateDBConnection();
+    if (!drizzle) {
+      logger.error("Failed to update DB connection, retrying...");
+      attempts++;
+      await delay(50); // Wait for 1 second before retrying
+    }
+  }
+
+  if (!drizzle) {
+    logger.error("Failed to update DB connection after maximum attempts.");
+    return;
+  }
+  logger.info("Successfully updated env");
+
+  lucia.updateLucia(drizzle);
+});
+
+server.listen(env.get("PORT"));
+
+console.log("server listening on http://localhost:" + env.get("PORT"));

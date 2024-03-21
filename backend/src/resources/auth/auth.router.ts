@@ -10,7 +10,6 @@ export const authRouter = router({
     .input(RegisterRouteInput)
     .output(UserRouterOutput)
     .mutation(async (opts) => {
-      //return "hello"
       const [errorCheck, res] = await luciaAuthentication.register(opts.input);
       if (errorCheck) {
         throw errorCheck;

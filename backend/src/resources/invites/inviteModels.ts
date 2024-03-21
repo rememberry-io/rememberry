@@ -3,11 +3,11 @@ import { db } from "../../db/db";
 import * as schema from "../../db/schema";
 
 export async function createInvite(invite: schema.NewInvite) {
-  const res = db.insert(schema.invites).values(invite).returning();
+  const res = db.drizzle.insert(schema.invites).values(invite).returning();
 }
 
 export async function getById(inviteId: string): Promise<schema.Invite> {
-  const invite = await db
+  const invite = await db.drizzle
     .select()
     .from(schema.invites)
     .where(eq(schema.invites.id, inviteId));
@@ -15,7 +15,7 @@ export async function getById(inviteId: string): Promise<schema.Invite> {
 }
 
 export async function acceptInvite(invite: schema.Invite) {
-  const res = await db.transaction(async (tx) => {
+  const res = await db.drizzle.transaction(async (tx) => {
     await tx.insert(schema.usersPeers).values({
       userId: invite.receiverId,
       peerId: invite.peerId,

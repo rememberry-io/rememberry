@@ -1,14 +1,14 @@
 import { TRPCError } from "@trpc/server";
 import { verifyRequestOrigin } from "lucia";
 import { lucia } from "../auth/lucia";
-import env from "../env";
+import { env } from "../env";
 import { middleware, publicProcedure } from "../trpc";
 import { getTRPCError } from "../utils";
 
 const allowedHost = () => {
-  if (env.NODE_ENV === "staging") {
+  if (env.get("NODE_ENV") === "staging") {
     return "web.stage.rememberry.app";
-  } else if (env.NODE_ENV === "production") {
+  } else if (env.get("NODE_ENV") === "production") {
     return "rememberry.app";
   } else {
     return "127.0.0.1:3000";
@@ -33,13 +33,13 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
 
   const cookieHeader = req.headers.cookie;
 
-  const sessionId = lucia.readSessionCookie(cookieHeader ?? "");
+  const sessionId = lucia.lucia.readSessionCookie(cookieHeader ?? "");
   if (!sessionId)
     throw getTRPCError(undefined, "Invalid cookie", "UNAUTHORIZED")[0];
 
-  const { session, user } = await lucia.validateSession(sessionId);
+  const { session, user } = await lucia.lucia.validateSession(sessionId);
   if (!session) {
-    const sessionCookie = lucia.createBlankSessionCookie();
+    const sessionCookie = lucia.lucia.createBlankSessionCookie();
     res.setHeader("Set-Cookie", sessionCookie.serialize());
 
     throw new TRPCError({
@@ -49,7 +49,7 @@ const isLoggedIn = middleware(async ({ next, ctx }) => {
   }
 
   if (session.fresh) {
-    const sessionCookie = lucia.createSessionCookie(session.id);
+    const sessionCookie = lucia.lucia.createSessionCookie(session.id);
     res.setHeader("Set-Cookie", sessionCookie.serialize());
   }
 
