@@ -69,17 +69,16 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   //const deleteNode = useNodeDelete();
 
   useEffect(() => {
-    if (nodes.length === 0) {
+    if (nodesProp.length === 0) {
       setDialogOpen(true);
       setCreateNode(true);
-    } else if (nodes.length > 0) {
+    } else {
       setDialogOpen(false);
       setCreateNode(false);
     }
-
     setNodes(nodesProp);
     setEdges(edgesProp);
-  }, [nodesProp, setNodes, setEdges, edgesProp, nodes]);
+  }, [nodesProp, setNodes, setEdges, edgesProp]);
 
   const onDragEnd: NodeDragHandler = async (_event, node, _nodes) => {
     const dbUpdatedNode = storeNodeToDatabaseNode(node);
