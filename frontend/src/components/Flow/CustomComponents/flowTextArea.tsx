@@ -24,7 +24,7 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
   const [row, setRow] = useState(1);
 
   useEffect(() => {
-    const newRow = value.split('\n').length || 1;
+    const newRow = value.split("\n").length || 1;
     setRow(newRow);
 
     if (textAreaRef.current && isFocussed) {
@@ -32,7 +32,7 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
       const length = value.length;
       textAreaRef.current.setSelectionRange(length, length); // Set cursor position to the end of the text
     }
-  }, [value]);
+  }, [value, isFocussed, textAreaRef]);
 
   const inputProps = isInput
     ? "focus:outline-primary bg-gray-100 focus:outline-primary mt-5 dark:bg-dark-700  "
@@ -44,7 +44,6 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
       onSubmit();
     }
   };
-
 
   return (
     <textarea

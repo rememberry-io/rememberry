@@ -1,6 +1,6 @@
+import { backendHookWrapper } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { backendHookWrapper } from "@/lib/utils";
 import { MapDeleteInput, mapRouter } from "./map.types";
 
 export default function useDeleteMap() {
@@ -14,8 +14,8 @@ export default function useDeleteMap() {
   });
 
   const deleteMap = async (mapId: MapDeleteInput) => {
-    return await backendHookWrapper(mapId, mapDeletion.mutateAsync)
-  }
+    return await backendHookWrapper(mapId, mapDeletion.mutateAsync);
+  };
 
   return deleteMap;
 }

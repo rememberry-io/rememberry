@@ -30,7 +30,7 @@ export const DialogTwoInputsUI: React.FC<DialogTwoInputsProps> = ({
   discardChanges,
   changeTopInput,
   changeBottomInput,
-  classNameInputFields = ""
+  classNameInputFields = "",
 }) => {
   const frontsideAreaRef = useRef<HTMLTextAreaElement>(null);
   const backsideAreaRef = useRef<HTMLTextAreaElement>(null);

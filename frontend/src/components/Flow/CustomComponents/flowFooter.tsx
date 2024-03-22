@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import "reactflow/dist/style.css";
 
 const FlowFooter: React.FC<{ children: JSX.Element }> = ({ children }) => {

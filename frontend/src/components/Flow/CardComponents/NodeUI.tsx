@@ -13,14 +13,14 @@ interface NodeUIProps {
   backside: string;
   borderClasses: string;
   isFocused: boolean;
-  normalizeZoom: (zoom: number) => number;
   zoom: number;
-  toggleCard: () => void;
-  handleColorChange: (color: ColorType) => void;
   nodeType: string;
   nodeId: string;
+  normalizeZoom: (zoom: number) => number;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
+  toggleCard: () => void;
+  handleColorChange: (color: ColorType) => void;
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -65,11 +65,11 @@ export const NodeUI: React.FC<NodeUIProps> = ({
             className={`${colorType}`}
             value={isFront ? frontside : backside}
             textAreaRef={isFront ? frontsideAreaRef : backsideAreaRef}
-            rows={1}
             placeholder={""}
-            changes={function(): void { }}
+            changes={function (): void {}}
             isInput={false}
-            onSubmit={function(): void { }}
+            onSubmit={function (): void {}}
+            isFocussed={false}
           />
         </div>
       </div>

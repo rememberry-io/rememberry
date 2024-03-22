@@ -94,36 +94,39 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
     setDialogOpen(false);
   };
 
-  const getChildNodePosition = useCallback((event: MouseEvent, parentNode?: Node) => {
-    const { domNode } = reactflowStore.getState();
+  const getChildNodePosition = useCallback(
+    (event: MouseEvent, parentNode?: Node) => {
+      const { domNode } = reactflowStore.getState();
 
-    if (
-      !domNode ||
-      // we need to check if these properites exist, because when a node is not initialized yet,
-      // it doesn't have a positionAbsolute nor a width or height
-      !parentNode?.positionAbsolute ||
-      !parentNode?.width ||
-      !parentNode?.height
-    ) {
-      return;
-    }
+      if (
+        !domNode ||
+        // we need to check if these properites exist, because when a node is not initialized yet,
+        // it doesn't have a positionAbsolute nor a width or height
+        !parentNode?.positionAbsolute ||
+        !parentNode?.width ||
+        !parentNode?.height
+      ) {
+        return;
+      }
 
-    const { top, left } = domNode.getBoundingClientRect();
+      const { top, left } = domNode.getBoundingClientRect();
 
-    // remove the wrapper bounds, in order to get the correct mouse position
-    const panePosition = screenToFlowPosition({
-      x: event.clientX - left,
-      y: event.clientY - top,
-    });
+      // remove the wrapper bounds, in order to get the correct mouse position
+      const panePosition = screenToFlowPosition({
+        x: event.clientX - left,
+        y: event.clientY - top,
+      });
 
-    const x = panePosition.x;
-    const y = panePosition.y + parentNode.height / 2;
+      const x = panePosition.x;
+      const y = panePosition.y + parentNode.height / 2;
 
-    return {
-      x,
-      y,
-    };
-  }, []);
+      return {
+        x,
+        y,
+      };
+    },
+    [reactflowStore, screenToFlowPosition],
+  );
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
     // remember where the connection started so we can add the new node to the correct parent on connect end

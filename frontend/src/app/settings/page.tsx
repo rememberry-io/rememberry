@@ -8,18 +8,18 @@ import { useState } from "react";
 import { useUserStore } from "../../lib/services/authentication/userStore";
 
 export default function Settings() {
-  const { user, actions } = useUserStore();
+  const { user } = useUserStore();
 
-  const [initialValues, setInitialValues] = useState({
+  const [initialValues, _setInitialValues] = useState({
     username: user?.username || "",
     email: user?.email || "",
     password: "", // Passwords are not usually provided for security reasons
   });
 
-  const handleUpdate = async (values: any, { setFieldError }: any) => {
+  const handleUpdate = async () => {
     // Call your API to update the user details here
     // For example: await updateUserDetails(values);
-    console.log("Update values", values);
+    console.log("Update values");
     // After updating, you can use actions.setUser to update the state
     // actions.setUser(updatedUserDetails);
   };

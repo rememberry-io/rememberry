@@ -1,6 +1,6 @@
+import { backendHookWrapper } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { getQueryKey } from "@trpc/react-query";
-import { backendHookWrapper } from "@/lib/utils";
 import { MapCreateInput, mapRouter } from "./map.types";
 
 export default function useCreateMap() {
@@ -14,8 +14,8 @@ export default function useCreateMap() {
   });
 
   const createMap = async (map: MapCreateInput) => {
-    return await backendHookWrapper(map, mapCreator.mutateAsync)
-  }
+    return await backendHookWrapper(map, mapCreator.mutateAsync);
+  };
 
   return createMap;
 }

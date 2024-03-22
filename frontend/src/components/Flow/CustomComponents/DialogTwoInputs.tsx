@@ -20,7 +20,7 @@ export const DialogTwoInputs: React.FC<DialogTwoInputsStatefulProps> = ({
   placeholderBottomInput,
   onSubmit,
   closeDialog,
-  classNameInputFields = ""
+  classNameInputFields = "",
 }) => {
   const [topInputState, setTopInputState] = useState(topInput);
   const [bottomInputState, setBottomInputState] = useState(bottomInput);

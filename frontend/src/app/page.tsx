@@ -2,19 +2,18 @@
 "use client";
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import MapCard from "@/components/Flow/CardComponents/MapCard";
+import { DialogTwoInputs } from "@/components/Flow/CustomComponents/DialogTwoInputs";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/lib/services/authentication/userStore";
+import useCreateMap from "@/lib/services/maps/useCreateMap";
+import useDeleteMap from "@/lib/services/maps/useDeleteMap";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
+import useUpdateMap from "@/lib/services/maps/useUpdateMap";
 import { Box } from "@radix-ui/themes";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import "reactflow/dist/style.css";
-import React from "react"
-import { DialogTwoInputs } from "@/components/Flow/CustomComponents/DialogTwoInputs";
-import useCreateMap from "@/lib/services/maps/useCreateMap";
-import { useRouter } from "next/navigation";
-import useDeleteMap from "@/lib/services/maps/useDeleteMap";
-import useUpdateMap from "@/lib/services/maps/useUpdateMap";
 
 function MapMenu() {
   const { isLoading, maps } = useGetMapByUserId();
@@ -27,7 +26,7 @@ function MapMenu() {
   const updateMap = useUpdateMap();
   const [dialogName, setDialogName] = useState("");
   const [dialogDescription, setDialogDescription] = useState("");
-  const [mapIdEdit, setMapIdEdit] = useState("")
+  const [mapIdEdit, setMapIdEdit] = useState("");
 
   if (isLoading) return null;
 
@@ -47,13 +46,13 @@ function MapMenu() {
           router.push("/map/" + map.id);
         }
       } else {
-        const map = maps.find(m => m.id === mapIdEdit)
+        const map = maps.find((m) => m.id === mapIdEdit);
         if (map) {
           console.log(name, description);
-          
-          map.name = name
-          map.description = description
-          updateMap(map)
+
+          map.name = name;
+          map.description = description;
+          updateMap(map);
         } else {
           // TODO: better error catching
           console.error("no map");
@@ -65,22 +64,27 @@ function MapMenu() {
     }
   };
 
-  const openDialog = (isCreate: boolean, name = "", description = "", mapId?: string) => {
+  const openDialog = (
+    isCreate: boolean,
+    name = "",
+    description = "",
+    mapId?: string,
+  ) => {
     setDialogOpen(true);
     setIsCreate(isCreate);
-    setDialogName(name)
-    setDialogDescription(description)
+    setDialogName(name);
+    setDialogDescription(description);
     if (!isCreate && mapId) {
-      setMapIdEdit(mapId)
+      setMapIdEdit(mapId);
     }
   };
 
   const closeDialog = () => {
     setDialogOpen(false);
-    setDialogName("")
-    setDialogDescription("")
-    setMapIdEdit("")
-  }
+    setDialogName("");
+    setDialogDescription("");
+    setMapIdEdit("");
+  };
 
   return (
     <div className="relative w-full h-full">
@@ -88,16 +92,17 @@ function MapMenu() {
         <FlowBackground />
       </div>
       <div className="z-10 absolute top-0 left-0 h-screen">
-        {dialogOpen && (<DialogTwoInputs
-          topInput={dialogName}
-          bottomInput={dialogDescription}
-          placeholderTopInput={"Name"}
-          placeholderBottomInput={"Description"}
-          isDialogOpen={dialogOpen}
-          onSubmit={handleSubmitDialog}
-          closeDialog={closeDialog}
-          classNameInputFields={""}
-        />
+        {dialogOpen && (
+          <DialogTwoInputs
+            topInput={dialogName}
+            bottomInput={dialogDescription}
+            placeholderTopInput={"Name"}
+            placeholderBottomInput={"Description"}
+            isDialogOpen={dialogOpen}
+            onSubmit={handleSubmitDialog}
+            closeDialog={closeDialog}
+            classNameInputFields={""}
+          />
         )}
         <div
           id="header"

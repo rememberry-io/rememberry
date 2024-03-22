@@ -9,14 +9,21 @@ interface MapCardProps {
     description: string;
     id: string;
   };
-  openEditMapDialog: (isCreate: boolean, name: string, description: string, mapId: string) => void;
-  deleteMap: (mapId: MapDeleteInput) => Promise<readonly [null, boolean] | readonly [string, null]>;
+  openEditMapDialog: (
+    isCreate: boolean,
+    name: string,
+    description: string,
+    mapId: string,
+  ) => void;
+  deleteMap: (
+    mapId: MapDeleteInput,
+  ) => Promise<readonly [null, boolean] | readonly [string, null]>;
 }
 
 const MapCard: React.FC<MapCardProps> = ({
   map,
   openEditMapDialog,
-  deleteMap
+  deleteMap,
 }) => {
   return (
     <div className="flex flex-col gap-4 rounded-lg border bg-card dark:bg-dark-800 text-card-foreground shadow-sm p-3 w-72">
@@ -29,7 +36,9 @@ const MapCard: React.FC<MapCardProps> = ({
         </button>
         <button
           className="bg-yellow-500 rounded-full p-1"
-          onClick={() => openEditMapDialog(false, map.name, map.description, map.id)}
+          onClick={() =>
+            openEditMapDialog(false, map.name, map.description, map.id)
+          }
         >
           <PenLine size="12" strokeWidth="3" color="#985712" />
         </button>
@@ -49,7 +58,6 @@ const MapCard: React.FC<MapCardProps> = ({
           <div className="dark:bg-dark-800 line-clamp-2 break-words w-4/5">
             {map.description}
           </div>
-
         </div>
       </Link>
     </div>
