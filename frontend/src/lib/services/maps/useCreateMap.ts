@@ -1,35 +1,21 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { TRPCClientError } from "@trpc/client";
 import { getQueryKey } from "@trpc/react-query";
-import { RouterInput, RouterOutput, rqTrpc } from "../trpc/client";
-
-export type MapInput = RouterInput["maps"]["createMap"];
-export type MapOutput = RouterOutput["maps"]["createMap"];
+import { backendHookWrapper } from "@/lib/utils";
+import { MapCreateInput, mapRouter } from "./map.types";
 
 export default function useCreateMap() {
   const queryClient = useQueryClient();
-  const mapCreator = rqTrpc.maps.createMap.useMutation({
+  const mapCreator = mapRouter.createMap.useMutation({
     onSuccess() {
       queryClient.refetchQueries({
-        queryKey: getQueryKey(rqTrpc.maps.getUsersMaps, undefined, "query"),
+        queryKey: getQueryKey(mapRouter.getUsersMaps, undefined, "query"),
       });
     },
   });
 
-  const createMap = async (params: { map: MapInput }) => {
-    try {
-      const newMap = await mapCreator.mutateAsync(params.map);
-
-      return [null, newMap] as const;
-    } catch (e) {
-      if (e instanceof TRPCClientError) return [e.message, null] as const;
-      else
-        return [
-          "An Error has occured. Please try again: \n" + e,
-          null,
-        ] as const;
-    }
-  };
+  const createMap = async (map: MapCreateInput) => {
+    return await backendHookWrapper(map, mapCreator.mutateAsync)
+  }
 
   return createMap;
 }

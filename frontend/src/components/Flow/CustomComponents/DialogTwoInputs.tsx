@@ -7,7 +7,7 @@ interface DialogTwoInputsStatefulProps {
   placeholderTopInput: string;
   placeholderBottomInput: string;
   isDialogOpen: boolean;
-  onSubmit: (frontside: string, backside: string) => void;
+  onSubmit: (topInput: string, bottomInput: string) => void;
   closeDialog: () => void;
   classNameInputFields: string;
 }

@@ -1,10 +1,12 @@
+import { useEffect, useState } from "react";
+
 interface FlowTextAreaProps {
   className: string;
   value: string;
   textAreaRef: React.RefObject<HTMLTextAreaElement>;
-  rows: number;
   placeholder: string;
   isInput: boolean;
+  isFocussed: boolean;
   onSubmit: () => void;
   changes: (value: string) => void;
 }
@@ -13,12 +15,25 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
   className,
   value,
   textAreaRef,
-  rows,
   placeholder,
   isInput,
+  isFocussed,
   onSubmit,
   changes,
 }) => {
+  const [row, setRow] = useState(1);
+
+  useEffect(() => {
+    const newRow = value.split('\n').length || 1;
+    setRow(newRow);
+
+    if (textAreaRef.current && isFocussed) {
+      textAreaRef.current.focus(); // Focus on the textarea element
+      const length = value.length;
+      textAreaRef.current.setSelectionRange(length, length); // Set cursor position to the end of the text
+    }
+  }, [value]);
+
   const inputProps = isInput
     ? "focus:outline-primary bg-gray-100 focus:outline-primary mt-5 dark:bg-dark-700  "
     : "outline-none focus:outline-none focus:ring-0  focus:ring-offset-0 ";
@@ -30,13 +45,14 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
     }
   };
 
+
   return (
     <textarea
       className={`${inputProps} hover:cursor-pointer read-only:visible  rounded-md resize-none break-words flex items-center p-2 justify-between w-full ${className}`}
       value={value}
       ref={textAreaRef}
       placeholder={placeholder}
-      rows={rows}
+      rows={row}
       readOnly={!isInput}
       onChange={(e) => changes(e.target.value)}
       onKeyDown={handleKeyDown}

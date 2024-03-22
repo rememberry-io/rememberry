@@ -49,8 +49,8 @@ export const DialogTwoInputsUI: React.FC<DialogTwoInputsProps> = ({
                 value={topInput}
                 placeholder={placeholderTopInput}
                 textAreaRef={frontsideAreaRef}
-                rows={1}
                 changes={(value: string) => changeTopInput(value)}
+                isFocussed={true}
                 isInput={true}
                 onSubmit={() => onSubmit}
               />
@@ -62,8 +62,8 @@ export const DialogTwoInputsUI: React.FC<DialogTwoInputsProps> = ({
                 value={bottomInput}
                 placeholder={placeholderBottomInput}
                 textAreaRef={backsideAreaRef}
-                rows={1}
                 changes={(value: string) => changeBottomInput(value)}
+                isFocussed={false}
                 isInput={true}
                 onSubmit={() => onSubmit}
               />

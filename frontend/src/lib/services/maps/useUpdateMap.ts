@@ -1,11 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { MapUpdateInput, mapRouter } from "./map.types";
 import { getQueryKey } from "@trpc/react-query";
 import { backendHookWrapper } from "@/lib/utils";
-import { MapDeleteInput, mapRouter } from "./map.types";
 
-export default function useDeleteMap() {
+export default function useUpdateMap() {
   const queryClient = useQueryClient();
-  const mapDeletion = mapRouter.deleteMapWithAllStacks.useMutation({
+  const mapUpdater = mapRouter.updateMap.useMutation({
     onSuccess() {
       queryClient.refetchQueries({
         queryKey: getQueryKey(mapRouter.getUsersMaps, undefined, "query"),
@@ -13,9 +13,9 @@ export default function useDeleteMap() {
     },
   });
 
-  const deleteMap = async (mapId: MapDeleteInput) => {
-    return await backendHookWrapper(mapId, mapDeletion.mutateAsync)
+  const updateMap = async (map: MapUpdateInput) => {
+    return await backendHookWrapper(map, mapUpdater.mutateAsync)
   }
 
-  return deleteMap;
+  return updateMap;
 }
