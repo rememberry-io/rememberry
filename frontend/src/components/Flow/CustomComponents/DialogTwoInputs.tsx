@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { DialogTwoInputsUI } from "./NodeDialogUi";
+import { DialogTwoInputsUI } from "./DialogTwoInputsUi";
 
 interface DialogTwoInputsStatefulProps {
   topInput: string;

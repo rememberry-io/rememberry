@@ -2,7 +2,7 @@
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import NodeEdge from "@/components/Flow/CardComponents/NodeEdge";
 import NodeWithState from "@/components/Flow/CardComponents/NodewithState";
-import { DialogTwoInputs } from "@/components/Flow/CustomComponents/NodeDialogState";
+import { DialogTwoInputs } from "@/components/Flow/CustomComponents/DialogTwoInputs";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { Button } from "@/components/ui/button";
