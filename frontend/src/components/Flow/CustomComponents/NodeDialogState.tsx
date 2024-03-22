@@ -1,46 +1,55 @@
 import React, { useState } from "react";
-import { NodeDialogUI } from "./NodeDialogUi";
+import { DialogTwoInputsUI } from "./NodeDialogUi";
 
-interface NodeDialogWithStateProps {
-  frontside: string;
-  backside: string;
+interface DialogTwoInputsStatefulProps {
+  topInput: string;
+  bottomInput: string;
+  placeholderTopInput: string;
+  placeholderBottomInput: string;
   isDialogOpen: boolean;
   onSubmit: (frontside: string, backside: string) => void;
   closeDialog: () => void;
+  classNameInputFields: string;
 }
 
-export const NodeDialog: React.FC<NodeDialogWithStateProps> = ({
-  frontside,
-  backside,
+export const DialogTwoInputs: React.FC<DialogTwoInputsStatefulProps> = ({
+  topInput,
+  bottomInput,
   isDialogOpen,
+  placeholderTopInput,
+  placeholderBottomInput,
   onSubmit,
   closeDialog,
+  classNameInputFields = ""
 }) => {
-  const [frontsideState, setFrontsideState] = useState(frontside);
-  const [backsideState, setBacksideState] = useState(backside);
+  const [topInputState, setTopInputState] = useState(topInput);
+  const [bottomInputState, setBottomInputState] = useState(bottomInput);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(frontsideState, backsideState);
+    onSubmit(topInputState, bottomInputState);
     closeDialog();
   };
 
   const discardChanges = () => {
-    setFrontsideState(frontside);
-    setBacksideState(backside);
+    setTopInputState(topInput);
+    setBottomInputState(bottomInput);
     closeDialog();
   };
 
   return (
-    <NodeDialogUI
-      frontside={frontsideState}
-      backside={backsideState}
+    <DialogTwoInputsUI
+      topInput={topInputState}
+      bottomInput={bottomInputState}
+      placeholderTopInput={placeholderTopInput}
+      placeholderBottomInput={placeholderBottomInput}
       isDialogOpen={isDialogOpen}
       closeDialog={closeDialog}
       onSubmit={handleSubmit}
       discardChanges={discardChanges}
-      changeFrontside={(value: string) => setFrontsideState(value)}
-      changeBackside={(value: string) => setBacksideState(value)}
+      changeTopInput={(value: string) => setTopInputState(value)}
+      changeBottomInput={(value: string) => setBottomInputState(value)}
+      classNameInputFields={classNameInputFields}
     />
   );
 };

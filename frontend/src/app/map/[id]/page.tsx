@@ -2,7 +2,7 @@
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import NodeEdge from "@/components/Flow/CardComponents/NodeEdge";
 import NodeWithState from "@/components/Flow/CardComponents/NodewithState";
-import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialogState";
+import { DialogTwoInputs } from "@/components/Flow/CustomComponents/NodeDialogState";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { Button } from "@/components/ui/button";
@@ -94,7 +94,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
     setDialogOpen(false);
   };
 
-  const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
+  const getChildNodePosition = useCallback((event: MouseEvent, parentNode?: Node) => {
     const { domNode } = reactflowStore.getState();
 
     if (
@@ -123,7 +123,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
       x,
       y,
     };
-  };
+  }, []);
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
     // remember where the connection started so we can add the new node to the correct parent on connect end
@@ -155,7 +155,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         }
       }
     },
-    [getChildNodePosition],
+    [getChildNodePosition, reactflowStore, connectingNodeId],
   );
 
   const createNewNodeToMap = () => {
@@ -189,6 +189,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         await updateNode({ node: dbParentNode });
       }
     } else {
+      console.log("still missing: will be updateNOde");
     }
     setParentNodeId(null);
   };
@@ -209,12 +210,15 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
       <Toaster position="bottom-center" reverseOrder={false} />
       {/* Node Dialog that gets thrown for input when node is created */}
       {dialogOpen && (
-        <NodeDialog
-          onSubmit={handleDialogSubmit}
-          frontside={""}
-          backside={""}
+        <DialogTwoInputs
+          topInput={""}
+          bottomInput={""}
+          placeholderTopInput={"Frontside"}
+          placeholderBottomInput={"Backside"}
           isDialogOpen={dialogOpen}
+          onSubmit={handleDialogSubmit}
           closeDialog={closeDialog}
+          classNameInputFields={""}
         />
       )}
 
