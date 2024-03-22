@@ -7,7 +7,7 @@ interface FlowTextAreaProps {
   placeholder: string;
   isInput: boolean;
   isFocussed: boolean;
-  onSubmit: () => void;
+  onSubmit: (e: React.FormEvent) => void;
   changes: (value: string) => void;
 }
 
@@ -41,7 +41,7 @@ export const FlowTextArea: React.FC<FlowTextAreaProps> = ({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault(); // Prevent the default action to avoid a newline being added
-      onSubmit();
+      onSubmit(e);
     }
   };
 
