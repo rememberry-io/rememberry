@@ -52,7 +52,7 @@ export const DialogTwoInputsUI: React.FC<DialogTwoInputsProps> = ({
                 changes={(value: string) => changeTopInput(value)}
                 isFocussed={true}
                 isInput={true}
-                onSubmit={() => onSubmit}
+                onSubmit={onSubmit}
               />
             </div>
 
@@ -65,7 +65,7 @@ export const DialogTwoInputsUI: React.FC<DialogTwoInputsProps> = ({
                 changes={(value: string) => changeBottomInput(value)}
                 isFocussed={false}
                 isInput={true}
-                onSubmit={() => onSubmit}
+                onSubmit={onSubmit}
               />
             </div>
             <Button type="submit" className="  mt-4" variant="default">
