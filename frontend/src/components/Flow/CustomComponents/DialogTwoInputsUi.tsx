@@ -4,33 +4,39 @@ import React, { useRef } from "react";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { FlowTextArea } from "./flowTextArea";
 
-interface NodeDialogProps {
-  frontside: string;
-  backside: string;
+interface DialogTwoInputsProps {
+  classNameInputFields: string;
+  topInput: string;
+  bottomInput: string;
+  placeholderTopInput: string;
+  placeholderBottomInput: string;
   isDialogOpen: boolean;
   autoOpen?: boolean;
   closeDialog: () => void;
   onSubmit: (e: React.FormEvent) => void;
   discardChanges: () => void;
-  changeFrontside: (input: string) => void;
-  changeBackside: (input: string) => void;
+  changeTopInput: (input: string) => void;
+  changeBottomInput: (input: string) => void;
 }
 
-export const NodeDialogUI: React.FC<NodeDialogProps> = ({
-  frontside,
-  backside,
+export const DialogTwoInputsUI: React.FC<DialogTwoInputsProps> = ({
+  topInput,
+  bottomInput,
+  placeholderTopInput,
+  placeholderBottomInput,
   isDialogOpen,
   closeDialog,
   onSubmit,
   discardChanges,
-  changeFrontside,
-  changeBackside,
+  changeTopInput,
+  changeBottomInput,
+  classNameInputFields = "",
 }) => {
   const frontsideAreaRef = useRef<HTMLTextAreaElement>(null);
   const backsideAreaRef = useRef<HTMLTextAreaElement>(null);
 
-  useAutosizeTextArea(frontsideAreaRef.current, frontside);
-  useAutosizeTextArea(backsideAreaRef.current, backside);
+  useAutosizeTextArea(frontsideAreaRef.current, topInput);
+  useAutosizeTextArea(backsideAreaRef.current, bottomInput);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={discardChanges}>
@@ -39,12 +45,12 @@ export const NodeDialogUI: React.FC<NodeDialogProps> = ({
           <div>
             <div>
               <FlowTextArea
-                className=" "
-                value={frontside}
-                placeholder="Frontside"
+                className={classNameInputFields}
+                value={topInput}
+                placeholder={placeholderTopInput}
                 textAreaRef={frontsideAreaRef}
-                rows={1}
-                changes={(value: string) => changeFrontside(value)}
+                changes={(value: string) => changeTopInput(value)}
+                isFocussed={true}
                 isInput={true}
                 onSubmit={() => onSubmit}
               />
@@ -52,12 +58,12 @@ export const NodeDialogUI: React.FC<NodeDialogProps> = ({
 
             <div className="leading-6 text-justify">
               <FlowTextArea
-                className=" "
-                value={backside}
-                placeholder="Back Text"
+                className={classNameInputFields}
+                value={bottomInput}
+                placeholder={placeholderBottomInput}
                 textAreaRef={backsideAreaRef}
-                rows={1}
-                changes={(value: string) => changeBackside(value)}
+                changes={(value: string) => changeBottomInput(value)}
+                isFocussed={false}
                 isInput={true}
                 onSubmit={() => onSubmit}
               />

@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import ReactFlow, { Background, ReactFlowProvider } from "reactflow";
 import "reactflow/dist/style.css";
 

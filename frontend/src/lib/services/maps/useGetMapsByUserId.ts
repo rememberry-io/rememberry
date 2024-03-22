@@ -1,15 +1,5 @@
 import { useUserStore } from "../authentication/userStore";
-import { rqTrpc } from "../trpc/client";
-
-export type Map = {
-  id: string;
-  userId: string;
-  peerId: string | null;
-  name: string;
-  description: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { MapGetMapsOutput, mapRouter } from "./map.types";
 
 export default function useGetMapByUserId() {
   const userId = useUserStore((state) => {
@@ -26,12 +16,12 @@ export default function useGetMapByUserId() {
     };
   }
 
-  const maps = rqTrpc.maps.getUsersMaps.useQuery(userId);
+  const maps = mapRouter.getUsersMaps.useQuery(userId);
 
   return {
     isLoading: maps.isLoading,
     error: maps.error,
     isError: maps.isError,
-    maps: maps.data as Map[],
+    maps: maps.data as MapGetMapsOutput,
   };
 }

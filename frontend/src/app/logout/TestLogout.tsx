@@ -8,7 +8,7 @@ export default function TestLogout() {
   async function onClickLogout(event: any) {
     event.preventDefault();
 
-    const [error, success] = await logout();
+    const [error, _success] = await logout();
 
     if (error) return;
 

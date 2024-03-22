@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Maximize2 } from "lucide-react";
 import React, { useRef } from "react";
 import { Position } from "reactflow";
-import { NodeDialog } from "../CustomComponents/NodeDialogState";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
 import useAutosizeTextArea from "../hooks/useAutosizeTextArea";
 import { CustomHandle } from "./CustomHandle";
@@ -14,18 +13,14 @@ interface NodeUIProps {
   backside: string;
   borderClasses: string;
   isFocused: boolean;
-  normalizeZoom: (zoom: number) => number;
   zoom: number;
-  toggleCard: () => void;
-  openDialog: () => void;
-  closeDialog: () => void;
-  isDialogOpen: boolean;
-  handleColorChange: (color: ColorType) => void;
-  handleDialogSubmit: (frontside: string, backside: string) => void;
   nodeType: string;
   nodeId: string;
+  normalizeZoom: (zoom: number) => number;
   focus: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
+  toggleCard: () => void;
+  handleColorChange: (color: ColorType) => void;
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -37,14 +32,10 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   normalizeZoom,
   zoom,
   toggleCard,
-  openDialog,
-  closeDialog,
-  isDialogOpen,
   handleColorChange,
   nodeType: nodeType,
   focus,
   blur,
-  handleDialogSubmit,
 }) => {
   // for multiline textarea
   const frontsideAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -74,11 +65,11 @@ export const NodeUI: React.FC<NodeUIProps> = ({
             className={`${colorType}`}
             value={isFront ? frontside : backside}
             textAreaRef={isFront ? frontsideAreaRef : backsideAreaRef}
-            rows={1}
             placeholder={""}
             changes={function (): void {}}
             isInput={false}
             onSubmit={function (): void {}}
+            isFocussed={false}
           />
         </div>
       </div>
@@ -102,22 +93,13 @@ export const NodeUI: React.FC<NodeUIProps> = ({
                 variant="secondary"
                 size="icon"
                 className=""
-                onClick={openDialog}
+                onClick={() => console.error("\n\nFIX ME\n\n")}
               >
                 <Maximize2 />
               </Button>
             </div>
           </div>
         </div>
-      )}
-      {isDialogOpen && (
-        <NodeDialog
-          frontside={frontside}
-          backside={backside}
-          isDialogOpen={isDialogOpen}
-          onSubmit={function (): void {}}
-          closeDialog={closeDialog}
-        ></NodeDialog>
       )}
 
       <CustomHandle position={Position.Top} />

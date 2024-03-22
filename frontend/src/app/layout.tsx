@@ -4,6 +4,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
+import React from "react";
 import CheckAuthentication from "../components/Authentication/CheckAuthentication";
 import { userLoader } from "../lib/services/authentication/userloader";
 import Providers from "./providers";

@@ -51,7 +51,7 @@ export default function Login() {
                     password: values.password,
                   };
 
-                  const [error, ress] = await login({ user });
+                  const [error, _res] = await login({ user });
                   if (error) {
                     setFieldError("email", error);
                   } else {
@@ -111,7 +111,7 @@ export default function Login() {
                     password: values.password,
                   };
 
-                  const [error, res] = await register({ user });
+                  const [error, _res] = await register({ user });
                   if (error) {
                     setFieldError("email", error);
                   } else {

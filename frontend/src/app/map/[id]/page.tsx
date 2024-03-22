@@ -2,7 +2,7 @@
 import FlowBackground from "@/components/Flow/Background/flowBackground";
 import NodeEdge from "@/components/Flow/CardComponents/NodeEdge";
 import NodeWithState from "@/components/Flow/CardComponents/NodewithState";
-import { NodeDialog } from "@/components/Flow/CustomComponents/NodeDialogState";
+import { DialogTwoInputs } from "@/components/Flow/CustomComponents/DialogTwoInputs";
 import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { Button } from "@/components/ui/button";
@@ -72,18 +72,19 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
     if (nodes.length === 0) {
       setDialogOpen(true);
       setCreateNode(true);
+    } else if (nodes.length > 0) {
+      setDialogOpen(false);
+      setCreateNode(false);
     }
-  }, [nodesProp]);
+
+    setNodes(nodesProp);
+    setEdges(edgesProp);
+  }, [nodesProp, setNodes, setEdges, edgesProp, nodes]);
 
   const onDragEnd: NodeDragHandler = async (_event, node, _nodes) => {
     const dbUpdatedNode = storeNodeToDatabaseNode(node);
     await updateNode({ node: dbUpdatedNode });
   };
-
-  useEffect(() => {
-    setNodes(nodesProp);
-    setEdges(edgesProp);
-  }, [nodesProp]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -92,39 +93,40 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   const closeDialog = () => {
     setDialogOpen(false);
   };
-  console.log("Map: " + mapId);
-  const handleMapName = (name: string) => {};
 
-  const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
-    const { domNode } = reactflowStore.getState();
+  const getChildNodePosition = useCallback(
+    (event: MouseEvent, parentNode?: Node) => {
+      const { domNode } = reactflowStore.getState();
 
-    if (
-      !domNode ||
-      // we need to check if these properites exist, because when a node is not initialized yet,
-      // it doesn't have a positionAbsolute nor a width or height
-      !parentNode?.positionAbsolute ||
-      !parentNode?.width ||
-      !parentNode?.height
-    ) {
-      return;
-    }
+      if (
+        !domNode ||
+        // we need to check if these properites exist, because when a node is not initialized yet,
+        // it doesn't have a positionAbsolute nor a width or height
+        !parentNode?.positionAbsolute ||
+        !parentNode?.width ||
+        !parentNode?.height
+      ) {
+        return;
+      }
 
-    const { top, left } = domNode.getBoundingClientRect();
+      const { top, left } = domNode.getBoundingClientRect();
 
-    // remove the wrapper bounds, in order to get the correct mouse position
-    const panePosition = screenToFlowPosition({
-      x: event.clientX - left,
-      y: event.clientY - top,
-    });
+      // remove the wrapper bounds, in order to get the correct mouse position
+      const panePosition = screenToFlowPosition({
+        x: event.clientX - left,
+        y: event.clientY - top,
+      });
 
-    const x = panePosition.x;
-    const y = panePosition.y + parentNode.height / 2;
+      const x = panePosition.x;
+      const y = panePosition.y + parentNode.height / 2;
 
-    return {
-      x,
-      y,
-    };
-  };
+      return {
+        x,
+        y,
+      };
+    },
+    [reactflowStore, screenToFlowPosition],
+  );
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
     // remember where the connection started so we can add the new node to the correct parent on connect end
@@ -156,7 +158,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         }
       }
     },
-    [getChildNodePosition],
+    [getChildNodePosition, reactflowStore, connectingNodeId],
   );
 
   const createNewNodeToMap = () => {
@@ -190,6 +192,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         await updateNode({ node: dbParentNode });
       }
     } else {
+      console.log("still missing: will be updateNOde");
     }
     setParentNodeId(null);
   };
@@ -210,12 +213,15 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
       <Toaster position="bottom-center" reverseOrder={false} />
       {/* Node Dialog that gets thrown for input when node is created */}
       {dialogOpen && (
-        <NodeDialog
-          onSubmit={handleDialogSubmit}
-          frontside={""}
-          backside={""}
+        <DialogTwoInputs
+          topInput={""}
+          bottomInput={""}
+          placeholderTopInput={"Frontside"}
+          placeholderBottomInput={"Backside"}
           isDialogOpen={dialogOpen}
+          onSubmit={handleDialogSubmit}
           closeDialog={closeDialog}
+          classNameInputFields={""}
         />
       )}
 
