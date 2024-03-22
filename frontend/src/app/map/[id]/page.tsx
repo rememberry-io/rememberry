@@ -72,18 +72,19 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
     if (nodes.length === 0) {
       setDialogOpen(true);
       setCreateNode(true);
+    } else if (nodes.length > 0) {
+      setDialogOpen(false);
+      setCreateNode(false);
     }
-  }, [nodesProp]);
+
+    setNodes(nodesProp);
+    setEdges(edgesProp);
+  }, [nodesProp, setNodes, setEdges, edgesProp, nodes]);
 
   const onDragEnd: NodeDragHandler = async (_event, node, _nodes) => {
     const dbUpdatedNode = storeNodeToDatabaseNode(node);
     await updateNode({ node: dbUpdatedNode });
   };
-
-  useEffect(() => {
-    setNodes(nodesProp);
-    setEdges(edgesProp);
-  }, [nodesProp]);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -92,8 +93,6 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   const closeDialog = () => {
     setDialogOpen(false);
   };
-  console.log("Map: " + mapId);
-  const handleMapName = (name: string) => {};
 
   const getChildNodePosition = (event: MouseEvent, parentNode?: Node) => {
     const { domNode } = reactflowStore.getState();
