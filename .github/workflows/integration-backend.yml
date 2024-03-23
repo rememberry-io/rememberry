@@ -23,7 +23,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         name: Get bun
         with:
-          bun-version: 1.0.6
+          bun-version: 1.0.35
       - run: bun install --frozen-lockfile
         name: Install dependecies
       - run: bun run test
@@ -41,7 +41,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         name: Get bun
         with:
-          bun-version: 1.0.6
+          bun-version: 1.0.35
       - run: bun install --frozen-lockfile
         name: Install dependecies
       - run: |
@@ -63,7 +63,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         name: Get bun
         with:
-          bun-version: 1.0.6
+          bun-version: 1.0.35
       - run: bun install --frozen-lockfile
         name: Install dependecies
       - run: bun run build

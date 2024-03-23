@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         name: get nodejs
         with:
           node-version: 20
@@ -40,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         name: get nodejs
         with:
           node-version: 20
