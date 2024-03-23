@@ -1,5 +1,5 @@
 FROM node:20-alpine AS frontbase
-FROM oven/bun:1.0.7-alpine AS backbase
+FROM oven/bun:1.0.35-alpine AS backbase
 
 
 FROM frontbase AS frontdeps

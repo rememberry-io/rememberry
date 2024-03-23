@@ -22,7 +22,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         name: get bun
         with:
-          bun-version: 1.0.6
+          bun-version: 1.0.35
       - run: bun install --frozen-lockfile
         name: install dependecies
         working-directory: backend
@@ -42,7 +42,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         name: get bun
         with:
-          bun-version: 1.0.6
+          bun-version: 1.0.35
       - run: bun install --frozen-lockfile
         name: install dependecies
         working-directory: backend

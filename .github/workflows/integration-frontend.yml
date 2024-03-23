@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         name: get nodejs
         with:
           node-version: 20
@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         name: get nodejs
         with:
           node-version: 20
@@ -60,14 +60,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: checkout frontend
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         name: get nodejs
         with:
           node-version: 20
       - uses: oven-sh/setup-bun@v1
         name: get bun
         with:
-          bun-version: 1.0.6
+          bun-version: 1.0.35
       - uses: actions/cache@v3
         with:
           path: |
