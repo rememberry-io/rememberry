@@ -1,4 +1,4 @@
-import { Node } from "@/lib/services/node/nodeStore";
+import { Node } from "@/lib/services/node/node.types";
 import { normalizeZoom } from "@/lib/utils";
 import React, { memo, useState } from "react";
 import { useViewport } from "reactflow";

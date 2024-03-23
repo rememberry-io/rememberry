@@ -7,13 +7,14 @@ import FlowFooter from "@/components/Flow/CustomComponents/flowFooter";
 import { FlowHeader } from "@/components/Flow/Header/FlowHeader";
 import { Button } from "@/components/ui/button";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
-import { NodeData } from "@/lib/services/node/nodeStore";
-import useNodeCreate, {
-  databaseNodeToStoreNode,
-  storeNodeToDatabaseNode,
-} from "@/lib/services/node/useCreateNode";
+import { NodeData } from "@/lib/services/node/node.types";
+import useNodeCreate from "@/lib/services/node/useCreateNode";
 import useGetNodesByMapId from "@/lib/services/node/useGetNodesByMapId";
 import useNodeUpdate from "@/lib/services/node/useUpdateNode";
+import {
+  databaseNodeToStoreNode,
+  storeNodeToDatabaseNode,
+} from "@/lib/services/node/utils";
 import { nanoid } from "nanoid/non-secure";
 import { useCallback, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
@@ -82,7 +83,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
 
   const onDragEnd: NodeDragHandler = async (_event, node, _nodes) => {
     const dbUpdatedNode = storeNodeToDatabaseNode(node);
-    await updateNode({ node: dbUpdatedNode });
+    await updateNode(dbUpdatedNode);
   };
 
   const toggleSidebar = () => {
@@ -173,22 +174,20 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   const handleDialogSubmit = async (front: string, back: string) => {
     if (isCreateNode) {
       await createNode({
-        node: {
-          mapId: mapId,
-          frontside: front,
-          backside: back,
-          xPosition,
-          yPosition,
-          nodeType: "flashcard",
-          parentNodeId: parentNodeId ? parentNodeId : undefined,
-        },
+        mapId: mapId,
+        frontside: front,
+        backside: back,
+        xPosition,
+        yPosition,
+        nodeType: "flashcard",
+        parentNodeId: parentNodeId ? parentNodeId : undefined,
       });
       const parentNode = nodes.find((n) => n.id === parentNodeId);
       if (parentNode) {
         parentNode.data.nodeType = "stack";
 
         const dbParentNode = storeNodeToDatabaseNode(parentNode);
-        await updateNode({ node: dbParentNode });
+        await updateNode(dbParentNode);
       }
     } else {
       console.log("still missing: will be updateNOde");
