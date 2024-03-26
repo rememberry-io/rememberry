@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import useGetMapByUserId from "@/lib/services/maps/useGetMapsByUserId";
 import { NodeData } from "@/lib/services/node/node.types";
 import useNodeCreate from "@/lib/services/node/useCreateNode";
+import useNodeDelete from "@/lib/services/node/useDeleteNode";
 import useGetNodesByMapId from "@/lib/services/node/useGetNodesByMapId";
 import useNodeUpdate from "@/lib/services/node/useUpdateNode";
 import {
@@ -52,30 +53,35 @@ type MapProps = {
 };
 
 function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
-  const reactflowStore = useStoreApi();
   const [nodes, setNodes, onNodesChange] = useNodesState<NodeData>(nodesProp);
   const [edges, setEdges, onEdgesChange] = useEdgesState(edgesProp);
   const [isOpen, setIsOpen] = useState(false);
   const [parentNodeId, setParentNodeId] = useState<string | null>(null);
   const [connectingNodeId, setConnectingNodeId] = useState<string | null>(null);
-  const { screenToFlowPosition } = useReactFlow();
-
   const [dialogOpen, setDialogOpen] = useState(false);
   const [isCreateNode, setCreateNode] = useState(false);
   const [xPosition, setXPosition] = useState(500);
   const [yPosition, setYPosition] = useState(500);
+  const [nodeIdToEdit, setNodeIdToEdit] = useState<string | null>(null)
+  const [placeholderTopInput, setPlaceholderTopInput] = useState("")
+  const [placeholderBottomInput, setPlaceholderBottomInput] = useState("")
+
+  const { screenToFlowPosition } = useReactFlow();
+  const reactflowStore = useStoreApi();
+
   const createNode = useNodeCreate();
   const updateNode = useNodeUpdate();
-
-  //const deleteNode = useNodeDelete();
+  const deleteNode = useNodeDelete();
 
   useEffect(() => {
     if (nodesProp.length === 0) {
       setDialogOpen(true);
       setCreateNode(true);
     } else {
-      setDialogOpen(false);
-      setCreateNode(false);
+      if (!nodeIdToEdit) {
+        setDialogOpen(false);
+        setCreateNode(false);
+      }
     }
     setNodes(nodesProp);
     setEdges(edgesProp);
@@ -92,6 +98,8 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
 
   const closeDialog = () => {
     setDialogOpen(false);
+    setCreateNode(false);
+    setNodeIdToEdit(null);
   };
 
   const getChildNodePosition = useCallback(
@@ -154,21 +162,38 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
           setYPosition(childNodePosition.y);
           setDialogOpen(true);
           setCreateNode(true);
-          console.log("creating new flaschard");
+          setPlaceholderTopInput("")
+          setPlaceholderBottomInput("")
         }
       }
     },
     [getChildNodePosition, reactflowStore, connectingNodeId],
   );
 
-  const createNewNodeToMap = () => {
+  const openDialogEditNode = (nodeId: string) => {
+    setDialogOpen(true);
+    setCreateNode(false);
+    setNodeIdToEdit(nodeId)
+    const node = nodes.find(n => n.id === nodeId)
+    if (node) {
+      setPlaceholderTopInput(node.data.frontside)
+      setPlaceholderBottomInput(node.data.backside)
+    } else {
+      setPlaceholderTopInput("")
+      setPlaceholderBottomInput("")
+    }
+
+  }
+
+  const openDialogAddNode = () => {
     const topLevelNode = nodes.find((n) => n.data.parentNodeId === null);
     setDialogOpen(true);
     setCreateNode(true);
-    console.log("creating new map");
     setXPosition(topLevelNode ? topLevelNode.position.x + 350 : 500);
     setYPosition(topLevelNode?.position.y || 500);
     setParentNodeId(null);
+    setPlaceholderTopInput("")
+    setPlaceholderBottomInput("")
   };
 
   const handleDialogSubmit = async (front: string, back: string) => {
@@ -190,12 +215,26 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         await updateNode(dbParentNode);
       }
     } else {
-      console.log("still missing: will be updateNOde");
+      const node = nodes.find(n => n.id === nodeIdToEdit);
+
+      if (node) {
+        node.data.frontside = front
+        node.data.backside = back
+
+        const dbNode = storeNodeToDatabaseNode(node)
+        await updateNode(dbNode)
+      }
     }
     setParentNodeId(null);
   };
 
-  console.log("id", mapId, "name", mapName, "nodes", nodes, "edges", edges);
+  //console.log("id", mapId, "name", mapName, "nodes", nodes, "edges", edges);
+
+  const nodesWithHandlers = nodes.map(node => {
+    node.data.editNode = openDialogEditNode
+    node.data.deleteNode = deleteNode
+    return node
+  })
 
   return (
     <div
@@ -208,12 +247,13 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         isOpen={isOpen}
         toggleSidebar={toggleSidebar}
       />
+
       <Toaster position="bottom-center" reverseOrder={false} />
-      {/* Node Dialog that gets thrown for input when node is created */}
+
       {dialogOpen && (
         <DialogTwoInputs
-          topInput={""}
-          bottomInput={""}
+          topInput={placeholderTopInput}
+          bottomInput={placeholderBottomInput}
           placeholderTopInput={"Frontside"}
           placeholderBottomInput={"Backside"}
           isDialogOpen={dialogOpen}
@@ -224,7 +264,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
       )}
 
       <ReactFlow
-        nodes={nodes}
+        nodes={nodesWithHandlers}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
@@ -246,9 +286,9 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
           <Button
             variant="default"
             className="border-2 border-white dark:border-dark-900"
-            onClick={createNewNodeToMap}
+            onClick={openDialogAddNode}
           >
-            Add Stack
+            Add flashcard
           </Button>
         </FlowFooter>
       </ReactFlow>

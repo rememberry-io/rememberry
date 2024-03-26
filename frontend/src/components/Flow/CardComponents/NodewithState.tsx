@@ -10,7 +10,6 @@ type NodeWithStateProps = Omit<Node, "position">;
 
 export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   const [isFront, setIsFront] = useState(true);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const [selectedColor, setSelectedColor] = useState<
     ColorType | null | undefined
@@ -35,12 +34,11 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
 
   const onFocus = () => {
     setFocusedId(id);
-    console.log("onFocus", id, focusedId);
   };
 
   const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
     const isFocusingChild =
-      e.currentTarget.contains(e.relatedTarget) || isDialogOpen;
+      e.currentTarget.contains(e.relatedTarget);
     if (isFocused && !isFocusingChild) {
       setFocusedId(null);
     }
@@ -49,6 +47,15 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   const toggleCard = () => {
     setIsFront(!isFront);
   };
+
+  const openEditDialog = () => {
+    data.editNode(id)
+  }
+
+  const deleteNode = async () => {
+    await data.deleteNode(id)
+  }
+
   return (
     <NodeUI
       nodeId={id}
@@ -64,6 +71,8 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
       zoom={zoom}
       toggleCard={toggleCard}
       handleColorChange={handleColorChange}
+      deleteNode={deleteNode}
+      editNode={openEditDialog}
     />
   );
 };

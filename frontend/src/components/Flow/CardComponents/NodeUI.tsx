@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Maximize2 } from "lucide-react";
+import { Maximize2, Delete, DeleteIcon } from "lucide-react";
 import React, { useRef } from "react";
 import { Position } from "reactflow";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
@@ -21,6 +21,8 @@ interface NodeUIProps {
   blur: (e: React.FocusEvent<HTMLDivElement, Element>) => void;
   toggleCard: () => void;
   handleColorChange: (color: ColorType) => void;
+  deleteNode: () => void;
+  editNode: () => void;
 }
 
 export const NodeUI: React.FC<NodeUIProps> = ({
@@ -36,6 +38,8 @@ export const NodeUI: React.FC<NodeUIProps> = ({
   nodeType: nodeType,
   focus,
   blur,
+  deleteNode,
+  editNode,
 }) => {
   // for multiline textarea
   const frontsideAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -66,9 +70,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({
             value={isFront ? frontside : backside}
             textAreaRef={isFront ? frontsideAreaRef : backsideAreaRef}
             placeholder={""}
-            changes={function (): void {}}
+            changes={function(): void { }}
             isInput={false}
-            onSubmit={function (): void {}}
+            onSubmit={function(): void { }}
             isFocussed={false}
           />
         </div>
@@ -88,14 +92,22 @@ export const NodeUI: React.FC<NodeUIProps> = ({
                 <TrafficLights onColorChange={handleColorChange} />
               </div>
             )}
-            <div className="flex flex-col items-center justify-center ">
+            <div className="flex flex-col gap-3 items-center justify-center ">
               <Button
                 variant="secondary"
                 size="icon"
                 className=""
-                onClick={() => console.error("\n\nFIX ME\n\n")}
+                onClick={editNode}
               >
                 <Maximize2 />
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className=""
+                onClick={deleteNode}
+              >
+                <DeleteIcon />
               </Button>
             </div>
           </div>

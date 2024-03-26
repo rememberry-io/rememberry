@@ -2,7 +2,7 @@ import { Node as NodeType } from "@backend/db/schema";
 import { Node as ReactFlowNode } from "reactflow";
 import { RouterInput, RouterOutput } from "../trpc/client";
 
-export type NodeData = Omit<NodeType, "id" | "xPosition" | "yPosition">;
+export type NodeData = Omit<NodeType, "id" | "xPosition" | "yPosition"> & { editNode: (nodeId: string) => void; deleteNode: (input: NodeDeleteInput) => Promise<any> };
 export type Node = ReactFlowNode<NodeData>;
 
 export type NodeCreationInput = RouterInput["node"]["create"];
