@@ -1,31 +1,23 @@
+import { backendHookWrapper } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { TRPCClientError, getQueryKey } from "@trpc/react-query";
-import { RouterInput, RouterOutput, rqTrpc } from "../trpc/client";
-
-export type NodeUpdateInput = RouterInput["node"]["updateById"];
-export type NodeUpdateOutput = RouterOutput["node"]["updateById"];
+import { getQueryKey } from "@trpc/react-query";
+import { NodeUpdateInput } from "./node.types";
+import { nodeRouter } from "./utils";
 
 export default function useNodeUpdate() {
   const queryClient = useQueryClient();
 
-  const nodeUpdater = rqTrpc.node.updateById.useMutation({
+  const nodeUpdater = nodeRouter.updateById.useMutation({
     onSuccess() {
       queryClient.refetchQueries({
-        queryKey: getQueryKey(rqTrpc.node.getAllByMapId, undefined, "query"),
+        queryKey: getQueryKey(nodeRouter.getAllByMapId, undefined, "query"),
       });
     },
   });
 
-  const updatedNode = async (params: { node: NodeUpdateInput }) => {
-    try {
-      const updatedNode = await nodeUpdater.mutateAsync(params.node);
-
-      return [null, updatedNode] as const;
-    } catch (e) {
-      if (e instanceof TRPCClientError) return [e.message, null] as const;
-      else
-        return ["An Error has occured. Please try again:\n" + e, null] as const;
-    }
+  const updatedNode = async (node: NodeUpdateInput) => {
+    return await backendHookWrapper(node, nodeUpdater.mutateAsync);
   };
+
   return updatedNode;
 }

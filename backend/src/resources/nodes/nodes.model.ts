@@ -146,11 +146,13 @@ class NodeModelDrizzle implements NodeModel {
 
   async updateNodeById(node: Node) {
     try {
+      this.logger.info("hallo?", node);
       const updatedNode = await this.db.drizzle
         .update(nodes)
         .set(node)
         .where(eq(nodes.id, node.id))
         .returning();
+      this.logger.info("hallo2?");
       if (!hasOnlyOneEntry(updatedNode)) return getTRPCError(this.logger);
       return [null, updatedNode[0]] as const;
     } catch (e) {
@@ -218,21 +220,51 @@ class NodeModelDrizzle implements NodeModel {
   }
   async deleteNodeAndChildren(nodeId: string) {
     try {
-      const res = await this.db.drizzle.execute(sql`
-        WITH RECURSIVE nodes_to_delete AS(
-        SELECT id FROM nodes
-        WHERE id =${nodeId}
+      const [err, node] = await this.getNodeById(nodeId);
+      if (err) return getTRPCError(this.logger, err.message);
+
+      const deletedNodes = await this.db.drizzle.transaction(async (tx) => {
+        const res = await tx.execute(sql`
+          WITH RECURSIVE nodes_to_delete AS(
+          SELECT id FROM nodes
+          WHERE id =${nodeId}
   
-        UNION
+          UNION
   
-        SELECT nodes.id
-        FROM nodes
-        JOIN nodes_to_delete ON nodes.parentNodeId = nodes_to_delete.id
-        )
-        DELETE FROM nodes
-        WHERE id IN(SELECT id FROM nodes_to_delete)
-      `);
-      return [null, res.rows as Node[]] as const;
+          SELECT nodes.id
+          FROM nodes
+          JOIN nodes_to_delete ON nodes.parent_node_id = nodes_to_delete.id
+          )
+          DELETE FROM nodes
+          WHERE id IN(SELECT id FROM nodes_to_delete)
+        `);
+
+        if (node.parentNodeId) {
+          const childrenNodes = await tx
+            .select()
+            .from(nodes)
+            .where(eq(nodes.parentNodeId, node.parentNodeId));
+          if (childrenNodes.length === 0) {
+            const [err, parentNode] = await this.getNodeById(node.parentNodeId);
+            if (err) {
+              tx.rollback();
+              return getTRPCError(this.logger, err.message);
+            }
+
+            parentNode.nodeType = "flashcard";
+
+            const [errUpdate] = await this.updateNodeById(parentNode);
+            if (errUpdate) {
+              tx.rollback();
+              return getTRPCError(this.logger, errUpdate.message);
+            }
+          }
+        }
+
+        return [null, res.rows as Node[]] as const;
+      });
+
+      return deletedNodes;
     } catch (e) {
       return getModelDefaultError(e, this.logger);
     }
