@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Maximize2, Delete, DeleteIcon } from "lucide-react";
+import { DeleteIcon, Maximize2 } from "lucide-react";
 import React, { useRef } from "react";
 import { Position } from "reactflow";
 import { FlowTextArea } from "../CustomComponents/flowTextArea";
@@ -70,9 +70,9 @@ export const NodeUI: React.FC<NodeUIProps> = ({
             value={isFront ? frontside : backside}
             textAreaRef={isFront ? frontsideAreaRef : backsideAreaRef}
             placeholder={""}
-            changes={function(): void { }}
+            changes={function (): void {}}
             isInput={false}
-            onSubmit={function(): void { }}
+            onSubmit={function (): void {}}
             isFocussed={false}
           />
         </div>

@@ -13,15 +13,26 @@ export const databaseNodeToStoreNode = (input: DatabaseNode): StoreNode => {
       y: input.yPosition,
     },
     type: "node",
-    data: _.pick(input, [
-      "createdAt",
-      "updatedAt",
-      "mapId",
-      "frontside",
-      "backside",
-      "parentNodeId",
-      "nodeType",
-    ]),
+    data: {
+      ..._.pick(input, [
+        "createdAt",
+        "updatedAt",
+        "mapId",
+        "frontside",
+        "backside",
+        "parentNodeId",
+        "nodeType",
+      ]),
+      editNode(_nodeId) {
+        console.info("Should be overwritten in map page");
+      },
+      deleteNode(_input) {
+        console.info("Should be overwritten in map page");
+        return new Promise((resolve, _reject) => {
+          resolve("Should be overwritten with actual logic");
+        });
+      },
+    },
   };
 
   return node;

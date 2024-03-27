@@ -62,9 +62,9 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   const [isCreateNode, setCreateNode] = useState(false);
   const [xPosition, setXPosition] = useState(500);
   const [yPosition, setYPosition] = useState(500);
-  const [nodeIdToEdit, setNodeIdToEdit] = useState<string | null>(null)
-  const [placeholderTopInput, setPlaceholderTopInput] = useState("")
-  const [placeholderBottomInput, setPlaceholderBottomInput] = useState("")
+  const [nodeIdToEdit, setNodeIdToEdit] = useState<string | null>(null);
+  const [placeholderTopInput, setPlaceholderTopInput] = useState("");
+  const [placeholderBottomInput, setPlaceholderBottomInput] = useState("");
 
   const { screenToFlowPosition } = useReactFlow();
   const reactflowStore = useStoreApi();
@@ -85,7 +85,7 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
     }
     setNodes(nodesProp);
     setEdges(edgesProp);
-  }, [nodesProp, setNodes, setEdges, edgesProp]);
+  }, [nodesProp, setNodes, setEdges, edgesProp, nodeIdToEdit]);
 
   const onDragEnd: NodeDragHandler = async (_event, node, _nodes) => {
     const dbUpdatedNode = storeNodeToDatabaseNode(node);
@@ -162,8 +162,8 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
           setYPosition(childNodePosition.y);
           setDialogOpen(true);
           setCreateNode(true);
-          setPlaceholderTopInput("")
-          setPlaceholderBottomInput("")
+          setPlaceholderTopInput("");
+          setPlaceholderBottomInput("");
         }
       }
     },
@@ -173,17 +173,16 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
   const openDialogEditNode = (nodeId: string) => {
     setDialogOpen(true);
     setCreateNode(false);
-    setNodeIdToEdit(nodeId)
-    const node = nodes.find(n => n.id === nodeId)
+    setNodeIdToEdit(nodeId);
+    const node = nodes.find((n) => n.id === nodeId);
     if (node) {
-      setPlaceholderTopInput(node.data.frontside)
-      setPlaceholderBottomInput(node.data.backside)
+      setPlaceholderTopInput(node.data.frontside);
+      setPlaceholderBottomInput(node.data.backside);
     } else {
-      setPlaceholderTopInput("")
-      setPlaceholderBottomInput("")
+      setPlaceholderTopInput("");
+      setPlaceholderBottomInput("");
     }
-
-  }
+  };
 
   const openDialogAddNode = () => {
     const topLevelNode = nodes.find((n) => n.data.parentNodeId === null);
@@ -192,8 +191,8 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
     setXPosition(topLevelNode ? topLevelNode.position.x + 350 : 500);
     setYPosition(topLevelNode?.position.y || 500);
     setParentNodeId(null);
-    setPlaceholderTopInput("")
-    setPlaceholderBottomInput("")
+    setPlaceholderTopInput("");
+    setPlaceholderBottomInput("");
   };
 
   const handleDialogSubmit = async (front: string, back: string) => {
@@ -215,14 +214,14 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
         await updateNode(dbParentNode);
       }
     } else {
-      const node = nodes.find(n => n.id === nodeIdToEdit);
+      const node = nodes.find((n) => n.id === nodeIdToEdit);
 
       if (node) {
-        node.data.frontside = front
-        node.data.backside = back
+        node.data.frontside = front;
+        node.data.backside = back;
 
-        const dbNode = storeNodeToDatabaseNode(node)
-        await updateNode(dbNode)
+        const dbNode = storeNodeToDatabaseNode(node);
+        await updateNode(dbNode);
       }
     }
     setParentNodeId(null);
@@ -230,11 +229,11 @@ function Map({ nodesProp, edgesProp, mapId, mapName }: MapProps) {
 
   //console.log("id", mapId, "name", mapName, "nodes", nodes, "edges", edges);
 
-  const nodesWithHandlers = nodes.map(node => {
-    node.data.editNode = openDialogEditNode
-    node.data.deleteNode = deleteNode
-    return node
-  })
+  const nodesWithHandlers = nodes.map((node) => {
+    node.data.editNode = openDialogEditNode;
+    node.data.deleteNode = deleteNode;
+    return node;
+  });
 
   return (
     <div

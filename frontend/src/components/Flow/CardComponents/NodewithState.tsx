@@ -37,8 +37,7 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   };
 
   const onBlur = (e: React.FocusEvent<HTMLDivElement, Element>) => {
-    const isFocusingChild =
-      e.currentTarget.contains(e.relatedTarget);
+    const isFocusingChild = e.currentTarget.contains(e.relatedTarget);
     if (isFocused && !isFocusingChild) {
       setFocusedId(null);
     }
@@ -49,12 +48,12 @@ export const NodeWithState: React.FC<NodeWithStateProps> = ({ data, id }) => {
   };
 
   const openEditDialog = () => {
-    data.editNode(id)
-  }
+    data.editNode(id);
+  };
 
   const deleteNode = async () => {
-    await data.deleteNode(id)
-  }
+    await data.deleteNode(id);
+  };
 
   return (
     <NodeUI
