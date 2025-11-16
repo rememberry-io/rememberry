@@ -12,7 +12,7 @@ on:
 jobs:
   lint-format:
     name: lint and format
-    runs-on: ubuntu-22.04
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
 
   test:
     name: test frontend
-    runs-on: ubuntu-22.04
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -57,7 +57,7 @@ jobs:
         run: pnpm run frontend test
 
   build-image:
-    runs-on: ubuntu-22.04
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     needs: [lint-format, test]
     name:
       build & push docker image
@@ -100,7 +100,7 @@ jobs:
             "PORT=3000"
 
   push-staging:
-    runs-on: ubuntu-22.04
+    runs-on: blacksmith-4vcpu-ubuntu-2204
     name:
       deploy changes on staging frontend
       # if: github.ref == 'refs/heads/master'
